@@ -1,10 +1,10 @@
 #ifndef FREERTOS_H_INC
 #define FREERTOS_H_INC
 
-#include "FreeRTOS/Source/include/FreeRTOS.h"
-#include "FreeRTOS/Source/include/task.h"
-#include "FreeRTOS/Source/include/queue.h"
-#include "FreeRTOS/Source/include/semphr.h"
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+#include "semphr.h"
 
 namespace FFS {
     
