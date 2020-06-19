@@ -1,0 +1,6 @@
+[submodule "src/ext/FreeRTOS/ESFree"]
+	path = src/ext/ESFree
+	url = https://github.com/RobinK2/ESFree.git
+[submodule "src/ext/FreeRTOS"]
+	path = src/ext/FreeRTOS
+	url = git@github.com:FreeRTOS/FreeRTOS-Kernel.git
