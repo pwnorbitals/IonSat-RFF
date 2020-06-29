@@ -4,4 +4,3 @@ incdir=[]
 subdir('src')
 subdir('test')
 
-

@@ -4,15 +4,16 @@
 namespace FFS {
     
     template<typename data_t>
-    classs Event {
+    class Event {
         data_t data;
         char sha1[32];
         unsigned long emissionTime;
+        unsigned char priority;
         
     public:
-        Event();
-        ~Event();
-    }
+        Event(){};
+        ~Event(){};
+    };
     
 }
 

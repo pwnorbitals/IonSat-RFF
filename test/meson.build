@@ -1,3 +1,5 @@
-source_files += files('unit/main.cpp')
+source_files += files('unit/controller.cpp')
 thread_dep = dependency('threads')
-executable('RFS_test', source_files, include_directories : incdir, dependencies: thread_dep)
+ut = executable('unit_test', source_files, include_directories : incdir, dependencies: thread_dep)
+
+test('unit test', ut)

@@ -8,14 +8,14 @@ FreeRTOS_inc = include_directories(
     'ESFree/'
     )
 FreeRTOS_src = files(
-    #'FreeRTOS/croutine.c',
+    'FreeRTOS/croutine.c',
     #'FreeRTOS/event_groups.c',
     'FreeRTOS/list.c',
     'FreeRTOS/queue.c',
     #'FreeRTOS/stream_buffer.c',
     'FreeRTOS/tasks.c',
     'FreeRTOS/timers.c',
-    #'FreeRTOS/portable/MemMang/'+FreeRTOS_allocator+'.c'
+    'FreeRTOS/portable/MemMang/'+FreeRTOS_allocator+'.c',
     port_path+'/port.c',
     'ESFree/scheduler.c'
     )
@@ -23,3 +23,4 @@ FreeRTOS_src = files(
 
 source_files += FreeRTOS_src
 incdir += FreeRTOS_inc
+incdir += include_directories('headers')

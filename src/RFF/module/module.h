@@ -7,16 +7,15 @@
 
 namespace FFS {
     
-    template<typename ...exposed_t>
+    // From https://stackoverflow.com/questions/9831501
+    template<typename ...handled_t>
     class Module {
         protected:
-            std::tuple<FFS::Event<exposed_t>, ...> exposedEvts;
-            std::tuple<FFS::EventHandler<event_t>, ...> evtHandlers;
+            std::tuple<FFS::EventHandler<handled_t> ...> evtHandlers;
             
 
-        public:
-            Module(std::tuple<FFS::Event<exposed_t>,...> _exposedEvts, std::tuple<FFS:Task<event_t>,...> _evtHandlers) :
-            exposedEvts{_exposedEvts}, evtHandlers{_evtHandlers} {
+        public:             
+            Module(std::tuple<FFS::EventHandler<handled_t> ...> _evtHandlers) : evtHandlers{_evtHandlers} {
                 
             }
             
@@ -24,12 +23,19 @@ namespace FFS {
                 
             }
             
-            template<typename event_t>
-            void callHandlers(FFS::Event<event_t> event) {
+            template<typename evt_t>
+            void callHandlers(FFS::Event<evt_t> event) {
+                /*
                 for(auto eh : evtHandlers) {
-                    // if event_t == eh::type
-                    eh(evt);
+                    if constexpr (std::is_same<evt_t, eh::event_t>::value) {
+                        eh(event);
+                    }
                 }
+                */               
+                
+                std::apply([](auto& ...event){
+                    (..., eh(event));
+                }, evtHandlers);
             }
 
             

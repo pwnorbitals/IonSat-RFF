@@ -1,4 +1,4 @@
-Build started at 2020-06-19T16:11:28.919073
+Build started at 2020-06-29T13:26:10.493948
 Main binary: /usr/bin/python3
 Build Options: -Dbackend=ninja
 Python system: Linux
@@ -9,64 +9,12 @@ Build dir: /home/ubuntu/IonSat-RFF/build
 Build type: native build
 Project name: FSW
 Project version: undefined
-No CFLAGS in the environment, not changing global flags.
-No LDFLAGS in the environment, not changing global flags.
-No CPPFLAGS in the environment, not changing global flags.
-Sanity testing C compiler: cc
-Is cross compiler: False.
-Sanity check compiler command line: cc /home/ubuntu/IonSat-RFF/build/meson-private/sanitycheckc.c -o /home/ubuntu/IonSat-RFF/build/meson-private/sanitycheckc.exe -pipe -D_FILE_OFFSET_BITS=64
-Sanity check compile stdout:
-
------
-Sanity check compile stderr:
-
------
-Running test binary command: /home/ubuntu/IonSat-RFF/build/meson-private/sanitycheckc.exe
 C compiler for the build machine: cc (gcc 9.3.0 "cc (Ubuntu 9.3.0-10ubuntu2) 9.3.0")
 C linker for the build machine: cc ld.bfd 2.34
-No CXXFLAGS in the environment, not changing global flags.
-No LDFLAGS in the environment, not changing global flags.
-No CPPFLAGS in the environment, not changing global flags.
-Sanity testing C++ compiler: c++
-Is cross compiler: False.
-Sanity check compiler command line: c++ /home/ubuntu/IonSat-RFF/build/meson-private/sanitycheckcpp.cc -o /home/ubuntu/IonSat-RFF/build/meson-private/sanitycheckcpp.exe -pipe -D_FILE_OFFSET_BITS=64
-Sanity check compile stdout:
-
------
-Sanity check compile stderr:
-
------
-Running test binary command: /home/ubuntu/IonSat-RFF/build/meson-private/sanitycheckcpp.exe
 C++ compiler for the build machine: c++ (gcc 9.3.0 "c++ (Ubuntu 9.3.0-10ubuntu2) 9.3.0")
 C++ linker for the build machine: c++ ld.bfd 2.34
-No CFLAGS in the environment, not changing global flags.
-No LDFLAGS in the environment, not changing global flags.
-No CPPFLAGS in the environment, not changing global flags.
-Sanity testing C compiler: cc
-Is cross compiler: False.
-Sanity check compiler command line: cc /home/ubuntu/IonSat-RFF/build/meson-private/sanitycheckc.c -o /home/ubuntu/IonSat-RFF/build/meson-private/sanitycheckc.exe -pipe -D_FILE_OFFSET_BITS=64
-Sanity check compile stdout:
-
------
-Sanity check compile stderr:
-
------
-Running test binary command: /home/ubuntu/IonSat-RFF/build/meson-private/sanitycheckc.exe
 C compiler for the host machine: cc (gcc 9.3.0 "cc (Ubuntu 9.3.0-10ubuntu2) 9.3.0")
 C linker for the host machine: cc ld.bfd 2.34
-No CXXFLAGS in the environment, not changing global flags.
-No LDFLAGS in the environment, not changing global flags.
-No CPPFLAGS in the environment, not changing global flags.
-Sanity testing C++ compiler: c++
-Is cross compiler: False.
-Sanity check compiler command line: c++ /home/ubuntu/IonSat-RFF/build/meson-private/sanitycheckcpp.cc -o /home/ubuntu/IonSat-RFF/build/meson-private/sanitycheckcpp.exe -pipe -D_FILE_OFFSET_BITS=64
-Sanity check compile stdout:
-
------
-Sanity check compile stderr:
-
------
-Running test binary command: /home/ubuntu/IonSat-RFF/build/meson-private/sanitycheckcpp.exe
 C++ compiler for the host machine: c++ (gcc 9.3.0 "c++ (Ubuntu 9.3.0-10ubuntu2) 9.3.0")
 C++ linker for the host machine: c++ ld.bfd 2.34
 Build machine cpu family: x86_64
@@ -75,13 +23,14 @@ Host machine cpu family: x86_64
 Host machine cpu: x86_64
 Target machine cpu family: x86_64
 Target machine cpu: x86_64
-Run-time dependency threads found: YES
+Dependency threads found: YES unknown (cached)
+Adding test "unit test"
 Build targets in project: 1
 
 Found ninja-1.10.0 at /usr/bin/ninja
 Running compile:
-Working directory:  /tmp/tmpsjmtk1k1
-Command line:  c++ /tmp/tmpsjmtk1k1/testfile.cpp -o /tmp/tmpsjmtk1k1/output.obj -pipe -D_FILE_OFFSET_BITS=64 -c -std=c++17 
+Working directory:  /tmp/tmpnvajgjz0
+Command line:  c++ /tmp/tmpnvajgjz0/testfile.cpp -o /tmp/tmpnvajgjz0/output.obj -pipe -D_FILE_OFFSET_BITS=64 -c -std=c++17 
 
 Code:
  int i = static_cast<int>(0);
@@ -91,8 +40,8 @@ Compiler stderr:
  
 Compiler accepts -std=c++17: YES
 Running compile:
-Working directory:  /home/ubuntu/IonSat-RFF/build/meson-private/tmpcvb0rcm_
-Command line:  c++ /home/ubuntu/IonSat-RFF/build/meson-private/tmpcvb0rcm_/testfile.cpp -o /home/ubuntu/IonSat-RFF/build/meson-private/tmpcvb0rcm_/output.obj -pipe -c -D_FILE_OFFSET_BITS=64 -O0 -fpermissive --print-search-dirs 
+Working directory:  /home/ubuntu/IonSat-RFF/build/meson-private/tmp9q8wuqk9
+Command line:  c++ /home/ubuntu/IonSat-RFF/build/meson-private/tmp9q8wuqk9/testfile.cpp -o /home/ubuntu/IonSat-RFF/build/meson-private/tmp9q8wuqk9/output.obj -pipe -c -D_FILE_OFFSET_BITS=64 -O0 -fpermissive --print-search-dirs 
 
 Code:
  

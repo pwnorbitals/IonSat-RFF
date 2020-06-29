@@ -251,8 +251,9 @@ portLONG lIndex;
 
 void vPortEndScheduler( void )
 {
-portBASE_TYPE xNumberOfThreads;
-portBASE_TYPE xResult;
+    portBASE_TYPE xNumberOfThreads;
+    portBASE_TYPE xResult;
+    
 	for ( xNumberOfThreads = 0; xNumberOfThreads < MAX_NUMBER_OF_TASKS; xNumberOfThreads++ )
 	{
 		if ( ( pthread_t )NULL != pxThreads[ xNumberOfThreads ].hThread )

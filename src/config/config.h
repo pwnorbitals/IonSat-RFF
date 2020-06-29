@@ -1,0 +1,2 @@
+
+#define FFS_MAX_PARALLEL_HANDLERS 64

@@ -1,3 +1,2 @@
-incdir = [include_directories('RFF')]
-source_files = []
+incdir += include_directories('RFF')
 subdir('ext')
