@@ -16,17 +16,16 @@ namespace FFS {
 
     
 
-
-    template<typename ...events_t>
+    template<typename ...modules_t>
     class Controller {
         protected:
             OSSettings settings;
-            std::tuple<FFS::Module<events_t>...> modules;
+            std::tuple<FFS::Module<modules_t>...> modules;
             std::tuple<FFS::Mode> modes;
 
         public:
-            Controller(OSSettings _settings, std::tuple<FFS::Mode> _modes, std::tuple<FFS::Module<events_t>...> _modules) : settings{_settings}, modules{_modules}, modes{_modes} { 
-                static_assert(sizeof...(events_t) != 0);
+            Controller(OSSettings _settings, std::tuple<FFS::Mode> _modes, std::tuple<FFS::Module<modules_t>...> _modules) : settings{_settings}, modules{_modules}, modes{_modes} { 
+                static_assert(sizeof...(modules_t) != 0);
             };
             virtual ~Controller() {};
             
@@ -38,7 +37,9 @@ namespace FFS {
                 */
                 
 
-                std::apply([message](auto... module){(module.callHandlers(message),...);}, modules);
+                std::apply([message](auto... module){
+                    ((module.callHandlers(FFS::Event{message})), ...);
+                }, modules);
             };
 
             void start() {
@@ -53,6 +54,7 @@ namespace FFS {
                     }
                 }
             }
+            
     };
 
 
