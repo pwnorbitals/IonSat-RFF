@@ -7,7 +7,7 @@ Number of Build Directories=1
 
 [MesonManager][BuildDir 0]
 Additional meson arguments=
-Build Directory Path=/home/ubuntu/IonSat-RFF/build
+Build Directory Path=/home/chris/astronautix/IonSat-RFF/build
 Meson Generator Backend=ninja
 Meson executable=/usr/bin/meson
 
