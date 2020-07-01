@@ -1,6 +1,27 @@
 [Buildset]
 BuildItems=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x01\x00\x00\x00\x0b\x00\x00\x00\x00\x01\x00\x00\x00\x14\x00I\x00o\x00n\x00S\x00a\x00t\x00-\x00R\x00F\x00F)
 
+[Launch]
+Launch Configurations=Launch Configuration 0
+
+[Launch][Launch Configuration 0]
+Configured Launch Modes=execute
+Configured Launchers=nativeAppLauncher
+Name=New Compiled Binary Launcher
+Type=Native Application
+
+[Launch][Launch Configuration 0][Data]
+Arguments=
+Dependencies=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x00)
+Dependency Action=Nothing
+EnvironmentGroup=
+Executable=file:///home/ubuntu/IonSat-RFF
+External Terminal=konsole --noclose --workdir %workdir -e %exe
+Project Target=IonSat-RFF,test,unit_test
+Use External Terminal=false
+Working Directory=
+isExecutable=false
+
 [MesonManager]
 Current Build Directory Index=0
 Number of Build Directories=1

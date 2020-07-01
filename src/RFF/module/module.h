@@ -8,14 +8,14 @@
 namespace FFS {
     
     // From https://stackoverflow.com/questions/9831501
-    template<typename ...handled_t>
+    template<typename ...handlers_t>
     class Module {
         protected:
-            std::tuple<FFS::EventHandler<handled_t> ...> evtHandlers;
+            std::tuple<FFS::EventHandler<handlers_t>...> evtHandlers;
             
 
         public:             
-            Module(std::tuple<FFS::EventHandler<handled_t> ...> _evtHandlers) : evtHandlers{_evtHandlers} {
+            Module(std::tuple<FFS::EventHandler<handlers_t>...> _evtHandlers) : evtHandlers{_evtHandlers} {
                 
             }
             
@@ -33,7 +33,7 @@ namespace FFS {
                 }
                 */               
                 
-                std::apply([](auto& ...event){
+                std::apply([event](auto... eh){
                     (..., eh(event));
                 }, evtHandlers);
             }
