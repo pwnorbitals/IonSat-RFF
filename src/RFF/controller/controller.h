@@ -34,14 +34,12 @@ namespace FFS {
                 func = [=](std::any any_ev){
                     auto f = [&](auto tag){
                         using EventType = typename decltype(tag)::type;
-                        if (auto* ev = std::any_cast<EventType>(&any_ev)) {
-                            std::apply([=](auto&&... module) {((module.callHandlers(FFS::Event<EventType>{*ev, this})), ...);}, _modules);
-                        }
+                        auto ev = std::any_cast<EventType>(any_ev);
+                        std::apply([&, _modules](auto... module) {((module.callHandlers(FFS::Event<EventType>{ev, this})), ...);}, _modules);
                     };
-                    std::apply([&f](auto&&... tags){ (f(tags), ...); }, event_tags);
+                    std::apply([&f](auto&... tags){ (f(tags), ...); }, event_tags);
                 };
             }
-            virtual ~Controller() {};
             
             template<typename evt_t> 
             void emit (evt_t event) {

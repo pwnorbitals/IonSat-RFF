@@ -64,15 +64,15 @@ namespace FFS {
         }
         
         template<typename evt_t>
-        void operator()(FFS::Event<evt_t> evt) {
+        void operator()(FFS::Event<evt_t> const& evt) {
             if constexpr (std::is_same<evt_t, event_t>::value) {
                 auto prio = UBaseType_t{1};
                 std::cout << "pushing back" << std::endl;
                 
-                auto cleanup = [&]() { 
+                auto cleanup = [=]() { 
                     std::remove_if(
                         taskHandlers.begin(), taskHandlers.end(), 
-                        [&evt](FFS::Task<event_t, stackDepth> task){ return task.event == evt; }
+                        [=](FFS::Task<event_t, stackDepth> const& task){ return task.event == evt; }
                     );
                     
                 };

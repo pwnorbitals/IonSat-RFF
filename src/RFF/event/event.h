@@ -14,10 +14,10 @@ namespace FFS {
         unsigned long emissionTime;
         Controller* controller = nullptr;
         
-        Event(data_t _data, Controller* _ctrlr) : data{_data}, controller{_ctrlr}{};
+        Event(data_t const& _data, Controller* _ctrlr) : data{_data}, controller{_ctrlr}{};
         ~Event(){};
         
-        bool operator==(Event const& other) { 
+        bool operator==(Event const& other) const { 
             
             // does not require any comparison operator for user-provided event types !
             return other.emissionTime == this->emissionTime && other.sha1 == this->sha1;

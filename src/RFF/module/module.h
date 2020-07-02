@@ -22,8 +22,8 @@ namespace FFS {
             Module(std::tuple<EventHandler<events_t, stackDepths>...> _handlers): evtHandlers{_handlers}{};
             
             template<typename evt_t>
-            void callHandlers(Event<evt_t> event) const {  
-                std::apply([&](auto... eh){
+            void callHandlers(Event<evt_t> const& event) {  
+                std::apply([&](auto&... eh){ // lvalue reference argument because rvalue reference would consume the event handlers
                     (..., eh(event));
                 }, evtHandlers);
             }
