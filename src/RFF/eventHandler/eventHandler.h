@@ -71,12 +71,18 @@ namespace FFS {
         
         template<typename evt_t>
         void operator()(FFS::Event<evt_t> evt) {
-            auto prio = 1;
             if constexpr (std::is_same<evt_t, event_t>::value) {
+                auto prio = UBaseType_t{1};
                 std::cout << "pushing back" << std::endl;
                 
-                auto cursize = taskHandlers.size();
-                auto cleanup = [&]() { taskHandlers.erase(taskHandlers.begin() + cursize); };
+                auto cleanup = [&]() { 
+                    std::remove_if(
+                        taskHandlers.begin(), taskHandlers.end(), 
+                        [&evt](FFS::Task<event_t> task){ return task.event == evt; }
+                    );
+                    
+                };
+                
                 
                 taskHandlers.push_back(FFS::Task{cify([&](void* arg) {
                     

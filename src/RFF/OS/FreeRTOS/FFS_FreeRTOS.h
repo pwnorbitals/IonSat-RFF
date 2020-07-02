@@ -16,13 +16,15 @@ namespace FFS {
 
     template<typename evt_t>
     class Task {
+        
+    public:
 
         TaskHandle_t taskHandle;
         StaticTask_t task;
         StackType_t StackBuffer;
         FFS::Event<evt_t> event;
 
-    public:
+    
 
             // TASK CREATION : https://www.freertos.org/a00019.html
         Task(TaskFunction_t pxTaskCode, const char * const pcName, const uint32_t ulStackDepth, FFS::Event<evt_t> _event, UBaseType_t uxPriority):
