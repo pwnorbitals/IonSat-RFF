@@ -39,13 +39,13 @@ namespace FFS {
                     };
                     std::apply([&f](auto&&... tags){ (f(tags), ...); }, event_tags);
                 };
-            };
+            }
             virtual ~Controller() {};
             
             template<typename evt_t> 
             void emit (evt_t event) {
                 func(event);
-            };
+            }
 
             void start() {
                 std::cout << "Starting controller" << std::endl;

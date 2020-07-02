@@ -6,6 +6,8 @@
 #include "queue.h"
 #include "semphr.h"
 
+#include <boost/container/static_vector.hpp>
+
 #include "event/event.h"
 
 namespace FFS {
@@ -14,22 +16,22 @@ namespace FFS {
         
     };
 
-    template<typename evt_t>
+    template<typename evt_t, uint32_t stackDepth>
     class Task {
         
     public:
 
         TaskHandle_t taskHandle;
         StaticTask_t task;
-        StackType_t StackBuffer;
+        StackType_t StackBuffer[stackDepth];
         FFS::Event<evt_t> event;
 
     
 
             // TASK CREATION : https://www.freertos.org/a00019.html
-        Task(TaskFunction_t pxTaskCode, const char * const pcName, const uint32_t ulStackDepth, FFS::Event<evt_t> _event, UBaseType_t uxPriority):
-            event{_event} {
-            taskHandle = xTaskCreateStatic(pxTaskCode, pcName, ulStackDepth, reinterpret_cast<void*>(&event), uxPriority, &StackBuffer, &task);
+        Task(TaskFunction_t pxTaskCode, const char * const pcName, FFS::Event<evt_t> _event, UBaseType_t uxPriority):
+            event{_event}{
+            taskHandle = xTaskCreateStatic(pxTaskCode, pcName, stackDepth, reinterpret_cast<void*>(&event), uxPriority, &StackBuffer[0], &task);
         }
 
         ~Task() {
@@ -295,18 +297,18 @@ void vApplicationGetTimerTaskMemory( StaticTask_t **ppxTimerTaskTCBBuffer,
 
 
     // https://www.freertos.org/pvTaskGetThreadLocalStoragePointer.html
+    /*
     void* pvTaskGetThreadLocalStoragePointer( TaskHandle_t xTaskToQuery, BaseType_t xIndex ){
         // TODO
     }
 
     void vTaskSetThreadLocalStoragePointer( TaskHandle_t xTaskToSet,  BaseType_t xIndex, void *pvValue ){
         // TODO
-    }
 
     TaskHandle_t xTaskGetIdleTaskHandle() {
 
     }
-
+*/
 }
 
 

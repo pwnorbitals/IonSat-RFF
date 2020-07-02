@@ -1,1 +1,1 @@
-incdir += include_directories('headers')
+incdir += include_directories('.')

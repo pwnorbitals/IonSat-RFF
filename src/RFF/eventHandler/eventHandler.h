@@ -40,22 +40,16 @@ namespace FFS {
     
     
 
-
     
-    template<typename _evt_t>
+    template<typename event_t, uint32_t stackDepth>
     class EventHandler {
         
-        
-        
-    public:
-        using event_t = _evt_t;
     
     protected:
         
         std::function<void(FFS::Event<event_t>*)> handlerFct;
-        boost::container::static_vector<FFS::Task<event_t>, FFS_MAX_PARALLEL_HANDLERS> taskHandlers;
+        boost::container::static_vector<FFS::Task<event_t, stackDepth>, FFS_MAX_PARALLEL_HANDLERS> taskHandlers;
         std::string name;
-        uint32_t stackDepth;
     
         
         
@@ -64,8 +58,8 @@ namespace FFS {
     
     public:
         
-        EventHandler( std::function<void(FFS::Event<event_t>*)> _handlerFct, std::string _name, uint32_t const _stackDepth) :                        
-            handlerFct{_handlerFct}, taskHandlers{}, name{_name}, stackDepth{_stackDepth} {
+        EventHandler( std::function<void(FFS::Event<event_t>*)> _handlerFct, std::string _name) :                        
+            handlerFct{_handlerFct}, taskHandlers{}, name{_name} {
             
         }
         
@@ -78,20 +72,20 @@ namespace FFS {
                 auto cleanup = [&]() { 
                     std::remove_if(
                         taskHandlers.begin(), taskHandlers.end(), 
-                        [&evt](FFS::Task<event_t> task){ return task.event == evt; }
+                        [&evt](FFS::Task<event_t, stackDepth> task){ return task.event == evt; }
                     );
                     
                 };
                 
                 
-                taskHandlers.push_back(FFS::Task{cify([&](void* arg) {
+                taskHandlers.push_back(FFS::Task<event_t, stackDepth>{cify([&](void* arg) {
                     
                     // dangerous ! but needed for interoperability with FreeRTOS' void(*)(void*) thread function
                     auto event = reinterpret_cast<FFS::Event<event_t>*>(arg);
                     handlerFct(event);
                     cleanup();
                     
-                }), name.c_str(), stackDepth, evt, prio});
+                }), name.c_str(), evt, prio});
                 std::cout << "done pushing back" << std::endl;
             }
         }

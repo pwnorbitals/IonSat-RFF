@@ -41,12 +41,14 @@ TEST_CASE( "typical use case", "[example]" ) {
         std::cout << evt->data.sent << std::endl;
     };
 
-    auto handlers = std::make_tuple(FFS::EventHandler<MyCustomEventType>{handler, "first", 1024}, 
-                                    FFS::EventHandler<MyOtherCustomEventType>{otherhandler, "second", 1024});
-    auto modules = std::make_tuple(FFS::Module<MyCustomEventType, MyOtherCustomEventType>{handlers});
+    auto handlers = std::make_tuple(FFS::EventHandler<MyCustomEventType, 100000000>{handler, "first"}, 
+                                    FFS::EventHandler<MyOtherCustomEventType, 100000000>{otherhandler, "second"});
+    auto modules = std::make_tuple(FFS::Module{handlers});
     auto controller = FFS::Controller{FFS::OSSettings{}, std::make_tuple(FFS::Mode{"abc"}), modules, event_tags{}};
 
     controller.emit(MyCustomEventType{42});
+    
+    controller.start();
     
     
     REQUIRE( 1 == 1 );
