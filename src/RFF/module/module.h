@@ -7,6 +7,7 @@
 
 namespace FFS {
     
+    // From : https://stackoverflow.com/questions/62693894
     template <typename...>
     class Module;
 

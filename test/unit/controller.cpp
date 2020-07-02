@@ -1,13 +1,13 @@
-#define CATCH_CONFIG_MAIN  // This tells Catch to provide a main() - only do this in one cpp file
-#include "catch.hpp"
+// #define CATCH_CONFIG_MAIN  // This tells Catch to provide a main() - only do this in one cpp file
+// #include "catch.hpp"
 
 #include <iostream>
 #include "FFS.h"
 
 
-
+/*
 TEST_CASE( "typical use case", "[example]" ) {
-    
+    */
     /*
     
     struct testEvent{int evnum;};
@@ -25,7 +25,7 @@ TEST_CASE( "typical use case", "[example]" ) {
     controller.emit(testEvent{2});
     
     */
-    
+int main(int argc, char *argv[]) {
     struct MyCustomEventType { int eventNo; };
     struct MyOtherCustomEventType { bool sent; };
     
@@ -41,8 +41,8 @@ TEST_CASE( "typical use case", "[example]" ) {
         std::cout << evt->data.sent << std::endl;
     };
 
-    auto handlers = std::make_tuple(FFS::EventHandler<MyCustomEventType, 100000000>{handler, "first"}, 
-                                    FFS::EventHandler<MyOtherCustomEventType, 100000000>{otherhandler, "second"});
+    auto handlers = std::make_tuple(FFS::EventHandler<MyCustomEventType, 1000>{handler, "first"}, 
+                                    FFS::EventHandler<MyOtherCustomEventType, 1000>{otherhandler, "second"});
     auto modules = std::make_tuple(FFS::Module{handlers});
     auto controller = FFS::Controller{FFS::OSSettings{}, std::make_tuple(FFS::Mode{"abc"}), modules, event_tags{}};
 
@@ -51,5 +51,5 @@ TEST_CASE( "typical use case", "[example]" ) {
     controller.start();
     
     
-    REQUIRE( 1 == 1 );
+    // REQUIRE( 1 == 1 );
 }
