@@ -8,32 +8,27 @@
 #include <iostream>
 #include <type_traits>
 
-
 // From : https://stackoverflow.com/questions/7852101
-template <class F>
-struct lambda_traits : lambda_traits<decltype(&F::operator())>
-{ };
+struct Lambda {
+    template<typename Tret, typename T>
+    static Tret lambda_ptr_exec(void* data) {
+        return (Tret) (*(T*)fn<T>())(data);
+    }
 
-template <typename F, typename R, typename... Args>
-struct lambda_traits<R(F::*)(Args...)> : lambda_traits<R(F::*)(Args...) const>
-{ };
+    template<typename Tret = void, typename Tfp = Tret(*)(void*), typename T>
+    static Tfp ptr(T&& t) {
+        fn<T>(&t);
+        return (Tfp) lambda_ptr_exec<Tret, T>;
+    }
 
-template <class F, class R, class... Args>
-struct lambda_traits<R(F::*)(Args...) const> {
-    using pointer = typename std::add_pointer<R(Args...)>::type;
-
-    static pointer cify(F&& f) {
-        static F fn = std::forward<F>(f);
-        return [](Args... args) {
-            return fn(std::forward<Args>(args)...);
-        };
+    template<typename T>
+    static void* fn(void* new_fn = nullptr) {
+        static void* fn;
+        if (new_fn != nullptr)
+            fn = new_fn;
+        return fn;
     }
 };
-
-template <class F>
-inline typename lambda_traits<F>::pointer cify(F&& f) {
-    return lambda_traits<F>::cify(std::forward<F>(f));
-}
 
 namespace FFS {
     
@@ -72,20 +67,19 @@ namespace FFS {
                 auto cleanup = [=]() { 
                     std::remove_if(
                         taskHandlers.begin(), taskHandlers.end(), 
-                        [=](FFS::Task<event_t, stackDepth> const& task){ return task.event == evt; }
+                        [&](FFS::Task<event_t, stackDepth> const& task){ return task.event == evt; }
                     );
                     
                 };
                 
-                
-                taskHandlers.push_back(FFS::Task<event_t, stackDepth>{cify([&](void* arg) {
-                    
+                void (*hf)(void*) = Lambda::ptr([&](void* arg) {
                     // dangerous ! but needed for interoperability with FreeRTOS' void(*)(void*) thread function
                     auto event = reinterpret_cast<FFS::Event<event_t>*>(arg);
                     handlerFct(event);
                     cleanup();
-                    
-                }), name.c_str(), evt, prio});
+                });
+                
+                taskHandlers.push_back(FFS::Task<event_t, stackDepth>{hf, name.c_str(), evt, prio});
                 std::cout << "done pushing back" << std::endl;
             }
         }
