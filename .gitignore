@@ -33,5 +33,6 @@
 
 build
 *.kdev4
+.kdev4
 subprojects/*
 !subprojects/*.wrap
