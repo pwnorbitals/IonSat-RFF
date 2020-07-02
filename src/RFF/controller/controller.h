@@ -30,6 +30,7 @@ namespace FFS {
             Controller(OSSettings _settings, std::tuple<FFS::Mode> _modes, std::tuple<modules...> _modules, eventTags event_tags) : settings{_settings}, modes{_modes} { 
                 static_assert(sizeof...(modules) != 0);
                 
+                // From : https://stackoverflow.com/questions/62652638
                 func = [=](std::any any_ev){
                     auto f = [&](auto tag){
                         using EventType = typename decltype(tag)::type;
