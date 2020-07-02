@@ -6,23 +6,28 @@
 #include "queue.h"
 #include "semphr.h"
 
+#include "event/event.h"
+
 namespace FFS {
     
     struct OSSettings {
         
     };
 
+    template<typename evt_t>
     class Task {
 
         TaskHandle_t taskHandle;
         StaticTask_t task;
         StackType_t StackBuffer;
+        FFS::Event<evt_t> event;
 
     public:
 
             // TASK CREATION : https://www.freertos.org/a00019.html
-        Task(TaskFunction_t pxTaskCode, const char * const pcName, const uint32_t ulStackDepth, void * const pvParameters, UBaseType_t uxPriority) {
-            taskHandle = xTaskCreateStatic(pxTaskCode, pcName, ulStackDepth, pvParameters, uxPriority, &StackBuffer, &task);
+        Task(TaskFunction_t pxTaskCode, const char * const pcName, const uint32_t ulStackDepth, FFS::Event<evt_t> _event, UBaseType_t uxPriority):
+            event{_event} {
+            taskHandle = xTaskCreateStatic(pxTaskCode, pcName, ulStackDepth, reinterpret_cast<void*>(&event), uxPriority, &StackBuffer, &task);
         }
 
         ~Task() {

@@ -6,6 +6,7 @@
 #include <memory>
 #include <ctime>
 #include <type_traits>
+#include <any>
 
 #include "mode/mode.h"
 #include "module/module.h"
@@ -14,32 +15,36 @@
 
 namespace FFS {
 
-    
+    template <typename T> struct Tag { using type = T; };
 
-    template<typename ...modules_t>
     class Controller {
         protected:
             OSSettings settings;
-            std::tuple<FFS::Module<modules_t>...> modules;
             std::tuple<FFS::Mode> modes;
-
+            std::function<void(std::any)> func;
+            
+            
         public:
-            Controller(OSSettings _settings, std::tuple<FFS::Mode> _modes, std::tuple<FFS::Module<modules_t>...> _modules) : settings{_settings}, modules{_modules}, modes{_modes} { 
-                static_assert(sizeof...(modules_t) != 0);
+            
+            template<typename ...modules, typename eventTags>
+            Controller(OSSettings _settings, std::tuple<FFS::Mode> _modes, std::tuple<modules...> _modules, eventTags event_tags) : settings{_settings}, modes{_modes} { 
+                static_assert(sizeof...(modules) != 0);
+                
+                func = [=](std::any any_ev){
+                    auto f = [&](auto tag){
+                        using EventType = typename decltype(tag)::type;
+                        if (auto* ev = std::any_cast<EventType>(&any_ev)) {
+                            std::apply([=](auto&&... module) {((module.callHandlers(FFS::Event<EventType>{*ev, this})), ...);}, _modules);
+                        }
+                    };
+                    std::apply([&f](auto&&... tags){ (f(tags), ...); }, event_tags);
+                };
             };
             virtual ~Controller() {};
             
-            template<typename chan_t> void emit (chan_t message) const {
-                /*
-                std::apply([message](auto... chan){
-                    (if constexpr(std::is_same_v<chan_t,chan::message_t>) { chan.emit(message) },...);
-                }, channels);
-                */
-                
-
-                std::apply([message](auto... module){
-                    ((module.callHandlers(FFS::Event{message})), ...);
-                }, modules);
+            template<typename evt_t> 
+            void emit (evt_t event) {
+                func(event);
             };
 
             void start() {

@@ -4,7 +4,11 @@
 #include <iostream>
 #include "FFS.h"
 
+
+
 TEST_CASE( "typical use case", "[example]" ) {
+    
+    /*
     
     struct testEvent{int evnum;};
     
@@ -19,6 +23,30 @@ TEST_CASE( "typical use case", "[example]" ) {
     auto controller = FFS::Controller{FFS::OSSettings{}, modes, std::make_tuple(module)};
     
     controller.emit(testEvent{2});
+    
+    */
+    
+    struct MyCustomEventType { int eventNo; };
+    struct MyOtherCustomEventType { bool sent; };
+    
+    using event_tags = std::tuple<FFS::Tag<MyCustomEventType>, FFS::Tag<MyOtherCustomEventType>>;
+
+    auto handler = [](FFS::Event<MyCustomEventType>* evt){  
+        std::cout << evt->data.eventNo << std::endl;
+        evt->controller->emit(MyOtherCustomEventType{true});
+    };
+    
+    auto otherhandler = [](FFS::Event<MyOtherCustomEventType>* evt) { 
+        std::cout << "boom !!" << std::endl;
+        std::cout << evt->data.sent << std::endl;
+    };
+
+    auto handlers = std::make_tuple(FFS::EventHandler<MyCustomEventType>{handler, "first", 512}, 
+                                    FFS::EventHandler<MyOtherCustomEventType>{otherhandler, "second", 512});
+    auto modules = std::make_tuple(FFS::Module<MyCustomEventType, MyOtherCustomEventType>{handlers});
+    auto controller = FFS::Controller{FFS::OSSettings{}, std::make_tuple(FFS::Mode{"abc"}), modules, event_tags{}};
+
+    controller.emit(MyCustomEventType{42});
     
     
     REQUIRE( 1 == 1 );

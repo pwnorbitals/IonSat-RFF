@@ -53,7 +53,7 @@ namespace FFS {
     protected:
         
         std::function<void(FFS::Event<event_t>*)> handlerFct;
-        boost::container::static_vector<FFS::Task, FFS_MAX_PARALLEL_HANDLERS> taskHandlers;
+        boost::container::static_vector<FFS::Task<event_t>, FFS_MAX_PARALLEL_HANDLERS> taskHandlers;
         std::string name;
         uint32_t stackDepth;
     
@@ -65,7 +65,7 @@ namespace FFS {
     public:
         
         EventHandler( std::function<void(FFS::Event<event_t>*)> _handlerFct, std::string _name, uint32_t const _stackDepth) :                        
-            handlerFct{_handlerFct},taskHandlers{}, name{_name}, stackDepth{_stackDepth} {
+            handlerFct{_handlerFct}, taskHandlers{}, name{_name}, stackDepth{_stackDepth} {
             
         }
         
@@ -85,7 +85,7 @@ namespace FFS {
                     handlerFct(event);
                     cleanup();
                     
-                }), name.c_str(), stackDepth, &evt, prio});
+                }), name.c_str(), stackDepth, evt, prio});
                 std::cout << "done pushing back" << std::endl;
             }
         }
