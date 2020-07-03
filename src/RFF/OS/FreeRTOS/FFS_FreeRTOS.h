@@ -31,7 +31,7 @@ namespace FFS {
             // TASK CREATION : https://www.freertos.org/a00019.html
         Task(TaskFunction_t pxTaskCode, const char * const pcName, FFS::Event<evt_t> _event, UBaseType_t uxPriority):
             event{_event}{
-            taskHandle = xTaskCreateStatic(pxTaskCode, pcName, stackDepth, reinterpret_cast<void*>(&event), uxPriority, &StackBuffer[0], &task);
+            taskHandle = xTaskCreateStatic(pxTaskCode, pcName, stackDepth, reinterpret_cast<void*>(&event), uxPriority, StackBuffer, &task);
         }
 
         ~Task() {

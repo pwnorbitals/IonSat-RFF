@@ -34,8 +34,11 @@ namespace FFS {
                 func = [=](std::any any_ev){
                     auto f = [&](auto tag){
                         using EventType = typename decltype(tag)::type;
-                        auto ev = std::any_cast<EventType>(any_ev);
-                        std::apply([&](auto... module) {((module.callHandlers(FFS::Event<EventType>{ev, this})), ...);}, _modules);
+                        try {
+                            auto ev = std::any_cast<EventType>(any_ev);
+                            std::apply([&](auto... module) {((module.callHandlers(FFS::Event<EventType>{ev, this})), ...);}, _modules);
+                        } catch(std::bad_any_cast const& e) {};
+                        
                     };
                     std::apply([&f](auto&... tags){ (f(tags), ...); }, event_tags);
                 };
@@ -48,6 +51,7 @@ namespace FFS {
 
             void start() {
                 std::cout << "Starting controller" << std::endl;
+                 vTaskStartScheduler();
                 auto start = std::clock();
                 while(true) {
                     auto duration = ( std::clock() - start ) / (double) CLOCKS_PER_SEC;

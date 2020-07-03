@@ -31,11 +31,6 @@ struct Lambda {
 };
 
 namespace FFS {
-    
-    
-    
-
-    
     template<typename event_t, uint32_t stackDepth>
     class EventHandler {
         
@@ -43,7 +38,8 @@ namespace FFS {
     protected:
         
         std::function<void(FFS::Event<event_t>*)> handlerFct;
-        boost::container::static_vector<FFS::Task<event_t, stackDepth>, FFS_MAX_PARALLEL_HANDLERS> taskHandlers;
+        // boost::container::static_vector<FFS::Task<event_t, stackDepth>, FFS_MAX_PARALLEL_HANDLERS> taskHandlers;
+        std::vector<FFS::Task<event_t, stackDepth>> taskHandlers;
         std::string name;
     
         
