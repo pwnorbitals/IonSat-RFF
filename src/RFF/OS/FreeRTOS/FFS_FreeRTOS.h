@@ -49,6 +49,14 @@ namespace FFS {
         StackType_t StackBuffer[stackDepth];
         FFS::Event<evt_t> event;
         std::function<void(void*)> handler;
+        
+        // NO COPY
+        Task(Task const& other) = delete;
+        Task& operator=(Task const& other) = delete;
+        
+        // MOVE ALLOWED
+        Task(Task&& other) = default;
+        Task& operator=(Task&& other) = default;
 
     
 

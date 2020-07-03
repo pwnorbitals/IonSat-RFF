@@ -43,8 +43,8 @@ int main(int argc, char *argv[]) {
 
     auto handlers = std::make_tuple(FFS::EventHandler<MyCustomEventType, 1000000>{handler, "first"}, 
                                     FFS::EventHandler<MyOtherCustomEventType, 1000000>{otherhandler, "second"});
-    auto modules = std::make_tuple(FFS::Module{handlers});
-    auto controller = FFS::Controller{FFS::OSSettings{}, std::make_tuple(FFS::Mode{"abc"}), modules, event_tags{}};
+    auto modules = std::make_tuple(FFS::Module{std::move(handlers)});
+    auto controller = FFS::Controller{FFS::OSSettings{}, std::make_tuple(FFS::Mode{"abc"}), std::move(modules), event_tags{}};
 
     controller.emit(MyCustomEventType{42});
     

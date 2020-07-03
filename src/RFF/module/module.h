@@ -19,7 +19,7 @@ namespace FFS {
 
         public:   
             template<typename ...events_t, uint32_t ...stackDepths>
-            Module(std::tuple<EventHandler<events_t, stackDepths>...> _handlers): evtHandlers{_handlers}{}
+            Module(std::tuple<EventHandler<events_t, stackDepths>...>&& _handlers): evtHandlers{std::move(_handlers)}{}
             
             template<typename evt_t>
             void callHandlers(Event<evt_t> const& event) {  
