@@ -27,16 +27,17 @@ namespace FFS {
         public:
             
             template<typename ...modules, typename eventTags>
-            Controller(OSSettings _settings, std::tuple<FFS::Mode> _modes, std::tuple<modules...> _modules, eventTags event_tags) : settings{_settings}, modes{_modes} { 
+            Controller(OSSettings _settings, std::tuple<FFS::Mode> _modes, std::tuple<modules...>&& _modules, eventTags event_tags) : settings{_settings}, modes{_modes} { 
                 static_assert(sizeof...(modules) != 0);
                 
                 // From : https://stackoverflow.com/questions/62652638
-                func = [=](std::any any_ev){
+                func = [this, event_tags, mods{std::move(_modules)}](std::any any_ev){ // invoked _modules' copy constructor which tries to copy the event handlers and the Tasks inside => fail. 
+                                                                        // Switch to generalized lambda capture from https://stackoverflow.com/questions/8640393
                     auto f = [&](auto tag){
                         using EventType = typename decltype(tag)::type;
                         try {
                             auto ev = std::any_cast<EventType>(any_ev);
-                            std::apply([&](auto... module) {((module.callHandlers(FFS::Event<EventType>{ev, this})), ...);}, _modules);
+                            std::apply([&](auto... module) {((module.callHandlers(FFS::Event<EventType>{ev, this})), ...);}, mods);
                         } catch(std::bad_any_cast const& e) {};
                         
                     };
