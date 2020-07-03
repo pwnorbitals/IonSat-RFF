@@ -8,6 +8,7 @@
 
 #include <boost/container/static_vector.hpp>
 #include <functional>
+#include <cstring>
 
 #include "event/event.h"
 
@@ -46,7 +47,7 @@ namespace FFS {
 
         TaskHandle_t taskHandle;
         StaticTask_t task;
-        StackType_t StackBuffer[stackDepth];
+        StackType_t stackBuffer[stackDepth];
         FFS::Event<evt_t> event;
         std::function<void(void*)> handler;
         
@@ -55,15 +56,24 @@ namespace FFS {
         Task& operator=(Task const& other) = delete;
         
         // MOVE ALLOWED
-        Task(Task&& other) = default;
-        Task& operator=(Task&& other) = default;
-
-    
+        Task(Task<evt_t, stackDepth>&& other) : task{std::move(other.task)}, stackBuffer{std::move(*(other.stackBuffer))},  event{std::move(other.event)}, handler{std::move(other.handler)}{
+            taskHandle = std::move(other.taskHandle);
+            other.taskHandle = nullptr;
+        }
+        Task& operator=(Task&& other){
+            task = std::move(other.task);
+            memcpy(stackBuffer, other.stackBuffer, sizeof(other.stackBuffer));
+            event = std::move(other.event);
+            handler = std::move(other.handler);
+            taskHandle = std::move(other.taskHandle);
+            other.taskHandle = nullptr;
+            return *this;
+        }
 
             // TASK CREATION : https://www.freertos.org/a00019.html
         Task(std::function<void(void*)> _handler, const char * const pcName, FFS::Event<evt_t> _event, UBaseType_t uxPriority):
             event{_event}, handler{_handler}{
-            taskHandle = xTaskCreateStatic(Lambda::ptr(std::remove_reference_t<std::function<void(void*)>>{handler}), pcName, stackDepth, reinterpret_cast<void*>(&event), uxPriority, StackBuffer, &task);
+            taskHandle = xTaskCreateStatic(Lambda::ptr(std::remove_reference_t<std::function<void(void*)>>{handler}), pcName, stackDepth, reinterpret_cast<void*>(&event), uxPriority, stackBuffer, &task);
         }
 
         ~Task() {
