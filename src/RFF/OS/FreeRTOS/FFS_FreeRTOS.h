@@ -7,8 +7,31 @@
 #include "semphr.h"
 
 #include <boost/container/static_vector.hpp>
+#include <functional>
 
 #include "event/event.h"
+
+// From : https://stackoverflow.com/questions/7852101
+struct Lambda {
+    template<typename Tret, typename T>
+    static Tret lambda_ptr_exec(void* data) {
+        return (Tret) (*(T*)fn<T>())(data);
+    }
+
+    template<typename Tret = void, typename Tfp = Tret(*)(void*), typename T>
+    static Tfp ptr(T&& t) {
+        fn<T>(&t);
+        return (Tfp) lambda_ptr_exec<Tret, T>;
+    }
+
+    template<typename T>
+    static void* fn(void* new_fn = nullptr) {
+        static void* fn;
+        if (new_fn != nullptr)
+            fn = new_fn;
+        return fn;
+    }
+};
 
 namespace FFS {
     
@@ -25,13 +48,14 @@ namespace FFS {
         StaticTask_t task;
         StackType_t StackBuffer[stackDepth];
         FFS::Event<evt_t> event;
+        std::function<void(void*)> handler;
 
     
 
             // TASK CREATION : https://www.freertos.org/a00019.html
-        Task(TaskFunction_t pxTaskCode, const char * const pcName, FFS::Event<evt_t> _event, UBaseType_t uxPriority):
-            event{_event}{
-            taskHandle = xTaskCreateStatic(pxTaskCode, pcName, stackDepth, reinterpret_cast<void*>(&event), uxPriority, StackBuffer, &task);
+        Task(std::function<void(void*)> _handler, const char * const pcName, FFS::Event<evt_t> _event, UBaseType_t uxPriority):
+            event{_event}, handler{_handler}{
+            taskHandle = xTaskCreateStatic(Lambda::ptr(std::remove_reference_t<std::function<void(void*)>>{handler}), pcName, stackDepth, reinterpret_cast<void*>(&event), uxPriority, StackBuffer, &task);
         }
 
         ~Task() {
