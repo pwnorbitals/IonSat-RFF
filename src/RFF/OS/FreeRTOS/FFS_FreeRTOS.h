@@ -39,6 +39,10 @@ namespace FFS {
     struct OSSettings {
         
     };
+    
+    void OSStart() {
+        vTaskStartScheduler();
+    }
 
     template<typename evt_t, uint32_t stackDepth>
     class Task {

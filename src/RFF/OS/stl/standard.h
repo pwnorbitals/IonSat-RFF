@@ -2,13 +2,13 @@
 #define STANDARD_H
 
 namespace FFS {
-    class Task {
+	class Task {
 
-    };
+	};
 
-    class Semaphore {
+	class Semaphore {
 
-    };
+	};
 }
 
 #endif // STANDARD_H

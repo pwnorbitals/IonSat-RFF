@@ -20,6 +20,7 @@ namespace FFS {
         // boost::container::static_vector<Task<event_t, stackDepth>, FFS_MAX_PARALLEL_HANDLERS> taskHandlers;
         std::vector<Task<event_t, stackDepth>> taskHandlers;
         std::string name;
+        UBaseType_t prio;
     
         
         
@@ -34,15 +35,14 @@ namespace FFS {
         EventHandler(EventHandler&& other) = default;
         EventHandler& operator=(EventHandler&& other) = default;
         
-        EventHandler( std::function<void(Event<event_t>*)> _handlerFct, std::string _name) :                        
-            handlerFct{_handlerFct}, taskHandlers{}, name{_name} {
+        EventHandler( std::function<void(Event<event_t>*)> _handlerFct, std::string _name, UBaseType_t _prio) :                        
+            handlerFct{_handlerFct}, taskHandlers{}, name{_name}, prio(_prio) {
             
         }
         
         template<typename evt_t>
         void operator()(Event<evt_t> const& evt) {
             if constexpr (std::is_same<evt_t, event_t>::value) {
-                auto prio = UBaseType_t{1};
                 std::cout << "pushing back" << std::endl;
                 
                 auto cleanup = [=]() { 
