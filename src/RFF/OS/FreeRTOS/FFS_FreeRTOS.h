@@ -72,7 +72,7 @@ namespace FFS {
 			event = std::move(other.event);
 			handler = std::move(other.handler);
 			taskHandle = std::move(other.taskHandle);
-			other.taskHandle = nullptr;
+			other.taskHandle = 0;
 			return *this;
 		}
 
@@ -80,10 +80,13 @@ namespace FFS {
 		Task(std::function<void (void*) > _handler, const char* const pcName, FFS::Event<evt_t> _event, UBaseType_t uxPriority) :
 			event{_event}, handler{_handler} {
 			taskHandle = xTaskCreateStatic(Lambda::ptr(std::remove_reference_t<std::function<void (void*) >> {handler}), pcName, stackDepth, reinterpret_cast<void*>(&event), uxPriority, stackBuffer, &task);
+            assert(taskHandle != 0);
 		}
 
 		~Task() {
-			vTaskDelete(taskHandle);
+            if(taskHandle != 0) {
+                vTaskDelete(taskHandle);
+            }
 		}
 
 		// TASK CONTROL : https://www.freertos.org/a00112.html

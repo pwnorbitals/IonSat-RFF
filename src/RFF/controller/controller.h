@@ -107,14 +107,17 @@ namespace FFS {
 			// From : https://stackoverflow.com/questions/62652638
 			func = [this, event_tags, mods{std::move(_modules) }](std::any any_ev) mutable {       // invoked _modules' copy constructor which tries to copy the event handlers and the Tasks inside => fail.
 				// Switch to generalized lambda capture from https://stackoverflow.com/questions/8640393
-				auto f = [&, this, mods2{std::move(mods) }](auto tag) mutable {
+				auto f = [&, this](auto tag) mutable {
 					using EventType = typename decltype(tag) ::type;
 					try {
 						auto ev = std::any_cast<EventType> (any_ev);
 						std::apply([&, this](auto & ... module) {
 							((module.callHandlers(FFS::Event<EventType> {ev, this})), ...);
-						}, mods2);
-					} catch(std::bad_any_cast const& e) {};
+						}, mods);
+					} catch(std::bad_any_cast const& e) {
+                        // assert(!"this should never fail");
+                        // <narrator> : In reality, this fails pretty often
+                    };
 
 				};
 				std::apply([&f](auto & ... tags) {

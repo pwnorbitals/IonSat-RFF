@@ -34,6 +34,7 @@ namespace FFS {
 		EventHandler& operator= (EventHandler const& other) = delete;
 		EventHandler(EventHandler&& other) = default;
 		EventHandler& operator= (EventHandler&& other) = default;
+        ~EventHandler() = default;
 
 		EventHandler(std::function<void (Event<event_t>*) > _handlerFct, std::string _name, UBaseType_t _prio) :
 			handlerFct{_handlerFct}, taskHandlers{}, name{_name}, prio(_prio) {
