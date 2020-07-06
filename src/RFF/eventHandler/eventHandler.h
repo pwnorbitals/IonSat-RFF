@@ -16,9 +16,9 @@ namespace FFS {
     
     protected:
         
-        std::function<void(FFS::Event<event_t>*)> handlerFct;
-        // boost::container::static_vector<FFS::Task<event_t, stackDepth>, FFS_MAX_PARALLEL_HANDLERS> taskHandlers;
-        std::vector<FFS::Task<event_t, stackDepth>> taskHandlers;
+        std::function<void(Event<event_t>*)> handlerFct;
+        // boost::container::static_vector<Task<event_t, stackDepth>, FFS_MAX_PARALLEL_HANDLERS> taskHandlers;
+        std::vector<Task<event_t, stackDepth>> taskHandlers;
         std::string name;
     
         
@@ -28,13 +28,19 @@ namespace FFS {
     
     public:
         
-        EventHandler( std::function<void(FFS::Event<event_t>*)> _handlerFct, std::string _name) :                        
+        EventHandler() = delete;
+        EventHandler(EventHandler const& other) = delete;
+        EventHandler& operator=(EventHandler const& other) = delete;
+        EventHandler(EventHandler&& other) = default;
+        EventHandler& operator=(EventHandler&& other) = default;
+        
+        EventHandler( std::function<void(Event<event_t>*)> _handlerFct, std::string _name) :                        
             handlerFct{_handlerFct}, taskHandlers{}, name{_name} {
             
         }
         
         template<typename evt_t>
-        void operator()(FFS::Event<evt_t> const& evt) {
+        void operator()(Event<evt_t> const& evt) {
             if constexpr (std::is_same<evt_t, event_t>::value) {
                 auto prio = UBaseType_t{1};
                 std::cout << "pushing back" << std::endl;
