@@ -36,3 +36,4 @@ build
 .kdev4
 subprojects/*
 !subprojects/*.wrap
+*.kate-swp
