@@ -21,6 +21,7 @@ namespace FFS {
 		std::vector<Task<event_t, stackDepth>> taskHandlers;
 		std::string name;
 		UBaseType_t prio;
+        std::function<void (void*) > fullHandler;
 
 
 
@@ -38,26 +39,8 @@ namespace FFS {
 
 		EventHandler(std::function<void (Event<event_t>*) > _handlerFct, std::string _name, UBaseType_t _prio) :
 			handlerFct{_handlerFct}, taskHandlers{}, name{_name}, prio(_prio) {
-
-		}
-
-		template<typename evt_t>
-		void operator()(Event<evt_t> const& evt) {
-			if constexpr(std::is_same<evt_t, event_t>::value) {
-				std::cout << "pushing back" << std::endl;
-
-				auto cleanup = [ = ]() {
-					std::cout << "cleaning up" << std::endl;
-					std::remove_if(
-					    taskHandlers.begin(), taskHandlers.end(),
-					[&](FFS::Task<event_t, stackDepth> const & task) {
-						return task.event == evt;
-					}
-					);
-
-				};
-
-				std::function<void (void*) > hf = [&](void* arg) {
+                
+                fullHandler = [&](void* arg) {
 					// dangerous ! but needed for interoperability with FreeRTOS' void(*)(void*) thread function
 					std::cout << "casting fct pointer" << std::endl;
 					auto event = reinterpret_cast<FFS::Event<event_t>*>(arg);
@@ -65,11 +48,23 @@ namespace FFS {
 					std::cout << "handling event" << std::endl;
 					handlerFct(event);
 
+
 					std::cout << "cleaning up" << std::endl;
-					cleanup();
+					std::remove_if(
+					    taskHandlers.begin(), taskHandlers.end(),
+                        [&](FFS::Task<event_t, stackDepth> const & task) {
+                            return task.event == *event;
+                        }
+                    );
 				};
 
-				taskHandlers.push_back(FFS::Task<event_t, stackDepth> {std::move(hf), name.c_str(), evt, prio});
+		}
+
+		template<typename evt_t>
+		void operator()(Event<evt_t> const& evt) {
+			if constexpr(std::is_same<evt_t, event_t>::value) {
+				std::cout << "pushing back" << std::endl;
+				taskHandlers.push_back(FFS::Task<event_t, stackDepth> {fullHandler, name.c_str(), evt, prio});
 				std::cout << "done pushing back" << std::endl;
 			}
 		}

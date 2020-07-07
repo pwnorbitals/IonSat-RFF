@@ -20,7 +20,7 @@ struct Lambda {
 	}
 
 	template<typename Tret = void, typename Tfp = Tret(*)(void*), typename T>
-	static Tfp ptr(T && t) {
+	static Tfp ptr(T& t) {
 		fn<T> (&t);
 		return (Tfp) lambda_ptr_exec<Tret, T>;
 	}
@@ -79,7 +79,9 @@ namespace FFS {
 		// TASK CREATION : https://www.freertos.org/a00019.html
 		Task(std::function<void (void*) > _handler, const char* const pcName, FFS::Event<evt_t> _event, UBaseType_t uxPriority) :
 			event{_event}, handler{_handler} {
-			taskHandle = xTaskCreateStatic(Lambda::ptr(std::remove_reference_t<std::function<void (void*) >> {handler}), pcName, stackDepth, reinterpret_cast<void*>(&event), uxPriority, stackBuffer, &task);
+                
+                // std::remove_reference_t<std::function<void (void*) >> {handler}
+			taskHandle = xTaskCreateStatic(Lambda::ptr(handler), pcName, stackDepth, reinterpret_cast<void*>(&event), uxPriority, stackBuffer, &task);
             assert(taskHandle != 0);
 		}
 
