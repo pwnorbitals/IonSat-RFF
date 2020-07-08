@@ -16,12 +16,13 @@ namespace FFS {
 
 	protected:
 
-		std::function<void (Event<event_t>*) > handlerFct;
+		
 		// boost::container::static_vector<Task<event_t, stackDepth>, FFS_MAX_PARALLEL_HANDLERS> taskHandlers;
-		std::vector<Task<event_t, stackDepth>> taskHandlers;
+		std::vector<Task<event_t, stackDepth>> taskHandlers; // TODO : switch to static_vector
 		std::string name;
 		UBaseType_t prio;
-        std::function<void (void*) > fullHandler;
+        std::function<void (void*)> fullHandler;
+        std::function<void (Event<event_t>*) > handlerFct;
 
 
 
@@ -38,12 +39,14 @@ namespace FFS {
         ~EventHandler() = default;
 
 		EventHandler(std::function<void (Event<event_t>*) > _handlerFct, std::string _name, UBaseType_t _prio) :
-			handlerFct{_handlerFct}, taskHandlers{}, name{_name}, prio(_prio) {
+			taskHandlers{},name{_name}, prio(_prio),  handlerFct{_handlerFct}{
                 
-                fullHandler = [&](void* arg) {
+                std::cout << "creating" << std::endl;
+                
+                fullHandler = [this](void* arg) {
 					// dangerous ! but needed for interoperability with FreeRTOS' void(*)(void*) thread function
 					std::cout << "casting fct pointer" << std::endl;
-					auto event = reinterpret_cast<FFS::Event<event_t>*>(arg);
+					auto* event = reinterpret_cast<FFS::Event<event_t>*>(arg);
 
 					std::cout << "handling event" << std::endl;
 					handlerFct(event);
@@ -52,7 +55,7 @@ namespace FFS {
 					std::cout << "cleaning up" << std::endl;
 					std::remove_if(
 					    taskHandlers.begin(), taskHandlers.end(),
-                        [&](FFS::Task<event_t, stackDepth> const & task) {
+                        [&event](FFS::Task<event_t, stackDepth> const & task) {
                             return task.event == *event;
                         }
                     );

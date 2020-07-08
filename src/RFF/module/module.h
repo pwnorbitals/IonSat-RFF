@@ -7,7 +7,7 @@
 
 namespace FFS {
 
-// From : https://stackoverflow.com/questions/62693894
+    // From : https://stackoverflow.com/questions/62693894
 	template <typename...>
 	class Module;
 
@@ -23,7 +23,7 @@ namespace FFS {
 
 		template<typename evt_t>
 		void callHandlers(Event<evt_t> const& event) {
-			std::apply([&](auto & ... eh) {    // lvalue reference argument because rvalue reference would consume the event handlers
+			std::apply([&](auto & ... eh) {    // lvalue reference argument because move would consume the event handlers
 				(..., eh(event));
 			}, evtHandlers);
 		}

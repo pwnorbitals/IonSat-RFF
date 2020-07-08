@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
     using event_tags = std::tuple<FFS::Tag<MyCustomEventType>, FFS::Tag<MyOtherCustomEventType>>;
 
     auto handler = [](FFS::Event<MyCustomEventType>* evt){  
-        std::cout << evt->data.eventNo << std::endl;
+        std::cout << "YAY ! got " << evt->data.eventNo << std::endl;
         evt->controller->emit(MyOtherCustomEventType{true});
     };
     

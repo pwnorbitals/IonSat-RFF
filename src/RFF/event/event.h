@@ -14,7 +14,7 @@ namespace FFS {
 		std::clock_t emissionTime;
 		Controller* controller = nullptr;
 
-		Event(data_t const& _data, Controller* _ctrlr) : data{_data}, sha1{0}, emissionTime{std::clock() }, controller{_ctrlr} {};
+		Event(data_t const& _data, Controller* _ctrlr) : data{_data}, sha1{0}, emissionTime{std::clock() }, controller{_ctrlr} {}; // TODO : set sha1
 		~Event() {};
 
 		bool operator== (Event const& other) const {
