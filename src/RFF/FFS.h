@@ -1,9 +1,4 @@
-#ifndef FFS_HPP_INC
-#define FFS_HPP_INC
-
-#include <iostream>
-
-#define OS FREERTOS
+#pragma once
 
 #include "../config/config.h"
 #include "OS/OS.h"
@@ -13,8 +8,3 @@
 #include "event/event.h"
 #include "eventHandler/eventHandler.h"
 
-namespace FFS {
-	void iotest();
-}
-
-#endif

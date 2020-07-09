@@ -1,12 +1,10 @@
-#ifndef RTOS_H_INC
-#define RTOS_H_INC
+#pragma once
 
-#define OS FREERTOS
+#include "FFS.h"
+
 
 #if OS == FREERTOS
 #include "FreeRTOS/FFS_FreeRTOS.h"
 #else
 #include "stl/stl.h"
-#endif
-
 #endif
