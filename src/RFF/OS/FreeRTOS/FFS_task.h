@@ -6,6 +6,7 @@
 #include "semphr.h"
 
 #include <boost/container/static_vector.hpp>
+#include <algorithm>
 
 namespace FFS {
     template<typename evt_t, uint32_t stackDepth>
@@ -18,6 +19,7 @@ namespace FFS {
         StackType_t stackBuffer[stackDepth];
         FFS::Event<evt_t> event;
         std::function<void (void*)>& handler;
+        std::string name;
 
 
         // NO COPY
@@ -25,27 +27,33 @@ namespace FFS {
         Task& operator= (Task const& other) = delete;
 
         // MOVE ALLOWED
-        Task(Task<evt_t, stackDepth>&& other) : task{std::move(other.task) }, stackBuffer{std::move(* (other.stackBuffer)) },  event{std::move(other.event) }, handler{other.handler} {
+        Task(Task<evt_t, stackDepth>&& other) : task{std::move(other.task) }, 
+                                                stackBuffer{std::move(* (other.stackBuffer)) },  
+                                                event{std::move(other.event) }, 
+                                                handler{other.handler},
+                                                name{other.name} {
             taskHandle = std::move(other.taskHandle);
             other.taskHandle = 0;
         }
         
         Task& operator= (Task&& other) {
             task = std::move(other.task);
-            memcpy(stackBuffer, other.stackBuffer, sizeof(other.stackBuffer));
+            //memcpy(stackBuffer, other.stackBuffer, sizeof(other.stackBuffer));
+            std::copy(std::begin(other.stackBuffer), std::end(other.stackBuffer), std::begin(stackBuffer));
             event = std::move(other.event);
             handler = other.handler; // copy the reference
             taskHandle = std::move(other.taskHandle);
+            name = std::move(other.name);
             other.taskHandle = 0;
             return *this;
         }
 
         // TASK CREATION : https://www.freertos.org/a00019.html
-        Task(std::function<void (void*)>& _handler, const char* const pcName, FFS::Event<evt_t> _event, UBaseType_t uxPriority) :
-            event{_event}, handler{_handler} {
+        Task(std::function<void (void*)>& _handler, std::string _name, FFS::Event<evt_t> _event, UBaseType_t uxPriority) :
+            event{_event}, handler{_handler}, name{_name} {
                 
             std::cout << "creating with handler address = " << &handler << std::endl;
-            taskHandle = xTaskCreateStatic(Lambda::ptr(handler), pcName, stackDepth, &event, uxPriority, stackBuffer, &task);
+            taskHandle = xTaskCreateStatic(Lambda::ptr(handler), name.c_str(), stackDepth, &event, uxPriority, stackBuffer, &task);
             /*
                 auto hdlr = Lambda::ptr(handler);
                 std::cout << "debug : trying start" << std::endl;

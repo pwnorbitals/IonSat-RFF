@@ -1,8 +1,9 @@
+
 #include "catch.hpp"
 
 #include <iostream>
 #include "FFS.h"
 
-TEST_CASE("", "[Controller]") {
+TEST_CASE("", "[Module]") {
     
 }

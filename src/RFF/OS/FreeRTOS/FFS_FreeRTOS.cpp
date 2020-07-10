@@ -4,6 +4,10 @@ namespace FFS {
     void OSStart() {
 		vTaskStartScheduler();
 	}
+	
+	void OSStop() {
+        vTaskEndScheduler();
+    }
 }
 
 extern "C" {

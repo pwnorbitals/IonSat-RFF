@@ -17,5 +17,6 @@ namespace FFS {
 	};
 
     void OSStart();
+    void OSStop();
      
 }

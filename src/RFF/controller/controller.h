@@ -66,6 +66,11 @@ namespace FFS {
             std::cout << "Starting controller" << std::endl;
             OSStart();
         }
+        
+        void stop() {
+            std::cout << "Ending controller" << std::endl;
+            OSStop();
+        }
 
     };
 }

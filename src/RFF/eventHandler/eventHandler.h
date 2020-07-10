@@ -24,6 +24,7 @@ namespace FFS {
         UBaseType_t prio;
         std::function<void (void*)> fullHandler;
         std::function<void (Event<event_t>*) > handlerFct;
+        Mutex taskHandlersProtector;
 
 
 
@@ -54,21 +55,28 @@ namespace FFS {
 
 
                     std::cout << "cleaning up" << std::endl;
+                    taskHandlersProtector.take();
                     std::remove_if(
                         taskHandlers.begin(), taskHandlers.end(),
                         [&event](Task<event_t, stackDepth> const & task) {
                             return task.event == *event;
                         }
                     );
+                    taskHandlersProtector.give();
                 };
 
         }
 
         template<typename evt_t>
         void operator()(Event<evt_t> const& evt) {
+            static unsigned int callCnt = 0;
             if constexpr(std::is_same<evt_t, event_t>::value) {
+                callCnt++; // Will overflow but is defined behaviour and should not cause problems (low collision probability)
+                           // TODO : guarantee no collision is possible
                 std::cout << "pushing back" << std::endl;
-                taskHandlers.push_back(Task<event_t, stackDepth> {fullHandler, name.c_str(), evt, prio});
+                taskHandlersProtector.take();
+                taskHandlers.push_back(Task<event_t, stackDepth> {fullHandler, name + std::to_string(callCnt), evt, prio});
+                taskHandlersProtector.give();
                 std::cout << "done pushing back" << std::endl;
             }
         }
