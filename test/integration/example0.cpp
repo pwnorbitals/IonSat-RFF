@@ -4,7 +4,7 @@
 #include <iostream>
 #include "FFS.h"
 
-
+/*
 TEST_CASE( "typical use case", "[example]" ) {
 
     struct MyCustomEventType { int eventNo; };
@@ -34,3 +34,4 @@ TEST_CASE( "typical use case", "[example]" ) {
     
     REQUIRE( 1 == 1 );
 }
+*/
