@@ -6,5 +6,6 @@
 #include "FFS.h"
 
 TEST_CASE("", "[Mode]") {
-    
+    std::cout << "ok" << std::endl;
+    REQUIRE(1 == 1);
 }
