@@ -1,4 +1,4 @@
-test_names = ['controller.cpp', 'eventHandler.cpp', 'FreeRTOS.cpp', 'event.cpp', 'mode.cpp', 'module.cpp']
+test_names = ['controller.cpp', 'eventHandler.cpp', 'task.cpp', 'event.cpp', 'mode.cpp', 'module.cpp']
 test_files = files(test_names)
 
 foreach tf : test_names

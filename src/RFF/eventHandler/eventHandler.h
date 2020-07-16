@@ -73,11 +73,14 @@ namespace FFS {
             if constexpr(std::is_same<evt_t, event_t>::value) {
                 callCnt++; // Will overflow but is defined behaviour and should not cause problems (low collision probability)
                            // TODO : guarantee no collision is possible
+                           /*
                 std::cout << "pushing back" << std::endl;
                 taskHandlersProtector.take();
                 taskHandlers.push_back(Task<event_t, stackDepth> {fullHandler, name + std::to_string(callCnt), evt, prio});
                 taskHandlersProtector.give();
                 std::cout << "done pushing back" << std::endl;
+                */
+                           fullHandler((void*)&evt);
             }
         }
 
