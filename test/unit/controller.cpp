@@ -1,4 +1,3 @@
-#define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
 #include <iostream>
@@ -7,4 +6,5 @@
 TEST_CASE("", "[Controller]") {
     std::cout << "ok" << std::endl;
     REQUIRE(1 == 1);
+    std::cout << "test" << std::endl;   
 }

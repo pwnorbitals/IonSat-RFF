@@ -1,4 +1,3 @@
-#define CATCH_CONFIG_MAIN
 #include "catch.hpp"
 
 #define FFS_TEST
@@ -10,17 +9,16 @@
 
 TEST_CASE("creation", "[EventHandler]") {
     
-    std::function<void(void*)> hdlr = [] (void* mydata) { 
-        auto* evt = static_cast<FFS::Event<int>*>(mydata); 
-        REQUIRE(evt->data == 8);
+    struct eventType{ int myint; };
+    
+    std::function<void(FFS::Event<eventType>*)> hdlr = [] (FFS::Event<eventType>* mydata) { 
+        REQUIRE(mydata->data.myint == 8);
         
         FFS::OSStop();
     };    
     
-    struct eventType{ int data; };
-    
-    auto evtHandler = FFS::EventHandler<eventType, 1000000>{hdlr, "first", 1};
-    auto evt = FFS::Event{eventType{8}, NULL};
+    auto evt = FFS::Event{eventType{8}};   
+    auto evtHandler = FFS::QueuedEventHandler<eventType, 1000000, 64>{hdlr, "first", 1};
     evtHandler(evt);
     
     FFS::OSStart();

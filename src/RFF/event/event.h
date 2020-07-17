@@ -5,6 +5,7 @@
 
 #include "FFS.h"
 
+
 namespace FFS {
 
     class Controller;
@@ -17,14 +18,20 @@ namespace FFS {
         std::clock_t emissionTime;
         Controller* controller;
 
-        Event(data_t const& _data, Controller* _ctrlr) : data{_data}, sha1{0}, emissionTime{std::clock() }, controller{_ctrlr} {}; // TODO : set sha1
+        Event(data_t const& _data = data_t{}, Controller* _ctrlr = NULL) : data{_data}, sha1{0}, emissionTime{std::clock() }, controller{_ctrlr} {}; // TODO : set sha1
         ~Event() {};
 
-        bool operator== (Event const& other) const {
+        template<typename T>
+        bool operator== (Event<T> const& other) const {
 
             // does not require any comparison operator for user-provided event types !
             return other.emissionTime == this->emissionTime && other.sha1 == this->sha1;
 
+        }
+        
+        template<typename T>
+        bool operator!= (Event<T> const& other) const {
+            return !(other == *this);
         }
     };
 }

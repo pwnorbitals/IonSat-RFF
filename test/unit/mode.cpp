@@ -1,6 +1,7 @@
 
-#define CATCH_CONFIG_MAIN
 #include "catch.hpp"
+
+#define FFS_TEST
 
 #include <iostream>
 #include "FFS.h"

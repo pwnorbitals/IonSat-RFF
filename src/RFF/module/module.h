@@ -11,15 +11,15 @@ namespace FFS {
     template <typename...>
     class Module;
 
-    template <typename ... event_t, uint32_t ... stackDepth>
-    class Module<std::tuple<EventHandler<event_t, stackDepth>...>> {
+    template <typename ...event_t, typename ...derived>
+    class Module<std::tuple<EventHandler<event_t, derived>...>> {
     protected:
-        std::tuple<EventHandler<event_t, stackDepth>...> evtHandlers;
+        std::tuple<EventHandler<event_t, derived>...> evtHandlers;
 
 
     public:
-        template<typename ...events_t, uint32_t ...stackDepths>
-        Module(std::tuple<EventHandler<events_t, stackDepths>...>&& _handlers) : evtHandlers{std::move(_handlers) } {}
+        template<typename ...events_t, typename ...deriveds>
+        Module(std::tuple<EventHandler<events_t, deriveds>...>&& _handlers) : evtHandlers{std::move(_handlers) } {}
 
         template<typename evt_t>
         void callHandlers(Event<evt_t> const& event) {
@@ -32,8 +32,8 @@ namespace FFS {
 
     };
 
-    template <typename ... event_t, std::uint32_t ... stackDepth>
-    Module(std::tuple<EventHandler<event_t, stackDepth>...>)
-    -> Module<std::tuple<EventHandler<event_t, stackDepth>...>>;
+    template <typename ... event_t, typename ... derived>
+    Module(std::tuple<EventHandler<event_t, derived>...>)
+    -> Module<std::tuple<EventHandler<event_t, derived>...>>;
 
 }

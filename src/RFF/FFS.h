@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../config/config.h"
 #include "OS/OS.h"
 #include "module/module.h"
 #include "controller/controller.h"

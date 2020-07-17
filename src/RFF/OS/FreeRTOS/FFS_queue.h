@@ -14,9 +14,7 @@ namespace FFS {
 
 	public:
 		Queue(UBaseType_t uxQueueLength,
-		      UBaseType_t uxItemSize,
-		      uint8_t* pucQueueStorageBuffer,
-		      StaticQueue_t* pxQueueBuffer) {
+		      UBaseType_t uxItemSize) {
 
 			queueHandle = xQueueCreateStatic(
 			                  uxQueueLength,

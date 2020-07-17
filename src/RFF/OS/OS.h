@@ -1,9 +1,6 @@
 #pragma once
 
-#include "FFS.h"
-
-
-#if OS == FREERTOS
+#if FFS_OS == FREERTOS
 #include "FreeRTOS/FFS_FreeRTOS.h"
 #else
 #include "stl/stl.h"

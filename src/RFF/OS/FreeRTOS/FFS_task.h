@@ -52,13 +52,7 @@ namespace FFS {
         Task(std::function<void (void*)>& _handler, std::string _name, FFS::Event<evt_t> _event, UBaseType_t uxPriority) :
             event{_event}, handler{_handler}, name{_name} {
                 
-            std::cout << "creating with handler address = " << &handler << std::endl;
             taskHandle = xTaskCreateStatic(Lambda::ptr(handler), name.c_str(), stackDepth, &event, uxPriority, stackBuffer, &task);
-            /*
-                auto hdlr = Lambda::ptr(handler);
-                std::cout << "debug : trying start" << std::endl;
-                hdlr(&event);
-            */
             assert(taskHandle != 0);
         }
 
@@ -87,6 +81,10 @@ namespace FFS {
 
         void suspend() {
             vTaskSuspend(taskHandle);
+        }
+        
+        static void suspendCurrent() {
+            vTaskSuspend(NULL);
         }
 
         void resume() {
