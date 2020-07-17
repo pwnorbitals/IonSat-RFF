@@ -10,7 +10,7 @@
 TEST_CASE("Tasks", "[FreeRTOS]") {
     struct eventType{ int myint; };
     
-    std::function<void(void*)> hdlr = [] (void* mydata) { 
+    auto hdlr = [] (void* mydata) { 
         auto* evt = static_cast<FFS::Event<eventType>*>(mydata); 
         REQUIRE(evt->data.myint == 8);
         

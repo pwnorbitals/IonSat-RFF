@@ -18,7 +18,7 @@ namespace FFS {
         StaticTask_t task;
         StackType_t stackBuffer[stackDepth];
         FFS::Event<evt_t> event;
-        std::function<void (void*)>& handler;
+        void (*const handler)(void*);
         std::string name;
 
 
@@ -40,8 +40,6 @@ namespace FFS {
             task = std::move(other.task);
             //memcpy(stackBuffer, other.stackBuffer, sizeof(other.stackBuffer));
             std::copy(std::begin(other.stackBuffer), std::end(other.stackBuffer), std::begin(stackBuffer));
-            event = std::move(other.event);
-            handler = other.handler; // copy the reference
             taskHandle = std::move(other.taskHandle);
             name = std::move(other.name);
             other.taskHandle = 0;
@@ -49,10 +47,17 @@ namespace FFS {
         }
 
         // TASK CREATION : https://www.freertos.org/a00019.html
-        Task(std::function<void (void*)>& _handler, std::string _name, FFS::Event<evt_t> _event, UBaseType_t uxPriority) :
+        Task(void (*const _handler)(void*), std::string _name, FFS::Event<evt_t> _event, UBaseType_t uxPriority) :
             event{_event}, handler{_handler}, name{_name} {
                 
-            taskHandle = xTaskCreateStatic(Lambda::ptr(handler), name.c_str(), stackDepth, &event, uxPriority, stackBuffer, &task);
+            taskHandle = xTaskCreateStatic(handler, name.c_str(), stackDepth, &event, uxPriority, stackBuffer, &task);
+            assert(taskHandle != 0);
+        }
+        
+        Task(void (*const _handler)(void*), std::string _name, UBaseType_t uxPriority) :
+            event{}, handler{_handler}, name{_name} {
+                
+            taskHandle = xTaskCreateStatic(handler, name.c_str(), stackDepth, &event, uxPriority, stackBuffer, &task);
             assert(taskHandle != 0);
         }
 
