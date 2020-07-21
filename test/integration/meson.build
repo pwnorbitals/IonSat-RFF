@@ -1,1 +1,1 @@
-# source_files += files('example0.cpp')
+test_files = ['example0.cpp']

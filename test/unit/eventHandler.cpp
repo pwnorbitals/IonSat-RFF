@@ -6,21 +6,42 @@
 #include "FFS.h"
 
 
-
-TEST_CASE("creation", "[EventHandler]") {
-    
+TEST_CASE( "Queued event handler" , "[EventHandler]" ){
     struct eventType{ int myint; };
     
-    std::function<void(FFS::Event<eventType>*)> hdlr = [] (FFS::Event<eventType>* mydata) { 
-        REQUIRE(mydata->data.myint == 8);
+    auto hdlr = [] (FFS::Event<eventType> const& mydata) { 
+        REQUIRE(mydata.data.myint == 8);
         
         FFS::OSStop();
     };    
     
-    auto evt = FFS::Event{eventType{8}};   
-    auto evtHandler = FFS::QueuedEventHandler<eventType, 1000000, 64>{hdlr, "first", 1};
+    
+            
+    auto evt = eventType{8}; 
+
+
+
+    auto evtHandler = FFS::QueuedEventHandler<eventType, 1024, 64>{hdlr, "first", 1};
     evtHandler(evt);
-    
     FFS::OSStart();
+}
+
+TEST_CASE( "Tasked event handler" , "[EventHandler]" ){
+    struct eventType{ int myint; };
     
+    auto hdlr = [] (FFS::Event<eventType> const& mydata) { 
+        REQUIRE(mydata.data.myint == 8);
+        
+        FFS::OSStop();
+    };    
+    
+    
+            
+    auto evt = eventType{8}; 
+
+
+
+    auto evtHandler = FFS::TaskedEventHandler<eventType, 1024, 64>{hdlr, "first", 1};
+    evtHandler(evt);
+    FFS::OSStart();
 }

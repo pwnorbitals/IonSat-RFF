@@ -6,6 +6,8 @@
 #include <boost/container/static_vector.hpp>
 #include <iostream>
 #include <type_traits>
+#include <vector>
+#include <algorithm>
 
 #include "lambda.h"
 
@@ -19,7 +21,7 @@ namespace FFS {
 
         std::string name;
         UBaseType_t prio;
-        std::function<void (Event<event_t>*) > handlerFct;
+        std::function<void (Event<event_t> const&) > handlerFct;
         
 
     public:
@@ -31,109 +33,28 @@ namespace FFS {
         EventHandler& operator= (EventHandler&& other) = default;
         ~EventHandler() = default;
 
-        EventHandler(std::function<void (Event<event_t>*) > _handlerFct, std::string _name, UBaseType_t _prio) :
+        EventHandler(std::function<void (Event<event_t> const&) > _handlerFct, std::string _name, UBaseType_t _prio) :
             name{_name}, prio(_prio), handlerFct{_handlerFct}
         { }
         
-        Derived& impl(){ return static_cast<Derived&>(*this); }
+        Derived* impl(){ return static_cast<Derived*>(this); }
 
         template<typename evt_t>
-        bool operator()(Event<evt_t> const& evt) {
+        bool operator()(evt_t const& evt) {
             if constexpr(std::is_same<evt_t, event_t>::value) {
-                return impl().handleEvent(evt);
+                return impl()->handleEvent(evt);
             }
             
             return false;
         }
     };
     
-    template<typename event_t, uint32_t stackDepth, uint16_t maxParallelHandlers>
-    class QueuedEventHandler : public EventHandler<event_t, QueuedEventHandler<event_t, stackDepth, maxParallelHandlers>>  {
-    protected:
-        std::function<void(void*)> fullHandler;
-        Task<event_t, stackDepth> handlerThread;
-        Queue eventsQueue;   
-        
-        typedef EventHandler<event_t, QueuedEventHandler<event_t, stackDepth, maxParallelHandlers>> parent;
-        typedef QueuedEventHandler<event_t, stackDepth, maxParallelHandlers> me;
-        
-    public:
-        
-        
-        
-        QueuedEventHandler(std::function<void (Event<event_t>*) > _handlerFct, std::string _name, UBaseType_t _prio) : 
-            EventHandler<event_t, QueuedEventHandler<event_t, stackDepth, maxParallelHandlers>>{_handlerFct, _name, _prio},
-            fullHandler{[this](void* arg) {
-                Event<event_t> recvdEvent;
-                while(true) {
-                    eventsQueue.receive(&recvdEvent, portMAX_DELAY); // blocks indefinitely
-                    parent::handlerFct(&recvdEvent);
-                }
-            }},
-            handlerThread{Lambda::ptr(fullHandler), parent::name, parent::prio}, eventsQueue{maxParallelHandlers, sizeof(event_t)}
-        {};
-        
-        
-        
-        
-        
-        bool handleEvent(Event<event_t> const& evt, TickType_t maxWait = 0) {
-            return eventsQueue.sendToBack(&evt, maxWait);
-        }
-    };
     
-    template<typename event_t, uint32_t stackDepth, uint16_t maxParallelHandlers>
-    class TaskedEventHandler : public EventHandler<event_t, TaskedEventHandler<event_t, stackDepth, maxParallelHandlers>>   {
-        
-    protected:
-        std::function<void(void*)> fullHandler;
-        // boost::container::static_vector<Task<event_t, stackDepth>, maxParallelHandlers> taskHandlers;
-        std::vector<Task<event_t, stackDepth>> taskHandlers; // TODO : switch to static_vector
-        Mutex taskHandlersProtector;
-        
-        typedef EventHandler<event_t, TaskedEventHandler<event_t, stackDepth, maxParallelHandlers>> parent;
-        typedef TaskedEventHandler<event_t, stackDepth, maxParallelHandlers> me;
-        
-    public:
-        
-        
-        TaskedEventHandler(std::function<void (Event<event_t>*) > _handlerFct, std::string _name, UBaseType_t _prio) : 
-            EventHandler<event_t, TaskedEventHandler<event_t, stackDepth, maxParallelHandlers>>{_handlerFct, _name, _prio},
-            fullHandler{[this](void* arg) {
-                auto* event = static_cast<Event<event_t>*>(arg);
-                handlerFct(event);
-
-                // Q : problem here ? task may be stopped in the middle of std::remove_if ?
-                // A : No problem, FreeRTOS doesn't destroy right away, adds to destroy list and IdleTask destroys later
-                taskHandlersProtector.take();
-                std::remove_if(
-                    taskHandlers.begin(), taskHandlers.end(),
-                    [&event](Task<event_t, stackDepth> const & task) {
-                        return task.event == *event;
-                    }
-                );
-                taskHandlersProtector.give();
-                
-                Task<event_t, stackDepth>::suspendCurrent();
-            }}, taskHandlers{}, taskHandlersProtector{}
-            {};
-        
-        
-        bool handleEvent(Event<event_t> const& evt) {
-            static uint16_t callCnt = 0;
-            
-            callCnt++; // Will overflow but is defined behaviour and should not cause problems (low collision probability)
-                    // TODO : guarantee no collision is possible
-            
-            taskHandlersProtector.take();
-            taskHandlers.push_back(Task<event_t, stackDepth> {Lambda::ptr(fullHandler), parent::name + std::to_string(callCnt), evt, parent::prio});
-            // TODO : add bound checking 
-            taskHandlersProtector.give();
-            
-            // TEST ONLY :
-            //fullHandler((void*)&evt);
-        }
-    };
+    
+    
     
     
 }
+
+#include "queuedEventHandler.h"
+#include "taskedEventHandler.h"

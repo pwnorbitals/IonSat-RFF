@@ -9,7 +9,7 @@
 #include <algorithm>
 
 namespace FFS {
-    template<typename evt_t, uint32_t stackDepth>
+    template<typename arg_t, uint32_t stackDepth>
     class Task {
 
     public:
@@ -17,7 +17,7 @@ namespace FFS {
         TaskHandle_t taskHandle;
         StaticTask_t task;
         StackType_t stackBuffer[stackDepth];
-        FFS::Event<evt_t> event;
+        std::optional<arg_t> arg;
         void (*const handler)(void*);
         std::string name;
 
@@ -27,9 +27,9 @@ namespace FFS {
         Task& operator= (Task const& other) = delete;
 
         // MOVE ALLOWED
-        Task(Task<evt_t, stackDepth>&& other) : task{std::move(other.task) }, 
+        Task(Task<arg_t, stackDepth>&& other) : task{std::move(other.task) }, 
                                                 stackBuffer{std::move(* (other.stackBuffer)) },  
-                                                event{std::move(other.event) }, 
+                                                arg{std::move(other.arg) }, 
                                                 handler{other.handler},
                                                 name{other.name} {
             taskHandle = std::move(other.taskHandle);
@@ -38,8 +38,8 @@ namespace FFS {
         
         Task& operator= (Task&& other) {
             task = std::move(other.task);
-            //memcpy(stackBuffer, other.stackBuffer, sizeof(other.stackBuffer));
             std::copy(std::begin(other.stackBuffer), std::end(other.stackBuffer), std::begin(stackBuffer));
+            arg = std::move(other.arg);
             taskHandle = std::move(other.taskHandle);
             name = std::move(other.name);
             other.taskHandle = 0;
@@ -47,18 +47,11 @@ namespace FFS {
         }
 
         // TASK CREATION : https://www.freertos.org/a00019.html
-        Task(void (*const _handler)(void*), std::string _name, FFS::Event<evt_t> _event, UBaseType_t uxPriority) :
-            event{_event}, handler{_handler}, name{_name} {
+        Task(void (*const _handler)(void*), std::string _name, UBaseType_t uxPriority, std::optional<arg_t> _arg = std::nullopt) :
+            arg{_arg}, handler{_handler}, name{_name} {
                 
-            taskHandle = xTaskCreateStatic(handler, name.c_str(), stackDepth, &event, uxPriority, stackBuffer, &task);
-            assert(taskHandle != 0);
-        }
-        
-        Task(void (*const _handler)(void*), std::string _name, UBaseType_t uxPriority) :
-            event{}, handler{_handler}, name{_name} {
-                
-            taskHandle = xTaskCreateStatic(handler, name.c_str(), stackDepth, &event, uxPriority, stackBuffer, &task);
-            assert(taskHandle != 0);
+                taskHandle = xTaskCreateStatic(handler, name.c_str(), stackDepth, (arg) ? &*arg : nullptr, uxPriority, stackBuffer, &task);
+                assert(taskHandle != 0);
         }
 
         ~Task() {
@@ -70,6 +63,10 @@ namespace FFS {
         // TASK CONTROL : https://www.freertos.org/a00112.html
         static void delay(const TickType_t xTicksToDelay) {
             vTaskDelay(xTicksToDelay);
+        }
+        
+        static xTaskHandle currentHandle( void ) {
+            return xTaskGetCurrentTaskHandle();      
         }
 
         static void delayUntil(TickType_t* pxPreviousWakeTime, const TickType_t xTimeIncrement) {

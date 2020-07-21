@@ -47,7 +47,7 @@ TEST_CASE("Tasks", "[FreeRTOS]") {
         FFS::OSStop();
     };
     auto evt = eventType{8};
-    auto task = FFS::Task<eventType, 20>{hdlr, "test", FFS::Event{evt}, 1};
+    auto task = FFS::Task<FFS::Event<eventType>, 20>{hdlr, "test", 1, FFS::Event{evt}};
     FFS::OSStart();
     
 }

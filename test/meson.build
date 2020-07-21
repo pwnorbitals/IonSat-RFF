@@ -1,11 +1,25 @@
+fs = import('fs')
+
 thread_dep = dependency('threads')
 freertos_dep = dependency('freertos', fallback:['freertos', 'freertos_dep'])
 boost_dep = dependency('boost')
 
 incdir += include_directories('.')
 
-subdir('unit')
-subdir('phys')
-subdir('integration')
-subdir('emul')
+test_files = []
+subdirs = ['unit', 'phys', 'integration', 'emul']
+test_master = files('test.cpp')
+
+foreach sd : subdirs
+    test_files = []
+    subdir(sd)
+    foreach tf : test_files
+        name = tf.split('.')[0]
+        file = files(sd+'/'+tf)
+        ut = executable(name+'_unit_test', source_files + file + test_master, include_directories : incdir, dependencies: [thread_dep, freertos_dep, boost_dep])
+        test(name+' unit test', ut)
+    endforeach
+endforeach
+
+
 
