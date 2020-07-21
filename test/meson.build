@@ -16,7 +16,7 @@ foreach sd : subdirs
     foreach tf : test_files
         name = tf.split('.')[0]
         file = files(sd+'/'+tf)
-        ut = executable(name+'_unit_test', source_files + file + test_master, include_directories : incdir, dependencies: [thread_dep, freertos_dep, boost_dep])
+        ut = executable(name+'_unit_test', source_files + file, include_directories : incdir, dependencies: [thread_dep, freertos_dep, boost_dep])
         test(name+' unit test', ut)
     endforeach
 endforeach

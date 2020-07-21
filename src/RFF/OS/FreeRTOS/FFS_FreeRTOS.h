@@ -9,13 +9,17 @@
 #include "FFS_queue.h"
 #include "FFS_semaphore.h"
 
+void ffs_main(void* empty);
+
 namespace FFS {
 
 	struct OSSettings {
 
 	};
-
+    
     void OSStart();
     void OSStop();
+    
+    
      
 }

@@ -1,5 +1,3 @@
-#include "catch.hpp"
-
 #include <iostream>
 #include "FFS.h"
 
@@ -7,12 +5,12 @@ struct eventType{ int myint; };
 bool operator==(eventType const& lhs, eventType const& rhs){return lhs.myint == rhs.myint;}
 bool operator!=(eventType const& lhs, eventType const& rhs){return lhs.myint != rhs.myint;}
 
-TEST_CASE("Creation and destruction", "[Event]") {
+void ffs_main() {
     
     
     auto start = std::clock();
     auto evt = FFS::Event{eventType{8}};
-    
+    /*
     SECTION( "Construction" ){
         REQUIRE(evt.controller == NULL);
         REQUIRE(evt.data == eventType{8});
@@ -27,4 +25,7 @@ TEST_CASE("Creation and destruction", "[Event]") {
             REQUIRE(evt != otherEvt); // They are equivalent, but not the same
             REQUIRE(evt != badEvt);
         }
+        */
+    
+    FFS::suspendCurrentTask();
 }

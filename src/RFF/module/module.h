@@ -15,7 +15,7 @@ namespace FFS {
 
 
     public:
-        template<typename ...events_t, typename ...deriveds>
+        template<typename ...events_t>
         Module(std::tuple<evtHandlers_t...>&& _handlers) : evtHandlers{std::move(_handlers) } {}
 
         template<typename evt_t>

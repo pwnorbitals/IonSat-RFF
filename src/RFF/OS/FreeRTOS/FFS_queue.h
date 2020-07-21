@@ -23,7 +23,7 @@ namespace FFS {
 			vQueueDelete(queueHandle);
 		}
 
-		BaseType_t send( item_t const& pvItemToQueue, TickType_t xTicksToWait) {
+		BaseType_t send( item_t const& pvItemToQueue, TickType_t xTicksToWait = 0) {
 			return  xQueueSend(queueHandle, &pvItemToQueue, xTicksToWait);
 		}
 
@@ -31,7 +31,7 @@ namespace FFS {
 			return xQueueSendFromISR(queueHandle, &pvItemToQueue, pxHigherPriorityTaskWoken);
 		}
 
-		BaseType_t sendToBack(item_t const& pvItemToQueue, TickType_t xTicksToWait) {
+		BaseType_t sendToBack(item_t const& pvItemToQueue, TickType_t xTicksToWait = 0) {
 			return xQueueSendToBack(queueHandle, &pvItemToQueue, xTicksToWait);
 		}
 
@@ -40,7 +40,7 @@ namespace FFS {
 		}
 
 
-		BaseType_t sendToFront(item_t const& pvItemToQueue, TickType_t xTicksToWait) {
+		BaseType_t sendToFront(item_t const& pvItemToQueue, TickType_t xTicksToWait = 0) {
 			return xQueueSendToFront(queueHandle, &pvItemToQueue, xTicksToWait);
 		}
 
@@ -49,7 +49,7 @@ namespace FFS {
 		}
 
 
-		BaseType_t receive(item_t& pvBuffer, TickType_t xTicksToWait) {
+		BaseType_t receive(item_t& pvBuffer, TickType_t xTicksToWait = 0) {
 			return xQueueReceive(queueHandle, &pvBuffer, xTicksToWait);
 		}
 
@@ -90,7 +90,7 @@ namespace FFS {
 		}
 
 
-		BaseType_t peek(item_t* pvBuffer, TickType_t xTicksToWait) {
+		BaseType_t peek(item_t* pvBuffer, TickType_t xTicksToWait = 0) {
 			return xQueuePeek(queueHandle, pvBuffer, xTicksToWait);
 		}
 

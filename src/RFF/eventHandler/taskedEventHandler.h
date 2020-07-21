@@ -21,7 +21,7 @@ namespace FFS {
         
         
         TaskedEventHandler(std::function<void (Event<event_t> const&) > _handlerFct, std::string _name, UBaseType_t _prio) : 
-            EventHandler<event_t, TaskedEventHandler<event_t, stackDepth, maxParallelHandlers>>{_handlerFct, _name, _prio},
+            EventHandler<event_t, me_t>{_handlerFct, _name, _prio},
             fullHandler{[](void* myself) {
                 
                 auto* me = static_cast<TaskedEventHandler<event_t, stackDepth, maxParallelHandlers>*>(myself);

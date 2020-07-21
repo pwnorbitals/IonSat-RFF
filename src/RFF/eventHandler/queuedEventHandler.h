@@ -24,9 +24,8 @@ namespace FFS {
         
         QueuedEventHandler(std::function<void (Event<event_t> const&) > _handlerFct, std::string _name, UBaseType_t _prio) : 
             EventHandler<event_t, me_t>{_handlerFct, _name, _prio},
-            fullHandler{[]( void* myself ) { // myself is a pointer to the this pointer !
-                auto** that = static_cast<me_t**>(myself);
-                auto* me = *that;
+            fullHandler{[]( void* p_this ) { // capturing this causes cast problems
+                auto* me = *(static_cast<me_t**>(p_this)); // TODO : clarify
                 Event<event_t> recvdEvent;
                 while(true) {
                     auto res = me->eventsQueue.receive(recvdEvent, portMAX_DELAY); // blocks indefinitely

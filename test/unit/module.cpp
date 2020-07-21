@@ -1,10 +1,9 @@
 
-#include "catch.hpp"
-
 #include <iostream>
 #include "FFS.h"
 
-TEST_CASE("", "[Module]") {
+void ffs_main() {
     std::cout << "ok" << std::endl;
-    REQUIRE(1 == 1);
+    assert(1 == 1);
+    FFS::suspendCurrentTask();
 }

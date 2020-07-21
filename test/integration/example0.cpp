@@ -1,15 +1,12 @@
 
-#include "catch.hpp"
-
 #define FFS_TEST
 
 #include <iostream>
 #include "FFS.h"
 
 
-TEST_CASE( "typical use case", "[example]" ) {
+void ffs_main() {
     
-
     struct MyCustomEventType { int eventNo; };
     struct MyOtherCustomEventType { bool sent; };
     
@@ -19,7 +16,7 @@ TEST_CASE( "typical use case", "[example]" ) {
     
     auto handler = [](FFS::Event<MyCustomEventType> const& evt){  
         std::cout << "YAY ! got " << evt.data.eventNo << std::endl;
-        REQUIRE(evt.data.eventNo == 42);
+        assert(evt.data.eventNo == 42);
         
         evt.controller->emit(MyOtherCustomEventType{true});
     };
@@ -28,7 +25,7 @@ TEST_CASE( "typical use case", "[example]" ) {
     
     auto otherhandler = [](FFS::Event<MyOtherCustomEventType> const& evt) { 
         std::cout << "boom !! that's" << evt.data.sent << std::endl;
-        REQUIRE(evt.data.sent == true);
+        assert(evt.data.sent == true);
         
         FFS::OSStop();
     };
@@ -37,8 +34,8 @@ TEST_CASE( "typical use case", "[example]" ) {
     
 
     
-    auto handlers = std::make_tuple(FFS::QueuedEventHandler<MyCustomEventType, 2048, 64>{handler, "first", 1}, 
-                                    FFS::TaskedEventHandler<MyOtherCustomEventType, 2048, 64>{otherhandler, "second", 2});
+    auto handlers = std::make_tuple(FFS::QueuedEventHandler<MyCustomEventType, 100000, 64>{handler, "first", 1}, 
+                                    FFS::TaskedEventHandler<MyOtherCustomEventType, 100000, 64>{otherhandler, "second", 2});
 
      
     auto modules = std::make_tuple(FFS::Module{std::move(handlers)});
@@ -47,11 +44,13 @@ TEST_CASE( "typical use case", "[example]" ) {
 
     controller.emit(MyCustomEventType{42});
     
+    FFS::suspendCurrentTask();
     
-    
-    FFS::OSStart();
-    
-    std::cout << "OK" << std::endl;
-    REQUIRE(1 == 1);
 }
+
+/*
+TEST_CASE( "typical use case", "[example]" ) {
+    
+}
+*/
 

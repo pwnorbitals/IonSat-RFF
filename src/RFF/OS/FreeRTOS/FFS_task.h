@@ -106,4 +106,8 @@ namespace FFS {
 
 
     };
+    
+    static void suspendCurrentTask() {
+        vTaskSuspend(NULL);
+    }
 }

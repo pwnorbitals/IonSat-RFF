@@ -1,4 +1,3 @@
-#include "catch.hpp"
 
 #define FFS_TEST
 
@@ -7,12 +6,12 @@
 #include "FFS.h"
 
 
-TEST_CASE("Tasks", "[FreeRTOS]") {
+void ffs_main() {
     struct eventType{ int myint; };
     
     auto hdlr = [] (void* mydata) { 
         auto* evt = static_cast<FFS::Event<eventType>*>(mydata); 
-        REQUIRE(evt->data.myint == 8);
+        assert(evt->data.myint == 8);
         
         /*
         SECTION( "priority changes" ){
@@ -48,14 +47,6 @@ TEST_CASE("Tasks", "[FreeRTOS]") {
     };
     auto evt = eventType{8};
     auto task = FFS::Task<FFS::Event<eventType>, 20>{hdlr, "test", 1, FFS::Event{evt}};
-    FFS::OSStart();
-    
-}
-
-TEST_CASE("Queues", "[FreeRTOS]") {
-    
-}
-
-TEST_CASE("Semaphores", "[FreeRTOS]") {
+    FFS::suspendCurrentTask();
     
 }
