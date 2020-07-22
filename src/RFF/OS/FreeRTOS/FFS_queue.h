@@ -8,7 +8,7 @@
 namespace FFS {
 // QUEUES : https://www.freertos.org/a00018.html
 
-	template<typename item_t, uint32_t length>
+	template<typename item_t, uint16_t length>
 	class Queue {
 		QueueHandle_t queueHandle;
 		uint8_t storageBuffer[length * sizeof(item_t)];
@@ -20,8 +20,27 @@ namespace FFS {
 		}
 
 		~Queue() {
-			vQueueDelete(queueHandle);
+            if(queueHandle != 0) {
+                vQueueDelete(queueHandle);
+            }
 		}
+		
+		Queue(Queue<item_t, length> const& other) = delete;
+        Queue& operator=(Queue<item_t, length> const& other) = delete;
+        Queue(Queue<item_t, length>&& other) : queueHandle{std::move(other.queueHandle)}, queue{std::move(other.queue)} {
+            std::copy(std::begin(other.storageBuffer), std::end(other.storageBuffer), std::begin(storageBuffer));
+            other.queueHandle = 0;
+        }
+        Queue& operator=(Queue<item_t, length>&& other) { 
+            queueHandle = std::move(other.queueHandle);
+            std::copy(std::begin(other.storageBuffer), std::end(other.storageBuffer), std::begin(storageBuffer));
+            queue = std::move(other.queue);
+            other.queueHandle = 0;
+        }
+        
+        QueueHandle_t const& handle() const {
+            return queueHandle;
+        }
 
 		BaseType_t send(item_t const& pvItemToQueue, TickType_t xTicksToWait = 0) {
 			return  xQueueSend(queueHandle, &pvItemToQueue, xTicksToWait);

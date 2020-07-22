@@ -2,6 +2,7 @@
 #pragma once
 
 #include "eventHandler.h"
+#include <atomic>
 
 namespace FFS {
 
@@ -14,52 +15,80 @@ namespace FFS {
 	protected:
 		Queue<Event<event_t>, maxParallelHandlers> eventsQueue;
 		Task<stackDepth, void*> handlerThread;
-
+        Queue<me_t*, 1> moveQueue;
 
 
 
 	public:
         
         QueuedEventHandler() = delete;
+        ~QueuedEventHandler() = default;
         QueuedEventHandler(me_t const& other) = delete;
         me_t& operator=(me_t const& other) = delete;
         QueuedEventHandler(me_t&& other) : 
             parent_t{std::move(other)}, 
             eventsQueue{std::move(other.eventsQueue)},
-            handlerThread{std::move(other.handlerThread)}
-            {}
+            handlerThread{std::move(other.handlerThread)},
+            moveQueue{}
+            {
+                other.moveQueue.sendToBack(this);
+            }
         me_t& operator=(me_t&& other) {
             parent_t::operator=(other);
             eventsQueue = std::move(other.eventsQueue);
             handlerThread = std::move(other.handlerThread);
+            moveQueue = {};
+            
+            other.moveQueue.sendToBack(this);
         }
         
 
 
 
 		QueuedEventHandler(std::function<void (Event<event_t> const&) > _handlerFct, std::string _name, UBaseType_t _prio) :
-			EventHandler<event_t, me_t>{_handlerFct, _name, _prio},
-		eventsQueue{},
-		handlerThread{std::bind(&me_t::fullHandler, this, std::placeholders::_1), parent_t::name, parent_t::prio}
+			parent_t{_handlerFct, _name, _prio},
+            eventsQueue{},
+            handlerThread{std::bind(&me_t::fullHandler, this, std::placeholders::_1), this->name, this->prio},
+            moveQueue{}
 		{};
         
         
         void fullHandler (void*) { 
+            // BUG : IMPLICITELY CAPTURES THIS WHEN MOVE HAPPENS, USES DELETED THIS
+            // SOLUTION : ADAPT THIS
+            
 			Event<event_t> recvdEvent{};
+            me_t* me = this;
+            me_t* destination;
+            
+            auto set = QueueSet<maxParallelHandlers+1>{};
+            set.add(me->eventsQueue);
+            set.add(me->moveQueue);
+            
 			while(true) {
-				auto res = eventsQueue.receive(recvdEvent, portMAX_DELAY); // blocks indefinitely
-
-				if(!res) {
-					// TODO : count errors ?
-					continue;
-				}
-
-				parent_t::handlerFct(recvdEvent);
+                
+                auto Qhandle = set.select(portMAX_DELAY);
+                if(Qhandle == me->eventsQueue.handle()) {
+                        me->eventsQueue.receive(recvdEvent, 0); 
+                        me->handlerFct(recvdEvent);
+                } else if(Qhandle ==  me->moveQueue.handle()) {
+                        
+                        me->moveQueue.receive(destination, 0);
+                        set.remove(me->eventsQueue);
+                        set.remove(me->moveQueue);
+                        me = destination;
+                        set.add(me->eventsQueue);
+                        set.add(me->moveQueue);
+                }
+                
+                
+				
 
 
 			}
 		}
-
+        
+        //TODO : move semantics
 		bool handleEvent(Event<event_t> const& evt, TickType_t maxWait = 0) {
 			return eventsQueue.sendToBack(evt, maxWait);
 		}

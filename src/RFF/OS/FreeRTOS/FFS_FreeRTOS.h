@@ -8,6 +8,7 @@
 #include "FFS_task.h"
 #include "FFS_queue.h"
 #include "FFS_semaphore.h"
+#include "FFS_queueSet.h"
 
 void ffs_main(void* empty);
 

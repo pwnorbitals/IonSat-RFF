@@ -47,7 +47,7 @@ namespace FFS {
                        // Also, name collision is no problem from the OS point of view (it's only for debugging)
 
 			taskHandlersProtector.take();
-			taskHandlers.push_back(task_t {std::bind(&me_t::fullHandler, this, std::placeholders::_1), parent_t::name + std::to_string(callCnt), parent_t::prio, std::move(evt)});
+			taskHandlers.push_back(task_t {std::bind(&me_t::fullHandler, this, std::placeholders::_1), this->name + std::to_string(callCnt), this->prio, std::move(evt)});
 			// TODO : add bound checking
 			taskHandlersProtector.give();
 
@@ -59,7 +59,7 @@ namespace FFS {
 		
 		void fullHandler(Event<event_t>&& event) {
 			
-            parent_t::handlerFct(std::move(event));
+            this->handlerFct(std::move(event));
             
             
 			auto curHandle = task_t::currentHandle();

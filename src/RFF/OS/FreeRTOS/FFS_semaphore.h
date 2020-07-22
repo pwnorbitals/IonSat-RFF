@@ -18,6 +18,10 @@ namespace FFS {
 		~Semaphore() {
 			vSemaphoreDelete(semaphoreHandle);
 		}
+		
+		SemaphoreHandle_t const& handle() const {
+            return semaphoreHandle;
+        }
 
 		UBaseType_t getCount() {
 			return uxSemaphoreGetCount(semaphoreHandle);

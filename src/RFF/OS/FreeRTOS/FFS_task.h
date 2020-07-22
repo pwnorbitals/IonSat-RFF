@@ -27,14 +27,25 @@ namespace FFS {
 		// NO COPY
 		Task(Task const& other) = delete;
 		Task& operator= (Task const& other) = delete;
+        
+        // NO MOVE
+        /*
+        Task(Task&& other) = delete;
+        Task& operator=(Task&& other) = delete;
+        */
 
-		// MOVE ALLOWED
+		// MOVE WAS ALLOWED
 		Task(Task<stackDepth, arg_t>&& other) : task{std::move(other.task) },
-			stackBuffer{std::move(* (other.stackBuffer)) },
 			arg{std::move(other.arg) },
+			handler{std::move(other.handler)},
 			name{other.name} {
+                
+            std::copy(std::begin(other.stackBuffer), std::end(other.stackBuffer), std::begin(stackBuffer));
 			taskHandle = std::move(other.taskHandle);
 			other.taskHandle = 0;
+            
+            // PROBLEM : values captured by handler are invalidated
+            // SOLUTION : ?
 		}
 
 		Task& operator= (Task&& other) {
@@ -42,9 +53,14 @@ namespace FFS {
 			std::copy(std::begin(other.stackBuffer), std::end(other.stackBuffer), std::begin(stackBuffer));
 			taskHandle = std::move(other.taskHandle);
 			name = std::move(other.name);
+            handler = std::move(other.handler);
 			other.taskHandle = 0;
 			return *this;
+            
+            // PROBLEM : values captured by handler are invalidated
+            // SOLUTION : ?
 		}
+		
 
 		// TASK CREATION : https://www.freertos.org/a00019.html
 		Task(std::function<void(arg_t)> _handler, std::string _name, UBaseType_t uxPriority, arg_t&& _arg = {}) :
@@ -53,7 +69,7 @@ namespace FFS {
                 // Trick : function ptr is a non-capturing lambda that takes its context as argument, equivalent to std::function
 			taskHandle = xTaskCreateStatic([](void* myself){
                 auto me = static_cast<me_t*>(myself);
-                me->handler(std::forward<arg_t>(me->arg));
+                me->handler(std::forward<arg_t>(me->arg)); // BUG : handler's captured data doesn't change when task is moved
             }, name.c_str(), stackDepth, this, uxPriority, stackBuffer, &task);
 			assert(taskHandle != 0);
 		}
