@@ -3,24 +3,24 @@
 extern void ffs_main();
 
 void temp_main(void* empty) {
-    
-    ffs_main();
-    FFS::suspendCurrentTask(); // When initialization is done, suspend the task. Should never be necessary ...
+
+	ffs_main();
+	FFS::suspendCurrentTask(); // When initialization is done, suspend the task. Should never be necessary ...
 }
 
 namespace FFS {
-    void OSStart() {
+	void OSStart() {
 		vTaskStartScheduler();
 	}
-	
+
 	void OSStop() {
-        vTaskEndScheduler();
-    }
+		vTaskEndScheduler();
+	}
 }
 
 int main() {
-    auto task = FFS::Task<1000000>(temp_main, "init", configMAX_PRIORITIES-1); 
-    FFS::OSStart();
+	auto task = FFS::Task<1000000>(temp_main, "init", configMAX_PRIORITIES - 1);
+	FFS::OSStart();
 }
 
 extern "C" {

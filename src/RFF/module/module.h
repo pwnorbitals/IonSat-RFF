@@ -8,24 +8,24 @@
 
 namespace FFS {
 
-    template <typename ...evtHandlers_t>
-    class Module {
-    protected:
-        std::tuple<evtHandlers_t...> evtHandlers;
+	template <typename ...evtHandlers_t>
+	class Module {
+	protected:
+		std::tuple<evtHandlers_t...> evtHandlers;
 
 
-    public:
-        template<typename ...events_t>
-        Module(std::tuple<evtHandlers_t...>&& _handlers) : evtHandlers{std::move(_handlers) } {}
+	public:
+		template<typename ...events_t>
+		Module(std::tuple<evtHandlers_t...>&& _handlers) : evtHandlers{std::move(_handlers) } {}
 
-        template<typename evt_t>
-        void callHandlers(evt_t const& event) {
-            std::apply([&](auto & ... eh) {    // lvalue reference argument because move would consume the event handlers
-                (..., eh(event));
-            }, evtHandlers);
-        }
+		template<typename evt_t>
+		void callHandlers(evt_t const& event) {
+			std::apply([&](auto & ... eh) {    // lvalue reference argument because move would consume the event handlers
+				(..., eh(event));
+			}, evtHandlers);
+		}
 
 
 
-    };
+	};
 }

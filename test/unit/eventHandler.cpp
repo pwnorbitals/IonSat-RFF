@@ -5,38 +5,38 @@
 
 
 void ffs_main() {
-    struct eventType{ int myint; };
-    
-    auto hdlr = [] (FFS::Event<eventType> const& mydata) { 
-        assert(mydata.data.myint == 8);
-        
-        FFS::OSStop();
-    };    
-    
-    
-            
-    auto evt = FFS::Event{eventType{8}}; 
+	struct eventType { int myint; };
+
+	auto hdlr = [](FFS::Event<eventType> const & mydata) {
+		assert(mydata.data.myint == 8);
+
+		FFS::OSStop();
+	};
 
 
 
-    auto evtHandler = FFS::QueuedEventHandler<eventType, 1024, 64>{hdlr, "first", 1};
-    evtHandler(evt);
-    FFS::suspendCurrentTask();
+	auto evt = FFS::Event{eventType{8}};
+
+
+
+	auto evtHandler = FFS::QueuedEventHandler<eventType, 1024, 64> {hdlr, "first", 1};
+	evtHandler(evt);
+	FFS::suspendCurrentTask();
 }
 
 /*
 TEST_CASE( "Tasked event handler" , "[EventHandler]" ){
     struct eventType{ int myint; };
-    
-    auto hdlr = [] (FFS::Event<eventType> const& mydata) { 
+
+    auto hdlr = [] (FFS::Event<eventType> const& mydata) {
         REQUIRE(mydata.data.myint == 8);
-        
+
         FFS::OSStop();
-    };    
-    
-    
-            
-    auto evt = FFS::Event{eventType{8}}; 
+    };
+
+
+
+    auto evt = FFS::Event{eventType{8}};
 
 
 

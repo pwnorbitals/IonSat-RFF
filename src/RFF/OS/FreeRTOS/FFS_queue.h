@@ -7,8 +7,8 @@
 
 namespace FFS {
 // QUEUES : https://www.freertos.org/a00018.html
-    
-    template<typename item_t, uint32_t length>
+
+	template<typename item_t, uint32_t length>
 	class Queue {
 		QueueHandle_t queueHandle;
 		uint8_t storageBuffer[length * sizeof(item_t)];
@@ -23,7 +23,7 @@ namespace FFS {
 			vQueueDelete(queueHandle);
 		}
 
-		BaseType_t send( item_t const& pvItemToQueue, TickType_t xTicksToWait = 0) {
+		BaseType_t send(item_t const& pvItemToQueue, TickType_t xTicksToWait = 0) {
 			return  xQueueSend(queueHandle, &pvItemToQueue, xTicksToWait);
 		}
 

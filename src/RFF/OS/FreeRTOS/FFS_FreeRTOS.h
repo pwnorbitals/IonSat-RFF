@@ -16,10 +16,10 @@ namespace FFS {
 	struct OSSettings {
 
 	};
-    
-    void OSStart();
-    void OSStop();
-    
-    
-     
+
+	void OSStart();
+	void OSStop();
+
+
+
 }
