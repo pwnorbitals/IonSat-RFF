@@ -43,9 +43,9 @@ namespace FFS {
 		Derived* impl() { return static_cast<Derived*>(this); }
 
 		template<typename evt_t>
-		bool operator()(Event<evt_t> const& evt) {
+		bool operator()(Event<evt_t>&& evt) {
 			if constexpr(std::is_same<evt_t, event_t>::value) {
-				return impl()->handleEvent(evt);
+				return impl()->handleEvent(std::move(evt));
 			}
 
 			return false;

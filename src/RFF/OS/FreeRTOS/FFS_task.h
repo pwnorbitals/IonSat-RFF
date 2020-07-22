@@ -20,7 +20,7 @@ namespace FFS {
 		StaticTask_t task;
 		StackType_t stackBuffer[stackDepth];
 		arg_t arg;
-		std::function<void(arg_t const&)> handler;
+		std::function<void(arg_t)> handler;
 		std::string name;
 
 
@@ -47,13 +47,13 @@ namespace FFS {
 		}
 
 		// TASK CREATION : https://www.freertos.org/a00019.html
-		Task(std::function<void(arg_t)> _handler, std::string _name, UBaseType_t uxPriority, arg_t _arg = {}) :
-			task{}, stackBuffer{}, arg{_arg}, handler{_handler}, name{_name} {
+		Task(std::function<void(arg_t)> _handler, std::string _name, UBaseType_t uxPriority, arg_t&& _arg = {}) :
+			task{}, stackBuffer{}, arg{std::forward<arg_t>(_arg)}, handler{_handler}, name{_name} {
                 
                 // Trick : function ptr is a non-capturing lambda that takes its context as argument, equivalent to std::function
 			taskHandle = xTaskCreateStatic([](void* myself){
                 auto me = static_cast<me_t*>(myself);
-                me->handler(me->arg);
+                me->handler(std::forward<arg_t>(me->arg));
             }, name.c_str(), stackDepth, this, uxPriority, stackBuffer, &task);
 			assert(taskHandle != 0);
 		}

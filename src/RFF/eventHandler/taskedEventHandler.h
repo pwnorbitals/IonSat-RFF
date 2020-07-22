@@ -9,13 +9,13 @@ namespace FFS {
 
         using me_t = TaskedEventHandler<event_t, stackDepth, maxParallelHandlers>;
 		using parent_t = EventHandler<event_t, me_t>;
+        using task_t = Task<stackDepth, Event<event_t>&&>;
 
 	protected:
-		std::function<void(void*)> fullHandler;
+		std::function<void(Event<event_t>&&)> fullHandler;
 		// boost::container::static_vector<Task<event_t, stackDepth>, maxParallelHandlers> taskHandlers;
-		std::vector<Task<stackDepth, me_t*>> taskHandlers; // TODO : switch to static_vector
+		std::vector<task_t> taskHandlers; // TODO : switch to static_vector
 		Mutex taskHandlersProtector;
-		Queue<Event<event_t>, maxParallelHandlers> waitingEvents;
 
 
 
@@ -27,33 +27,25 @@ namespace FFS {
         TaskedEventHandler(me_t&& other) : 
             parent_t{std::move(other)},
             taskHandlers{std::move(other.taskHandlers)},
-            taskHandlersProtector{std::move(other.taskHandlersProtector)},
-            waitingEvents{std::move(other.waitingEvents)}
+            taskHandlersProtector{std::move(other.taskHandlersProtector)}
             {};
         me_t& operator=(me_t&& other) {
             parent_t::operator=(std::move(other));
             taskHandlers = std::move(other.taskHandlers);
             taskHandlersProtector = std::move(other.taskHandlersProtector);
-            waitingEvents = std::move(other.waitingEvents);
         }
 
-		TaskedEventHandler(std::function<void(Event<event_t>)> _handlerFct, std::string _name, UBaseType_t _prio) :
+		TaskedEventHandler(std::function<void(Event<event_t> const&)> _handlerFct, std::string _name, UBaseType_t _prio) :
 			parent_t{_handlerFct, _name, _prio},
-		fullHandler{[this](void* empty) {
+		fullHandler{[this](Event<event_t>&& event) {
+			
+            parent_t::handlerFct(std::move(event));
             
-            empty;
-
-			Event<event_t> event{};
-			auto res = waitingEvents.receive(event, 0);
-			if(res != pdFALSE) {
-				parent_t::handlerFct(event);
-			}
-
-
-			auto curHandle{Task<stackDepth, event_t>::currentHandle()};
+            
+			auto curHandle = task_t::currentHandle();
 			auto toErase = std::remove_if(
 			                   taskHandlers.begin(), taskHandlers.end(),
-			[curHandle](Task<stackDepth, me_t*> const & task) {
+			[curHandle](task_t const & task) {
 				return task.taskHandle == curHandle;
 			}
 			               );
@@ -66,22 +58,18 @@ namespace FFS {
 
 			FFS::suspendCurrentTask();
 		}},
-		taskHandlers{}, taskHandlersProtector{}, waitingEvents{}
+		taskHandlers{}, taskHandlersProtector{}
 		{};
 
 
-		bool handleEvent(Event<event_t> const& evt) {
+		bool handleEvent(Event<event_t>&& evt) {
 			static uint16_t callCnt = 0;
 
 			callCnt++; // Will overflow but is defined behaviour and should not cause problems (low collision probability)
-			// Also, name collision is no problem from the OS point of view (it's only for debugging)
+                       // Also, name collision is no problem from the OS point of view (it's only for debugging)
 
-			auto res = waitingEvents.sendToBack(evt, 0);
-			if(res == pdFALSE) { return false; }
-
-			std::cout << "this ptr : " << this << std::endl;
 			taskHandlersProtector.take();
-			taskHandlers.push_back(Task<stackDepth, me_t*> {fullHandler, parent_t::name + std::to_string(callCnt), parent_t::prio});
+			taskHandlers.push_back(task_t {fullHandler, parent_t::name + std::to_string(callCnt), parent_t::prio, std::move(evt)});
 			// TODO : add bound checking
 			taskHandlersProtector.give();
 

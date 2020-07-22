@@ -24,7 +24,7 @@ void ffs_main() {
     
     
     
-	evtHandler2(evt);
+	evtHandler2(std::move(evt));
 	FFS::suspendCurrentTask();
 }
 

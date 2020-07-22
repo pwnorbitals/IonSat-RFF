@@ -28,7 +28,7 @@ namespace FFS {
 		template<typename evt_t>
 		void callHandlers(evt_t const& event) {
 			std::apply([&](auto & ... eh) {    // lvalue reference argument because move would consume the event handlers
-				(..., eh(event));
+				(..., eh(evt_t{event}));
 			}, evtHandlers);
 		}
 
