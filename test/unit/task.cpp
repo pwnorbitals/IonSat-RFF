@@ -9,9 +9,8 @@
 void ffs_main() {
 	struct eventType { int myint; };
 
-	auto hdlr = [](void* mydata) {
-		auto* evt = static_cast<FFS::Event<eventType>*>(mydata);
-		assert(evt->data.myint == 8);
+	auto hdlr = [](FFS::Event<eventType> const& evt) {
+		assert(evt.data.myint == 8);
 
 		/*
 		SECTION( "priority changes" ){

@@ -20,7 +20,11 @@ void ffs_main() {
 
 
 	auto evtHandler = FFS::QueuedEventHandler<eventType, 1024, 64> {hdlr, "first", 1};
-	evtHandler(evt);
+    auto evtHandler2 = FFS::QueuedEventHandler{std::move(evtHandler)}; // check move works
+    
+    
+    
+	evtHandler2(evt);
 	FFS::suspendCurrentTask();
 }
 

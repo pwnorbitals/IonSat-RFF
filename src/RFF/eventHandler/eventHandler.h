@@ -10,6 +10,7 @@
 #include <algorithm>
 
 #include "lambda.h"
+#include "unique_function.h"
 
 namespace FFS {
 
@@ -18,10 +19,12 @@ namespace FFS {
 	template<typename event_t, typename Derived>
 	class EventHandler {
 	protected:
+        
+        using handler_t = std::function<void(Event<event_t> const&)>;
 
 		std::string name;
 		UBaseType_t prio;
-		std::function<void (Event<event_t> const&) > handlerFct;
+		handler_t handlerFct;
 
 
 	public:
@@ -33,7 +36,7 @@ namespace FFS {
 		EventHandler& operator= (EventHandler&& other) = default;
 		~EventHandler() = default;
 
-		EventHandler(std::function<void (Event<event_t> const&) > _handlerFct, std::string _name, UBaseType_t _prio) :
+		EventHandler(handler_t _handlerFct, std::string _name, UBaseType_t _prio) :
 			name{_name}, prio(_prio), handlerFct{_handlerFct}
 		{ }
 
@@ -48,11 +51,6 @@ namespace FFS {
 			return false;
 		}
 	};
-
-
-
-
-
 
 }
 

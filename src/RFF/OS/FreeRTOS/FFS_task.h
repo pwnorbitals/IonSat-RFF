@@ -11,6 +11,8 @@
 namespace FFS {
 	template<uint32_t stackDepth, typename arg_t = void*>
 	class Task {
+        
+        using me_t = Task<stackDepth, arg_t>;
 
 	public:
 
@@ -18,7 +20,7 @@ namespace FFS {
 		StaticTask_t task;
 		StackType_t stackBuffer[stackDepth];
 		arg_t arg;
-		void (*const handler)(void*);
+		std::function<void(arg_t const&)> handler;
 		std::string name;
 
 
@@ -30,7 +32,6 @@ namespace FFS {
 		Task(Task<stackDepth, arg_t>&& other) : task{std::move(other.task) },
 			stackBuffer{std::move(* (other.stackBuffer)) },
 			arg{std::move(other.arg) },
-			handler{other.handler},
 			name{other.name} {
 			taskHandle = std::move(other.taskHandle);
 			other.taskHandle = 0;
@@ -39,7 +40,6 @@ namespace FFS {
 		Task& operator= (Task&& other) {
 			task = std::move(other.task);
 			std::copy(std::begin(other.stackBuffer), std::end(other.stackBuffer), std::begin(stackBuffer));
-			arg = std::move(other.arg);
 			taskHandle = std::move(other.taskHandle);
 			name = std::move(other.name);
 			other.taskHandle = 0;
@@ -47,9 +47,14 @@ namespace FFS {
 		}
 
 		// TASK CREATION : https://www.freertos.org/a00019.html
-		Task(void (*const _handler)(void*), std::string _name, UBaseType_t uxPriority, arg_t _arg = {}) :
-			arg{_arg}, handler{_handler}, name{_name} {
-			taskHandle = xTaskCreateStatic(handler, name.c_str(), stackDepth, &arg, uxPriority, stackBuffer, &task);
+		Task(std::function<void(arg_t)> _handler, std::string _name, UBaseType_t uxPriority, arg_t _arg = {}) :
+			task{}, stackBuffer{}, arg{_arg}, handler{_handler}, name{_name} {
+                
+                // Trick : function ptr is a non-capturing lambda that takes its context as argument, equivalent to std::function
+			taskHandle = xTaskCreateStatic([](void* myself){
+                auto me = static_cast<me_t*>(myself);
+                me->handler(me->arg);
+            }, name.c_str(), stackDepth, this, uxPriority, stackBuffer, &task);
 			assert(taskHandle != 0);
 		}
 

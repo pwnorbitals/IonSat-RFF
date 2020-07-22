@@ -7,11 +7,11 @@ namespace FFS {
 	template<typename event_t, uint32_t stackDepth, uint16_t maxParallelHandlers>
 	class TaskedEventHandler : public EventHandler<event_t, TaskedEventHandler<event_t, stackDepth, maxParallelHandlers>>   {
 
-		typedef EventHandler<event_t, TaskedEventHandler<event_t, stackDepth, maxParallelHandlers>> parent_t;
-		typedef TaskedEventHandler<event_t, stackDepth, maxParallelHandlers> me_t;
+        using me_t = TaskedEventHandler<event_t, stackDepth, maxParallelHandlers>;
+		using parent_t = EventHandler<event_t, me_t>;
 
 	protected:
-		void(*fullHandler)(void*);
+		std::function<void(void*)> fullHandler;
 		// boost::container::static_vector<Task<event_t, stackDepth>, maxParallelHandlers> taskHandlers;
 		std::vector<Task<stackDepth, me_t*>> taskHandlers; // TODO : switch to static_vector
 		Mutex taskHandlersProtector;
@@ -21,24 +21,38 @@ namespace FFS {
 
 	public:
 
+        TaskedEventHandler() = delete;
+        TaskedEventHandler(me_t const& other) = delete;
+        me_t& operator=(me_t const& other) = delete;
+        TaskedEventHandler(me_t&& other) : 
+            parent_t{std::move(other)},
+            taskHandlers{std::move(other.taskHandlers)},
+            taskHandlersProtector{std::move(other.taskHandlersProtector)},
+            waitingEvents{std::move(other.waitingEvents)}
+            {};
+        me_t& operator=(me_t&& other) {
+            parent_t::operator=(std::move(other));
+            taskHandlers = std::move(other.taskHandlers);
+            taskHandlersProtector = std::move(other.taskHandlersProtector);
+            waitingEvents = std::move(other.waitingEvents);
+        }
 
-		TaskedEventHandler(std::function<void (Event<event_t> const&) > _handlerFct, std::string _name, UBaseType_t _prio) :
-			EventHandler<event_t, me_t>{_handlerFct, _name, _prio},
-		fullHandler{[](void* this_ptr) {
-
-			auto* me = *(static_cast<me_t**>(this_ptr));
-
+		TaskedEventHandler(std::function<void(Event<event_t>)> _handlerFct, std::string _name, UBaseType_t _prio) :
+			parent_t{_handlerFct, _name, _prio},
+		fullHandler{[this](void* empty) {
+            
+            empty;
 
 			Event<event_t> event{};
-			auto res = me->waitingEvents.receive(event, 0);
+			auto res = waitingEvents.receive(event, 0);
 			if(res != pdFALSE) {
-				me->handlerFct(event);
+				parent_t::handlerFct(event);
 			}
 
 
 			auto curHandle{Task<stackDepth, event_t>::currentHandle()};
 			auto toErase = std::remove_if(
-			                   me->taskHandlers.begin(), me->taskHandlers.end(),
+			                   taskHandlers.begin(), taskHandlers.end(),
 			[curHandle](Task<stackDepth, me_t*> const & task) {
 				return task.taskHandle == curHandle;
 			}
@@ -46,9 +60,9 @@ namespace FFS {
 
 			// Q : problem here ? task may be halted in the middle of the operation ?
 			// A : No problem, FreeRTOS doesn't destroy right away, adds to destroy list and IdleTask destroys later
-			me->taskHandlersProtector.take();
-			me->taskHandlers.erase(toErase, me->taskHandlers.end());
-			me->taskHandlersProtector.give();
+			taskHandlersProtector.take();
+			taskHandlers.erase(toErase, taskHandlers.end());
+			taskHandlersProtector.give();
 
 			FFS::suspendCurrentTask();
 		}},
@@ -67,7 +81,7 @@ namespace FFS {
 
 			std::cout << "this ptr : " << this << std::endl;
 			taskHandlersProtector.take();
-			taskHandlers.push_back(Task<stackDepth, me_t*> {fullHandler, parent_t::name + std::to_string(callCnt), parent_t::prio, this});
+			taskHandlers.push_back(Task<stackDepth, me_t*> {fullHandler, parent_t::name + std::to_string(callCnt), parent_t::prio});
 			// TODO : add bound checking
 			taskHandlersProtector.give();
 
