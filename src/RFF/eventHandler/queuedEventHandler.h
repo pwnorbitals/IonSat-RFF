@@ -12,7 +12,6 @@ namespace FFS {
 		
 
 	protected:
-		std::function<void(void*)> fullHandler; // TODO : use normal member function with std::bind ?
 		Queue<Event<event_t>, maxParallelHandlers> eventsQueue;
 		Task<stackDepth, void*> handlerThread;
 
@@ -26,13 +25,11 @@ namespace FFS {
         me_t& operator=(me_t const& other) = delete;
         QueuedEventHandler(me_t&& other) : 
             parent_t{std::move(other)}, 
-            fullHandler{std::move(other.fullHandler)}, 
             eventsQueue{std::move(other.eventsQueue)},
             handlerThread{std::move(other.handlerThread)}
             {}
         me_t& operator=(me_t&& other) {
             parent_t::operator=(other);
-            fullHandler = std::move(other.fullHandler);
             eventsQueue = std::move(other.eventsQueue);
             handlerThread = std::move(other.handlerThread);
         }
@@ -42,8 +39,12 @@ namespace FFS {
 
 		QueuedEventHandler(std::function<void (Event<event_t> const&) > _handlerFct, std::string _name, UBaseType_t _prio) :
 			EventHandler<event_t, me_t>{_handlerFct, _name, _prio},
-		fullHandler{[this](void* empty) { 
-
+		eventsQueue{},
+		handlerThread{std::bind(&me_t::fullHandler, this, std::placeholders::_1), parent_t::name, parent_t::prio}
+		{};
+        
+        
+        void fullHandler (void*) { 
 			Event<event_t> recvdEvent{};
 			while(true) {
 				auto res = eventsQueue.receive(recvdEvent, portMAX_DELAY); // blocks indefinitely
@@ -57,14 +58,7 @@ namespace FFS {
 
 
 			}
-		}},
-		eventsQueue{},
-		handlerThread{fullHandler, parent_t::name, parent_t::prio}
-		{};
-
-
-
-
+		}
 
 		bool handleEvent(Event<event_t> const& evt, TickType_t maxWait = 0) {
 			return eventsQueue.sendToBack(evt, maxWait);

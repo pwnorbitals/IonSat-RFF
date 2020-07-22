@@ -2,7 +2,7 @@
 
 extern void ffs_main();
 
-void temp_main(void* empty) {
+void temp_main(void*) {
 
 	ffs_main();
 	FFS::suspendCurrentTask(); // When initialization is done, suspend the task. Should never be necessary ...
