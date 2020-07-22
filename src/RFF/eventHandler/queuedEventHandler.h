@@ -13,7 +13,7 @@ namespace FFS {
     protected:
         void(*fullHandler)(void*); // TODO : use normal member function with std::bind ?
         Queue<Event<event_t>, maxParallelHandlers> eventsQueue; 
-        Task<me_t*, stackDepth> handlerThread;
+        Task<stackDepth, me_t*> handlerThread;
           
         
         
@@ -25,8 +25,10 @@ namespace FFS {
         QueuedEventHandler(std::function<void (Event<event_t> const&) > _handlerFct, std::string _name, UBaseType_t _prio) : 
             EventHandler<event_t, me_t>{_handlerFct, _name, _prio},
             fullHandler{[]( void* p_this ) { // capturing this causes cast problems
+                
                 auto* me = *(static_cast<me_t**>(p_this)); // TODO : clarify
-                Event<event_t> recvdEvent;
+                
+                Event<event_t> recvdEvent{};
                 while(true) {
                     auto res = me->eventsQueue.receive(recvdEvent, portMAX_DELAY); // blocks indefinitely
                     

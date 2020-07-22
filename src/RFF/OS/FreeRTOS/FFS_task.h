@@ -9,7 +9,7 @@
 #include <algorithm>
 
 namespace FFS {
-    template<typename arg_t, uint32_t stackDepth>
+    template<uint32_t stackDepth, typename arg_t = void*>
     class Task {
 
     public:
@@ -17,7 +17,7 @@ namespace FFS {
         TaskHandle_t taskHandle;
         StaticTask_t task;
         StackType_t stackBuffer[stackDepth];
-        std::optional<arg_t> arg;
+        arg_t arg;
         void (*const handler)(void*);
         std::string name;
 
@@ -27,7 +27,7 @@ namespace FFS {
         Task& operator= (Task const& other) = delete;
 
         // MOVE ALLOWED
-        Task(Task<arg_t, stackDepth>&& other) : task{std::move(other.task) }, 
+        Task(Task<stackDepth, arg_t>&& other) : task{std::move(other.task) }, 
                                                 stackBuffer{std::move(* (other.stackBuffer)) },  
                                                 arg{std::move(other.arg) }, 
                                                 handler{other.handler},
@@ -47,10 +47,9 @@ namespace FFS {
         }
 
         // TASK CREATION : https://www.freertos.org/a00019.html
-        Task(void (*const _handler)(void*), std::string _name, UBaseType_t uxPriority, std::optional<arg_t> _arg = std::nullopt) :
-            arg{_arg}, handler{_handler}, name{_name} {
-                
-                taskHandle = xTaskCreateStatic(handler, name.c_str(), stackDepth, (arg) ? &*arg : nullptr, uxPriority, stackBuffer, &task);
+        Task(void (*const _handler)(void*), std::string _name, UBaseType_t uxPriority, arg_t _arg = {}) :
+            arg{_arg}, handler{_handler}, name{_name} {                
+                taskHandle = xTaskCreateStatic(handler, name.c_str(), stackDepth, &arg, uxPriority, stackBuffer, &task);
                 assert(taskHandle != 0);
         }
 

@@ -31,9 +31,6 @@ namespace FFS {
 
         template<typename ...modules, typename eventTags>
         Controller(OSSettings _settings, std::tuple<FFS::Mode> _modes, std::tuple<modules...>&& _modules, eventTags event_tags) : settings{_settings}, modes{_modes} {
-    #ifndef FFS_TEST
-            static_assert(sizeof...(modules) != 0);
-    #endif
 
             // From : https://stackoverflow.com/questions/62652638
             func = [this, event_tags, mods{std::move(_modules) }](std::any&& any_ev) mutable {       // invoked _modules' copy constructor which tries to copy the event handlers and the Tasks inside => fail.

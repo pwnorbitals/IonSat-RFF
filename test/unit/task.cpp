@@ -46,7 +46,7 @@ void ffs_main() {
         FFS::OSStop();
     };
     auto evt = eventType{8};
-    auto task = FFS::Task<FFS::Event<eventType>, 20>{hdlr, "test", 1, FFS::Event{evt}};
+    auto task = FFS::Task<20000, FFS::Event<eventType>>{hdlr, "test", 1, FFS::Event{evt}};
     FFS::suspendCurrentTask();
     
 }
