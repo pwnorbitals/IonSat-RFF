@@ -9,68 +9,47 @@
 #include <algorithm>
 
 namespace FFS {
-	template<uint32_t stackDepth, typename arg_t = void*>
+	template<uint32_t stackDepth>
 	class Task {
         
-        using me_t = Task<stackDepth, arg_t>;
+        using me_t = Task<stackDepth>;
+        using fct_t = void(*)(void*);
 
 	public:
 
 		TaskHandle_t taskHandle;
 		StaticTask_t task;
 		StackType_t stackBuffer[stackDepth];
-		arg_t arg;
-		std::function<void(arg_t)> handler;
-		std::string name;
 
 
 		// NO COPY
 		Task(Task const& other) = delete;
 		Task& operator= (Task const& other) = delete;
         
-        // NO MOVE
-        /*
-        Task(Task&& other) = delete;
-        Task& operator=(Task&& other) = delete;
-        */
-
-		// MOVE WAS ALLOWED
-		Task(Task<stackDepth, arg_t>&& other) : task{std::move(other.task) },
-			arg{std::move(other.arg) },
-			handler{std::move(other.handler)},
-			name{other.name} {
+        
+		// MOVE IS ALLOWED
+		Task(Task<stackDepth>&& other) : task{std::move(other.task) }{
                 
             std::copy(std::begin(other.stackBuffer), std::end(other.stackBuffer), std::begin(stackBuffer));
 			taskHandle = std::move(other.taskHandle);
 			other.taskHandle = 0;
-            
-            // PROBLEM : values captured by handler are invalidated
-            // SOLUTION : ?
 		}
 
 		Task& operator= (Task&& other) {
 			task = std::move(other.task);
 			std::copy(std::begin(other.stackBuffer), std::end(other.stackBuffer), std::begin(stackBuffer));
 			taskHandle = std::move(other.taskHandle);
-			name = std::move(other.name);
-            handler = std::move(other.handler);
 			other.taskHandle = 0;
 			return *this;
-            
-            // PROBLEM : values captured by handler are invalidated
-            // SOLUTION : ?
 		}
 		
 
 		// TASK CREATION : https://www.freertos.org/a00019.html
-		Task(std::function<void(arg_t)> _handler, std::string _name, UBaseType_t uxPriority, arg_t&& _arg = {}) :
-			task{}, stackBuffer{}, arg{std::forward<arg_t>(_arg)}, handler{_handler}, name{_name} {
+		Task(fct_t _handler, std::string _name, UBaseType_t uxPriority, void* _arg = {}) :
+			task{}, stackBuffer{} {
                 
-                // Trick : function ptr is a non-capturing lambda that takes its context as argument, equivalent to std::function
-			taskHandle = xTaskCreateStatic([](void* myself){
-                auto me = static_cast<me_t*>(myself);
-                me->handler(std::forward<arg_t>(me->arg)); // BUG : handler's captured data doesn't change when task is moved
-            }, name.c_str(), stackDepth, this, uxPriority, stackBuffer, &task);
+                // WAS BUGGY : handler fct was std::function, went out of scope at move. Now impossible with (non-owning) function ptr
+			taskHandle = xTaskCreateStatic(_handler, _name.c_str(), stackDepth, _arg, uxPriority, stackBuffer, &task); 
 			assert(taskHandle != 0);
 		}
 

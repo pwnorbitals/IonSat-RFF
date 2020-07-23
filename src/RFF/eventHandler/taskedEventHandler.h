@@ -9,12 +9,15 @@ namespace FFS {
 
         using me_t = TaskedEventHandler<event_t, stackDepth, maxParallelHandlers>;
 		using parent_t = EventHandler<event_t, me_t>;
-        using task_t = Task<stackDepth, Event<event_t>&&>;
+        using task_t = Task<stackDepth>;
 
 	protected:
 		// boost::container::static_vector<Task<event_t, stackDepth>, maxParallelHandlers> taskHandlers;
 		std::vector<task_t> taskHandlers; // TODO : switch to static_vector
 		Mutex taskHandlersProtector;
+        std::string name;
+        UBaseType_t prio;
+        Queue<Event<event_t>, maxParallelHandlers> waitingEvents;
 
 
 
@@ -34,9 +37,9 @@ namespace FFS {
             taskHandlersProtector = std::move(other.taskHandlersProtector);
         }
 
-		TaskedEventHandler(std::function<void(Event<event_t> const&)> _handlerFct, std::string _name, UBaseType_t _prio) :
-			parent_t{_handlerFct, _name, _prio},
-		taskHandlers{}, taskHandlersProtector{}
+		TaskedEventHandler(void(*_handlerFct)(Event<event_t>*), std::string _name, UBaseType_t _prio) :
+			parent_t{_handlerFct},
+		taskHandlers{}, taskHandlersProtector{}, name{_name}, prio{_prio}
 		{};
 
 
@@ -45,9 +48,11 @@ namespace FFS {
 
 			callCnt++; // Will overflow but is defined behaviour and should not cause problems (low collision probability)
                        // Also, name collision is no problem from the OS point of view (it's only for debugging)
+                       
+            waitingEvents.sendToBack(evt);
 
 			taskHandlersProtector.take();
-			taskHandlers.push_back(task_t {std::bind(&me_t::fullHandler, this, std::placeholders::_1), this->name + std::to_string(callCnt), this->prio, std::move(evt)});
+			taskHandlers.push_back(task_t {(void(*)(void*))&me_t::fullHandler, name + std::to_string(callCnt), prio, this});
 			// TODO : add bound checking
 			taskHandlersProtector.give();
 
@@ -57,14 +62,19 @@ namespace FFS {
 			return true;
 		}
 		
-		void fullHandler(Event<event_t>&& event) {
+		static void fullHandler(me_t* me) {
+            
+            Event<event_t> recvdEvent;
+            if(!me->waitingEvents.receive(recvdEvent, 0)) {
+                return;
+            }
 			
-            this->handlerFct(std::move(event));
+            me->handlerFct(&recvdEvent);
             
             
 			auto curHandle = task_t::currentHandle();
 			auto toErase = std::remove_if(
-			                   taskHandlers.begin(), taskHandlers.end(),
+			                   me->taskHandlers.begin(), me->taskHandlers.end(),
 			[curHandle](task_t const & task) {
 				return task.taskHandle == curHandle;
 			}
@@ -72,9 +82,9 @@ namespace FFS {
 
 			// Q : problem here ? task may be halted in the middle of the operation ?
 			// A : No problem, FreeRTOS doesn't destroy right away, adds to destroy list and IdleTask destroys later
-			taskHandlersProtector.take();
-			taskHandlers.erase(toErase, taskHandlers.end());
-			taskHandlersProtector.give();
+			me->taskHandlersProtector.take();
+			me->taskHandlers.erase(toErase, me->taskHandlers.end());
+			me->taskHandlersProtector.give();
 
 			FFS::suspendCurrentTask();
 		}

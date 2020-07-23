@@ -7,9 +7,9 @@ void ffs_main() {
 	using event_tags = std::tuple<FFS::Tag<MyCustomEventType>>;
 
 
-	auto handler = [](FFS::Event<MyCustomEventType> const & evt) {
-		std::cout << "ok : " << evt.data.eventNo << std::endl;
-		assert(evt.data.eventNo == 42);
+	auto handler = [](FFS::Event<MyCustomEventType>* evt) {
+		std::cout << "ok : " << evt->data.eventNo << std::endl;
+		assert(evt->data.eventNo == 42);
 		FFS::suspendCurrentTask();
 	};
 

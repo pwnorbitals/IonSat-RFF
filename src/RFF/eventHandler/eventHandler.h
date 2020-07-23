@@ -20,10 +20,7 @@ namespace FFS {
 	class EventHandler {
 	protected:
         
-        using handler_t = std::function<void(Event<event_t> const&)>;
-
-		std::string name;
-		UBaseType_t prio;
+        using handler_t = void(*)(Event<event_t>*);
 		handler_t handlerFct;
 
 
@@ -32,12 +29,28 @@ namespace FFS {
 		EventHandler() = delete;
 		EventHandler(EventHandler const& other) = delete;
 		EventHandler& operator= (EventHandler const& other) = delete;
-		EventHandler(EventHandler&& other) = default;
-		EventHandler& operator= (EventHandler&& other) = default;
-		~EventHandler() = default;
+		EventHandler(EventHandler&& other): handlerFct{std::move(other.handlerFct)}{
+            /*
+            objLock = {};
+            other.objLock.take();
+            
+            name = std::move(other.name);
+            prio = std::move(other.prio);
+            handlerFct = std::move(other.handlerFct);
+            
+            other.objLock.give();
+            */
+        }
+		EventHandler& operator= (EventHandler&& other) {
+           
+            handlerFct = std::move(other.handlerFct);
+        };
+		~EventHandler(){
+            
+        };
 
-		EventHandler(handler_t _handlerFct, std::string _name, UBaseType_t _prio) :
-			name{_name}, prio(_prio), handlerFct{_handlerFct}
+		EventHandler(handler_t _handlerFct) :
+			handlerFct{_handlerFct}
 		{ }
 
 		Derived* impl() { return static_cast<Derived*>(this); }

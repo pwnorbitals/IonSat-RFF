@@ -7,8 +7,8 @@
 void ffs_main() {
 	struct eventType { int myint; };
 
-	auto hdlr = [](FFS::Event<eventType> const & mydata) {
-		assert(mydata.data.myint == 8);
+	auto hdlr = [](FFS::Event<eventType>* mydata) {
+		assert(mydata->data.myint == 8);
 
 		FFS::OSStop();
 	};

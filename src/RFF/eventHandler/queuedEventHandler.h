@@ -14,7 +14,7 @@ namespace FFS {
 
 	protected:
 		Queue<Event<event_t>, maxParallelHandlers> eventsQueue;
-		Task<stackDepth, void*> handlerThread;
+		Task<stackDepth> handlerThread;
         Queue<me_t*, 1> moveQueue;
 
 
@@ -28,37 +28,35 @@ namespace FFS {
         QueuedEventHandler(me_t&& other) : 
             parent_t{std::move(other)}, 
             eventsQueue{std::move(other.eventsQueue)},
-            handlerThread{std::move(other.handlerThread)},
-            moveQueue{}
-            {
-                other.moveQueue.sendToBack(this);
-            }
+            handlerThread{std::move(other.handlerThread)}{ }
+            
+            
         me_t& operator=(me_t&& other) {
             parent_t::operator=(other);
             eventsQueue = std::move(other.eventsQueue);
             handlerThread = std::move(other.handlerThread);
-            moveQueue = {};
             
+            moveQueue = {};
             other.moveQueue.sendToBack(this);
         }
         
 
 
 
-		QueuedEventHandler(std::function<void (Event<event_t> const&) > _handlerFct, std::string _name, UBaseType_t _prio) :
-			parent_t{_handlerFct, _name, _prio},
+		QueuedEventHandler(void (*_handlerFct)(FFS::Event<event_t>*) , std::string _name, UBaseType_t _prio) :
+			parent_t{_handlerFct},
             eventsQueue{},
-            handlerThread{std::bind(&me_t::fullHandler, this, std::placeholders::_1), this->name, this->prio},
+            handlerThread{(void(*)(void*))&me_t::fullHandler, _name, _prio, this},
             moveQueue{}
 		{};
         
-        
-        void fullHandler (void*) { 
+        // static, will never go out of scope at a move
+        static void fullHandler (me_t** initial_me) { 
             // BUG : IMPLICITELY CAPTURES THIS WHEN MOVE HAPPENS, USES DELETED THIS
             // SOLUTION : ADAPT THIS
             
 			Event<event_t> recvdEvent{};
-            me_t* me = this;
+            me_t* me = *initial_me;
             me_t* destination;
             
             auto set = QueueSet<maxParallelHandlers+1>{};
@@ -70,13 +68,14 @@ namespace FFS {
                 auto Qhandle = set.select(portMAX_DELAY);
                 if(Qhandle == me->eventsQueue.handle()) {
                         me->eventsQueue.receive(recvdEvent, 0); 
-                        me->handlerFct(recvdEvent);
+                        me->handlerFct(&recvdEvent); // not owning the function, so no problem here
                 } else if(Qhandle ==  me->moveQueue.handle()) {
-                        
                         me->moveQueue.receive(destination, 0);
                         set.remove(me->eventsQueue);
                         set.remove(me->moveQueue);
+                        
                         me = destination;
+                        
                         set.add(me->eventsQueue);
                         set.add(me->moveQueue);
                 }

@@ -52,4 +52,37 @@ namespace FFS {
 			semaphoreHandle = xSemaphoreCreateMutexStatic(&semaphoreBuffer);
 		}
 	};
+    
+    class SemaphoreHolder {
+        Semaphore* ref;
+    public:
+        
+        SemaphoreHolder() : ref{} {};
+        
+        SemaphoreHolder(Semaphore& _ref) : ref{&_ref} {
+            ref->take();
+        };
+        
+        ~SemaphoreHolder() {
+            if(ref) {
+                ref->give();
+            }
+        }
+        
+        SemaphoreHolder(SemaphoreHolder const& other) = delete;
+        SemaphoreHolder& operator=(SemaphoreHolder const& other) = delete;
+        
+        SemaphoreHolder(SemaphoreHolder&& other) : ref{other.ref}{ 
+            if(other.ref) { other.ref->give(); }
+            other.ref = nullptr; 
+            
+        };
+        SemaphoreHolder& operator=(SemaphoreHolder&& other) {
+            if(ref) { ref->give(); } 
+            ref = other.ref; 
+            other.ref = nullptr; 
+            
+            return *this;
+        };
+    };
 }

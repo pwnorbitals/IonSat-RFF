@@ -14,18 +14,18 @@ void ffs_main() {
 	// using events = FFS::declare_events<myCustomEventType, MyOtherCustomEventType>
 
 
-	auto handler = [](FFS::Event<MyCustomEventType> const & evt) {
-		std::cout << "YAY ! got " << evt.data.eventNo << std::endl;
-		assert(evt.data.eventNo == 42);
+	void(*handler)(FFS::Event<MyCustomEventType>*) = [](FFS::Event<MyCustomEventType>* evt) {
+		std::cout << "YAY ! got " << evt->data.eventNo << std::endl;
+		assert(evt->data.eventNo == 42);
 
-		evt.controller->emit(MyOtherCustomEventType{true});
+		evt->controller->emit(MyOtherCustomEventType{true});
 	};
 
 
 
-	auto otherhandler = [](FFS::Event<MyOtherCustomEventType> const & evt) {
-		std::cout << "boom !! that's" << evt.data.sent << std::endl;
-		assert(evt.data.sent == true);
+	void(*otherhandler)(FFS::Event<MyOtherCustomEventType>*) = [](FFS::Event<MyOtherCustomEventType>* evt) {
+		std::cout << "boom !! that's" << evt->data.sent << std::endl;
+		assert(evt->data.sent == true);
 
 		FFS::OSStop();
 	};
