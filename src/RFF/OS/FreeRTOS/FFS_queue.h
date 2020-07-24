@@ -36,6 +36,8 @@ namespace FFS {
             std::copy(std::begin(other.storageBuffer), std::end(other.storageBuffer), std::begin(storageBuffer));
             queue = std::move(other.queue);
             other.queueHandle = 0;
+            
+            return *this;
         }
         
         QueueHandle_t const& handle() const {

@@ -27,22 +27,10 @@ namespace FFS {
 	public:
 
 		EventHandler() = delete;
-		EventHandler(EventHandler const& other) = delete;
-		EventHandler& operator= (EventHandler const& other) = delete;
-		EventHandler(EventHandler&& other): handlerFct{std::move(other.handlerFct)}{
-            /*
-            objLock = {};
-            other.objLock.take();
-            
-            name = std::move(other.name);
-            prio = std::move(other.prio);
-            handlerFct = std::move(other.handlerFct);
-            
-            other.objLock.give();
-            */
-        }
+		EventHandler(EventHandler const& other) : handlerFct{other.handlerFct}{};
+		EventHandler& operator= (EventHandler const& other){ handlerFct = other.handlerFct; return *this;}
+		EventHandler(EventHandler&& other): handlerFct{std::move(other.handlerFct)}{}
 		EventHandler& operator= (EventHandler&& other) {
-           
             handlerFct = std::move(other.handlerFct);
         };
 		~EventHandler(){

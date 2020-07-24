@@ -9,7 +9,7 @@
 #include <algorithm>
 
 namespace FFS {
-	template<uint32_t stackDepth>
+	template<uint32_t stackDepth = 0>
 	class Task {
         
         using me_t = Task<stackDepth>;
@@ -30,16 +30,18 @@ namespace FFS {
 		// MOVE IS ALLOWED
 		Task(Task<stackDepth>&& other) : task{std::move(other.task) }{
                 
-            std::copy(std::begin(other.stackBuffer), std::end(other.stackBuffer), std::begin(stackBuffer));
-			taskHandle = std::move(other.taskHandle);
+            taskHandle = std::move(other.taskHandle);
 			other.taskHandle = 0;
+            std::copy(std::begin(other.stackBuffer), std::end(other.stackBuffer), std::begin(stackBuffer));
+			
 		}
 
 		Task& operator= (Task&& other) {
 			task = std::move(other.task);
-			std::copy(std::begin(other.stackBuffer), std::end(other.stackBuffer), std::begin(stackBuffer));
-			taskHandle = std::move(other.taskHandle);
+            taskHandle = std::move(other.taskHandle);
 			other.taskHandle = 0;
+			std::copy(std::begin(other.stackBuffer), std::end(other.stackBuffer), std::begin(stackBuffer));
+			
 			return *this;
 		}
 		
@@ -52,6 +54,8 @@ namespace FFS {
 			taskHandle = xTaskCreateStatic(_handler, _name.c_str(), stackDepth, _arg, uxPriority, stackBuffer, &task); 
 			assert(taskHandle != 0);
 		}
+		
+		Task() : taskHandle{}, task{}, stackBuffer{} {};
 
 		~Task() {
 			if(taskHandle != 0) { // do not delete if moved from
@@ -73,14 +77,17 @@ namespace FFS {
 		}
 
 		UBaseType_t priority() {
+            assert(taskHandle != 0);
 			return uxTaskPriorityGet(taskHandle);
 		}
 
 		void priority(UBaseType_t uxNewPriority) {
+            assert(taskHandle != 0);
 			vTaskPrioritySet(taskHandle, uxNewPriority);
 		}
 
 		void suspend() {
+            assert(taskHandle != 0);
 			vTaskSuspend(taskHandle);
 		}
 
@@ -89,14 +96,17 @@ namespace FFS {
 		}
 
 		void resume() {
+            assert(taskHandle != 0);
 			vTaskResume(taskHandle);
 		}
 
 		BaseType_t resumeFromISR() {
+            assert(taskHandle != 0);
 			return xTaskResumeFromISR(taskHandle);
 		}
 
 		BaseType_t abortDelay() {
+            assert(taskHandle != 0);
 			return xTaskAbortDelay(taskHandle);
 		}
 

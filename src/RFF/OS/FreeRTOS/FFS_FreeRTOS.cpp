@@ -16,10 +16,13 @@ namespace FFS {
 	void OSStop() {
 		vTaskEndScheduler();
 	}
+	
+	FFS::Task<INIT_TASK_STACK> const& getInitTask(){ return initTask; }
 }
 
 int main() {
 	auto task = FFS::Task<1000000>(temp_main, "init", configMAX_PRIORITIES - 1);
+    //initTask = FFS::Task<1000000>(temp_main, "init", configMAX_PRIORITIES - 1);
 	FFS::OSStart();
 }
 
