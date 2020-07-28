@@ -16,8 +16,8 @@ void ffs_main() {
 
 
 
-	auto handlers = std::make_tuple(FFS::TaskedEventHandler<MyCustomEventType, 1000000, 64> {handler, "first", 1});
-	auto module = FFS::Module{std::move(handlers)};
+	auto handler1 = FFS::TaskedEventHandler<MyCustomEventType, 1000000, 64> {handler, "first", 1};
+	auto module = FFS::Module{handler1};
     
     auto ev = MyCustomEventType{42};
     auto full_ev = FFS::Event{ev};

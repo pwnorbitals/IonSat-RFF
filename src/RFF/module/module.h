@@ -13,13 +13,13 @@ namespace FFS {
         typedef Module<evtHandlers_t...> me_t;
         
 	protected:
-		std::tuple<evtHandlers_t...> evtHandlers;
+		std::tuple<evtHandlers_t* ...> evtHandlers;
 
 
 	public:
         
         Module() = delete;
-        Module(std::tuple<evtHandlers_t...>&& modules) : evtHandlers{std::move(modules)}{};
+        Module(evtHandlers_t& ... modules) : evtHandlers{std::make_tuple(&modules...)}{};
         Module(me_t const& other) = delete;
         me_t& operator=(me_t const& other) = delete;
         Module(me_t&& other) = default;
@@ -28,7 +28,7 @@ namespace FFS {
 		template<typename evt_t>
 		void callHandlers(evt_t const& event) {
 			std::apply([&](auto & ... eh) {    // lvalue reference argument because move would consume the event handlers
-				(..., eh(evt_t{event}));
+				(..., (*eh)(evt_t{event}));
 			}, evtHandlers);
 		}
 

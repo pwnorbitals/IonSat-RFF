@@ -25,20 +25,12 @@ namespace FFS {
             }
 		}
 		
+		// Non-copyable Non-movable because static FreeRTOS queues reference specific memory locations that can't be changed
+		// See https://www.freertos.org/xQueueCreateStatic.html
 		Queue(Queue<item_t, length> const& other) = delete;
         Queue& operator=(Queue<item_t, length> const& other) = delete;
-        Queue(Queue<item_t, length>&& other) : queueHandle{std::move(other.queueHandle)}, queue{std::move(other.queue)} {
-            std::copy(std::begin(other.storageBuffer), std::end(other.storageBuffer), std::begin(storageBuffer));
-            other.queueHandle = 0;
-        }
-        Queue& operator=(Queue<item_t, length>&& other) { 
-            queueHandle = std::move(other.queueHandle);
-            std::copy(std::begin(other.storageBuffer), std::end(other.storageBuffer), std::begin(storageBuffer));
-            queue = std::move(other.queue);
-            other.queueHandle = 0;
-            
-            return *this;
-        }
+        Queue(Queue<item_t, length>&& other) = delete;
+        Queue& operator=(Queue<item_t, length>&& other) = delete;
         
         QueueHandle_t const& handle() const {
             return queueHandle;

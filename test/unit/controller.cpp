@@ -16,9 +16,9 @@ void ffs_main() {
 
 
 
-	auto handlers = std::make_tuple(FFS::TaskedEventHandler<MyCustomEventType, 1000000, 64> {handler, "first", 1});
-	auto modules = std::make_tuple(FFS::Module{std::move(handlers)});
-	auto controller = FFS::Controller{FFS::OSSettings{}, std::make_tuple(FFS::Mode{"abc"}), std::move(modules), event_tags{}};
+	auto handler1 = FFS::TaskedEventHandler<MyCustomEventType, 1000000, 64> {handler, "first", 1};
+	auto module = FFS::Module{handler1};
+	auto controller = FFS::Controller{std::make_tuple(FFS::Mode{"abc"}), event_tags{}, module};
 
 	controller.emit(MyCustomEventType{42});
 	FFS::suspendCurrentTask();

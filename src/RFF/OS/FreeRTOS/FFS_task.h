@@ -22,28 +22,13 @@ namespace FFS {
 		StackType_t stackBuffer[stackDepth];
 
 
-		// NO COPY
+		// NO COPY AND NO MOVE, FREERTOS REFERENCES FIXED ADDRESSES WITHIN OBJECTS
 		Task(Task const& other) = delete;
 		Task& operator= (Task const& other) = delete;
+		Task(Task<stackDepth>&& other) = delete;
+		Task& operator= (Task&& other) = delete;
         
-        
-		// MOVE IS ALLOWED
-		Task(Task<stackDepth>&& other) : task{std::move(other.task) }{
-                
-            taskHandle = std::move(other.taskHandle);
-			other.taskHandle = 0;
-            std::copy(std::begin(other.stackBuffer), std::end(other.stackBuffer), std::begin(stackBuffer));
-			
-		}
-
-		Task& operator= (Task&& other) {
-			task = std::move(other.task);
-            taskHandle = std::move(other.taskHandle);
-			other.taskHandle = 0;
-			std::copy(std::begin(other.stackBuffer), std::end(other.stackBuffer), std::begin(stackBuffer));
-			
-			return *this;
-		}
+        bool operator==(Task const& other) { return other.taskHandle == this->taskHandle; }
 		
 
 		// TASK CREATION : https://www.freertos.org/a00019.html

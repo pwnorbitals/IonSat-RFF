@@ -2,6 +2,7 @@
 #pragma once
 
 #include "eventHandler.h"
+#include <list>
 
 namespace FFS {
 	template<typename event_t, uint32_t stackDepth, uint16_t maxParallelHandlers>
@@ -13,7 +14,7 @@ namespace FFS {
 
 	protected:
 		// boost::container::static_vector<Task<event_t, stackDepth>, maxParallelHandlers> taskHandlers;
-		std::vector<task_t> taskHandlers; // TODO : switch to static_vector
+		std::list<task_t> taskHandlers; // TODO : switch to static_vector
 		Mutex taskHandlersProtector;
         std::string name;
         UBaseType_t prio;
@@ -52,7 +53,7 @@ namespace FFS {
             waitingEvents.sendToBack(evt);
 
 			taskHandlersProtector.take();
-			taskHandlers.push_back(task_t {(void(*)(void*))&me_t::fullHandler, name + std::to_string(callCnt), prio, this});
+			taskHandlers.emplace_back((void(*)(void*))&me_t::fullHandler, name + std::to_string(callCnt), prio, this);
 			// TODO : add bound checking
 			taskHandlersProtector.give();
 
@@ -72,18 +73,16 @@ namespace FFS {
             me->handlerFct(&recvdEvent);
             
             
+            
 			auto curHandle = task_t::currentHandle();
-			auto toErase = std::remove_if(
-			                   me->taskHandlers.begin(), me->taskHandlers.end(),
-			[curHandle](task_t const & task) {
-				return task.taskHandle == curHandle;
-			}
-			               );
 
 			// Q : problem here ? task may be halted in the middle of the operation ?
 			// A : No problem, FreeRTOS doesn't destroy right away, adds to destroy list and IdleTask destroys later
 			me->taskHandlersProtector.take();
-			me->taskHandlers.erase(toErase, me->taskHandlers.end());
+			// me->taskHandlers.erase(toErase, me->taskHandlers.end());
+            me->taskHandlers.remove_if([&curHandle](task_t const& task) {
+				return task.taskHandle == curHandle;
+			});
 			me->taskHandlersProtector.give();
 
 			FFS::suspendCurrentTask();
