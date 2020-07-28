@@ -25,6 +25,8 @@ namespace FFS {
 
 
 	public:
+        
+        using evt_t = event_t;
 
 		EventHandler() = delete;
 		EventHandler(EventHandler const& other) : handlerFct{other.handlerFct}{};

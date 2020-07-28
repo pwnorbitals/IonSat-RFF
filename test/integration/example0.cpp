@@ -10,8 +10,6 @@ void ffs_main() {
 	struct MyCustomEventType { int eventNo; };
 	struct MyOtherCustomEventType { bool sent; };
 
-	using event_tags = std::tuple<FFS::Tag<MyCustomEventType>, FFS::Tag<MyOtherCustomEventType>>;
-
 
 	void(*handler)(FFS::Event<MyCustomEventType>*) = [](FFS::Event<MyCustomEventType>* evt) {
 		std::cout << "YAY ! got " << evt->data.eventNo << std::endl;
@@ -35,7 +33,7 @@ void ffs_main() {
     auto h2 = FFS::TaskedEventHandler<MyOtherCustomEventType, 100000, 64> {otherhandler, "second", 2};
     auto m1 = FFS::Module{h1, h2};
 
-	auto controller = FFS::Controller{std::make_tuple(FFS::Mode{"abc"}), event_tags{}, m1};
+	auto controller = FFS::Controller{std::make_tuple(FFS::Mode{"abc"}), m1};
 
 	controller.emit(MyCustomEventType{42});
 

@@ -7,17 +7,15 @@
 #include "FFS.h"
 
 namespace FFS {
-
+    
 	template <typename ...evtHandlers_t>
 	class Module {
         typedef Module<evtHandlers_t...> me_t;
         
-	protected:
+	public:
 		std::tuple<evtHandlers_t* ...> evtHandlers;
 
 
-	public:
-        
         Module() = delete;
         Module(evtHandlers_t& ... modules) : evtHandlers{std::make_tuple(&modules...)}{};
         Module(me_t const& other) = delete;
