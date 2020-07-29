@@ -36,7 +36,7 @@ namespace FFS {
 				// Switch to generalized lambda capture from https://stackoverflow.com/questions/8640393
 				auto f = [this, &any_ev, &_modules...](auto evtHandler) -> bool {
 					using EventType = typename std::remove_pointer<decltype(evtHandler)>::type ::evt_t;
-					if(any_ev.type() == typeid(EventType)) { // TODO : get rid RTTI
+					if(any_ev.type() == typeid(EventType)) { // TODO : get rid of RTTI
 						auto ev = std::any_cast<EventType> (any_ev); 
 						auto full_ev = FFS::Event<EventType> {ev, this};
 						((_modules.callHandlers(full_ev)), ...);
@@ -63,6 +63,7 @@ namespace FFS {
 			};
 		}
 
+		// TODO : make emit interrupt-safe
 		template<typename evt_t>
 		void emit(evt_t&& event) {
 			func(std::move(event));

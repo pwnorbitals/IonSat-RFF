@@ -50,16 +50,12 @@ namespace FFS {
 			callCnt++; // Will overflow but is defined behaviour and should not cause problems (low collision probability)
                        // Also, name collision is no problem from the OS point of view (it's only for debugging)
                        
-            waitingEvents.sendToBack(evt);
+            waitingEvents.sendToBackFromISR(evt);
 
 			taskHandlersProtector.take();
 			taskHandlers.emplace_back((void(*)(void*))&me_t::fullHandler, name + std::to_string(callCnt), prio, this);
-			// TODO : add bound checking
+			// TODO : add bound checking ?
 			taskHandlersProtector.give();
-
-			// TEST ONLY :
-			//fullHandler((void*)&evt);
-
 			return true;
 		}
 		

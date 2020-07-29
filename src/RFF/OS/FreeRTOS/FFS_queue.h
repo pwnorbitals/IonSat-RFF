@@ -48,7 +48,7 @@ namespace FFS {
 			return xQueueSendToBack(queueHandle, &pvItemToQueue, xTicksToWait);
 		}
 
-		BaseType_t sendToBackFromISR(item_t const& pvItemToQueue, BaseType_t* pxHigherPriorityTaskWoken) {
+		BaseType_t sendToBackFromISR(item_t const& pvItemToQueue, BaseType_t* pxHigherPriorityTaskWoken = nullptr) {
 			return xQueueSendToBackFromISR(queueHandle, &pvItemToQueue, pxHigherPriorityTaskWoken);
 		}
 

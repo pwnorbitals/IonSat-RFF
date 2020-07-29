@@ -62,7 +62,7 @@ namespace FFS {
         
         //TODO : move semantics for event handling
 		bool handleEvent(Event<event_t> const& evt) {
-			auto res = eventsQueue.sendToBack(evt, 0);
+			auto res = eventsQueue.sendToBackFromISR(evt);
             return res;
 		}
 	};
