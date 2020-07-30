@@ -9,8 +9,8 @@
 void ffs_main() {
 	struct eventType { int myint; };
 
-	void(*hdlr)(FFS::Event<eventType>*) = [](FFS::Event<eventType>* evt) {
-		assert(evt->data.myint == 8);
+	void(*hdlr)(eventType const&) = [](eventType const& evt) {
+		assert(evt.myint == 8);
 
 		/*
 		SECTION( "priority changes" ){
@@ -44,8 +44,8 @@ void ffs_main() {
 
 		FFS::OSStop();
 	};
-	auto evt = FFS::Event{eventType{8}};
-	auto task = FFS::Task<20000> {(void(*)(void*))hdlr, "test", 1, &evt};
+	auto evt = eventType{8};
+	auto task = FFS::Task<1, 20000> {(void(*)(void*))hdlr, "test", &evt};
 	FFS::suspendCurrentTask();
 
 }

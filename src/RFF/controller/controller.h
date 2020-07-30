@@ -15,8 +15,7 @@
 #include "unique_function.h"
 
 namespace FFS {
-
-	
+    	
 
 	class Controller {
 	protected:
@@ -38,8 +37,7 @@ namespace FFS {
 					using EventType = typename std::remove_pointer<decltype(evtHandler)>::type ::evt_t;
 					if(any_ev.type() == typeid(EventType)) { // TODO : get rid of RTTI
 						auto ev = std::any_cast<EventType> (any_ev); 
-						auto full_ev = FFS::Event<EventType> {ev, this};
-						((_modules.callHandlers(full_ev)), ...);
+						((_modules.callHandlers(ev)), ...);
 						return true;
 					}
 
@@ -69,4 +67,28 @@ namespace FFS {
 			func(std::move(event));
 		}
 	};
+    
+    
+    extern Controller* ctrlr;
+    
+    template<typename ...modules_t>
+    class Setup {
+        Controller myController;
+    public:
+        
+        Setup(std::tuple<FFS::Mode> _modes, modules_t& ..._modules) : myController{_modes, _modules...} {
+            assert(ctrlr == nullptr);
+            ctrlr = &myController;
+        }
+        ~Setup() = default;
+        Setup(Setup const& other) = delete;
+        Setup& operator=(Setup const& other) = delete;
+    };
+    
+    
+    template<typename evt_t>
+    void emit(evt_t&& event) {
+        assert(ctrlr != nullptr);
+        ctrlr->emit(std::move(event));
+    }
 }

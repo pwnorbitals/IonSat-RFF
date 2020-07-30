@@ -7,8 +7,8 @@
 void ffs_main() {
 	struct eventType { int myint; };
 
-	auto hdlr = [](FFS::Event<eventType>* mydata) {
-		assert(mydata->data.myint == 8);
+	auto hdlr = [](eventType const& mydata) {
+		assert(mydata.myint == 8);
         std::cout << "OK!" << std::endl;
 
 		FFS::OSStop();
@@ -16,10 +16,10 @@ void ffs_main() {
 
 
 
-	auto evt = FFS::Event{eventType{8}};
+	auto evt = eventType{8};
 
     
-    auto evtHandler = FFS::QueuedEventHandler<eventType, 1024, 64> {hdlr, "first", 1};
+    auto evtHandler = FFS::EventHandler<eventType, 1> {hdlr, "first"};
 	evtHandler(std::move(evt));
 	FFS::suspendCurrentTask();
 }

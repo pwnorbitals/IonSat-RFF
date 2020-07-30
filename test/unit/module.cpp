@@ -5,21 +5,20 @@
 void ffs_main() {
 	struct MyCustomEventType { int eventNo; };
 
-	void(*handler)(FFS::Event<MyCustomEventType>*) = [](FFS::Event<MyCustomEventType>* evt) {
-		std::cout << "ok : " << evt->data.eventNo << std::endl;
-		assert(evt->data.eventNo == 42);
+	void(*handler)(MyCustomEventType const&) = [](MyCustomEventType const& evt) {
+		std::cout << "ok : " << evt.eventNo << std::endl;
+		assert(evt.eventNo == 42);
 		FFS::suspendCurrentTask();
 	};
 
 
 
-	auto handler1 = FFS::TaskedEventHandler<MyCustomEventType, 1000000, 64> {handler, "first", 1};
+	auto handler1 = FFS::EventHandler<MyCustomEventType, 1, 64, 1000000> {handler, "first"};
 	auto module = FFS::Module{handler1};
     
     auto ev = MyCustomEventType{42};
-    auto full_ev = FFS::Event{ev};
     
-    module.callHandlers(full_ev);
+    module.callHandlers(ev);
     
 	FFS::suspendCurrentTask();
 }

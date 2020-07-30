@@ -5,10 +5,12 @@ extern void ffs_main();
 void temp_main(void*) {
 
 	ffs_main();
-	FFS::suspendCurrentTask(); // When initialization is done, suspend the task. Should never be necessary ...
+	FFS::suspendCurrentTask();
 }
 
 namespace FFS {
+    Controller* ctrlr = nullptr;
+    
 	void OSStart() {
 		vTaskStartScheduler();
 	}
@@ -21,8 +23,7 @@ namespace FFS {
 }
 
 int main() {
-	auto task = FFS::Task<1000000>(temp_main, "init", configMAX_PRIORITIES - 1);
-    //initTask = FFS::Task<1000000>(temp_main, "init", configMAX_PRIORITIES - 1);
+	auto task = FFS::Task<configMAX_PRIORITIES - 1>(temp_main, "init");
 	FFS::OSStart();
 }
 

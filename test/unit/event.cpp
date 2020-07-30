@@ -9,7 +9,7 @@ void ffs_main() {
 
 
 	auto start = std::clock();
-	auto evt = FFS::Event{eventType{8}};
+	auto evt = eventType{8};
 	/*
 	SECTION( "Construction" ){
 	    REQUIRE(evt.controller == NULL);

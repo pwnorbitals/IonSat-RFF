@@ -9,7 +9,7 @@
 #include <algorithm>
 
 namespace FFS {
-	template<uint32_t stackDepth = 0>
+	template<uint32_t prio = 0, uint32_t stackDepth = 2*configMINIMAL_STACK_SIZE>
 	class Task {
         
         using me_t = Task<stackDepth>;
@@ -32,12 +32,14 @@ namespace FFS {
 		
 
 		// TASK CREATION : https://www.freertos.org/a00019.html
-		Task(fct_t _handler, std::string _name, UBaseType_t uxPriority, void* _arg = {}) :
+		Task(fct_t _handler, std::string _name, void* _arg = {}) :
 			task{}, stackBuffer{} {
                 
                 // WAS BUGGY : handler fct was std::function, went out of scope at move. Now impossible with (non-owning) function ptr
-			taskHandle = xTaskCreateStatic(_handler, _name.c_str(), stackDepth, _arg, uxPriority, stackBuffer, &task); 
+			taskHandle = xTaskCreateStatic(_handler, _name.c_str(), stackDepth, _arg, prio, stackBuffer, &task); 
 			assert(taskHandle != 0);
+            static_assert(prio <= configMAX_PRIORITIES);
+            static_assert(stackDepth >= configMINIMAL_STACK_SIZE);
 		}
 		
 		Task() : taskHandle{}, task{}, stackBuffer{} {};

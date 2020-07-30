@@ -14,41 +14,62 @@
 
 namespace FFS {
 
-
-
-	template<typename event_t, typename Derived>
+    
+    template<typename event_t, uint16_t prio = 0, uint16_t queueLength = 16, uint32_t stackDepth = 2*configMINIMAL_STACK_SIZE>
 	class EventHandler {
-	protected:
-        
-        using handler_t = void(*)(Event<event_t>*);
-		handler_t handlerFct;
-
-
-	public:
-        
+    public:
+        using me_t =      EventHandler<event_t, prio, queueLength, stackDepth>;
+        using handler_t = void(*)(event_t const&);
         using evt_t = event_t;
+		
+		Queue<event_t, queueLength> eventsQueue;
+        Task<prio, stackDepth> handlerThread;
+        handler_t handlerFct;
+        
+        EventHandler() = delete;
+        ~EventHandler() = default;
+        EventHandler(me_t const& other) = delete;
+        me_t& operator=(me_t const& other) = delete;
+        EventHandler(me_t&& other) = delete;            
+        me_t& operator=(me_t&& other) = delete;
+        
 
-		EventHandler() = delete;
-		EventHandler(EventHandler const& other) : handlerFct{other.handlerFct}{};
-		EventHandler& operator= (EventHandler const& other){ handlerFct = other.handlerFct; return *this;}
-		EventHandler(EventHandler&& other): handlerFct{std::move(other.handlerFct)}{}
-		EventHandler& operator= (EventHandler&& other) {
-            handlerFct = std::move(other.handlerFct);
-        };
-		~EventHandler(){
+
+
+		EventHandler(handler_t _handlerFct , std::string _name) :
+            eventsQueue{},
+            handlerThread{(void(*)(void*))&me_t::fullHandler, _name, this},
+            handlerFct{_handlerFct}
+		{
             
         };
+        
+        static void fullHandler (me_t* initial_me) { 
+            
+            me_t* me = initial_me;
+			event_t recvdEvent{};
+            
+			while(true) {
+                
+                me->eventsQueue.receive(recvdEvent, portMAX_DELAY); 
+                me->handlerFct(recvdEvent); // not owning the function, so no problem here
 
-		EventHandler(handler_t _handlerFct) :
-			handlerFct{_handlerFct}
-		{ }
+                
+				
 
-		Derived* impl() { return static_cast<Derived*>(this); }
 
+			}
+		}
+        
+		bool handleEvent(event_t const& evt) {
+			auto res = eventsQueue.sendToBackFromISR(evt);
+            return res;
+		}
+		
 		template<typename evt_t>
-		bool operator()(Event<evt_t>&& evt) {
+		bool operator()(evt_t&& evt) {
 			if constexpr(std::is_same<evt_t, event_t>::value) {
-				return impl()->handleEvent(std::move(evt));
+				return handleEvent(std::move(evt));
 			}
 
 			return false;
@@ -56,6 +77,3 @@ namespace FFS {
 	};
 
 }
-
-#include "queuedEventHandler.h"
-#include "taskedEventHandler.h"

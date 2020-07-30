@@ -5,6 +5,5 @@
 #include "module/module.h"
 #include "controller/controller.h"
 #include "mode/mode.h"
-#include "event/event.h"
 #include "eventHandler/eventHandler.h"
 
