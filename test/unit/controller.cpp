@@ -1,22 +1,18 @@
 #include <iostream>
 #include "FFS.h"
 
+struct MyCustomEventType { int eventNo; };
+
+void handler(MyCustomEventType const& evt) {
+    assert(evt.eventNo == 42);
+    std::cout << "Ok" << std::endl;
+    FFS::OSStop();
+}
+
+FFS::EventHandler<MyCustomEventType, 1, 64, 100000> handler1{handler, "first"};
+FFS::Module module{handler1};
+FFS::Controller controller{std::make_tuple(FFS::Mode{"abc"}), module};
+
 void ffs_main() {
-	struct MyCustomEventType { int eventNo; };
-
-	auto handler = [](MyCustomEventType const& evt) {
-		std::cout << "ok : " << evt.eventNo << std::endl;
-		assert(evt.eventNo == 42);
-		FFS::suspendCurrentTask();
-	};
-
-
-
-
-	auto handler1 = FFS::EventHandler<MyCustomEventType, 1, 64, 100000> {handler, "first"};
-	auto module = FFS::Module{handler1};
-	auto controller = FFS::Controller{std::make_tuple(FFS::Mode{"abc"}), module};
-
 	controller.emit(MyCustomEventType{42});
-	FFS::suspendCurrentTask();
 }

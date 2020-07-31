@@ -5,6 +5,7 @@
 #include "FFS.h"
 #include <csignal>
 #include <cstdlib>
+#include <chrono> 
 
 
 struct MyCustomEventType { int eventNo; };
@@ -42,7 +43,13 @@ void randomHandler(RandomEvent const& evt) {
 
 void randomGenerator(void*) {
     std::srand(std::time(nullptr));
+    auto start = std::chrono::steady_clock::now();
     while(true) {
+        auto now =  std::chrono::steady_clock::now();
+        if(std::chrono::duration_cast<std::chrono::milliseconds>(now - start).count() > 5000) {
+            std::cout << "Ok" << std::endl;
+            FFS::OSStop();
+        }
         int random = std::rand();
         std::cout << "random> " << random << std::endl;
         FFS::emit(RandomEvent{random});
@@ -67,6 +74,5 @@ FFS::Task<1, 512> t1{randomGenerator, "randomGenerator"};
 void ffs_main() {
     signal(SIGINT, [](int signum) {FFS::emit(SignalEvent{signum});});
 	FFS::emit(MyCustomEventType{42});
-
 }
 

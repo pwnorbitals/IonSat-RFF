@@ -9,8 +9,7 @@ void ffs_main() {
 
 	auto hdlr = [](eventType const& mydata) {
 		assert(mydata.myint == 8);
-        std::cout << "OK!" << std::endl;
-
+        std::cout << "Ok" << std::endl;
 		FFS::OSStop();
 	};
 
