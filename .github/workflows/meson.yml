@@ -1,0 +1,35 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Meson Build
+      uses: BSFishy/meson-build@v1.0.1
+      with:
+        # The action to run
+        action: build
+        # The directory to build the project to
+        directory: build # default is build
+        # Additional options to pass to Meson during setup
+        setup-options: # optional, default is 
+        # Additional options to pass to Meson
+        options: # optional, default is 
+   
+    - name: Meson Test
+      uses: BSFishy/meson-build@v1.0.1
+      with:
+        # The action to run
+        action: test
+        # The directory to build the project to
+        directory: build # default is build
+        # Additional options to pass to Meson during setup
+        setup-options: # optional, default is 
+        # Additional options to pass to Meson
+        options: # optional, default is 
