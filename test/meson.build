@@ -1,8 +1,7 @@
 fs = import('fs')
 
-thread_dep = dependency('threads')
+# thread_dep = dependency('threads')
 freertos_dep = dependency('freertos', fallback:['freertos', 'freertos_dep'])
-boost_dep = dependency('boost')
 
 incdir += include_directories('.')
 
@@ -16,7 +15,7 @@ foreach sd : subdirs
     foreach tf : test_files
         name = tf.split('.')[0]
         file = files(sd+'/'+tf)
-        ut = executable(name+'_unit_test', source_files + file, include_directories : incdir, dependencies: [thread_dep, freertos_dep, boost_dep])
+        ut = executable(name+'_unit_test', source_files + file, include_directories : incdir, dependencies: [freertos_dep])
         test(name+' unit test', ut)
     endforeach
 endforeach

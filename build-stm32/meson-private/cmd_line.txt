@@ -1,0 +1,8 @@
+[options]
+freertos:port = GCC/ARM_CM3
+backend = ninja
+freertos:allocator = 
+
+[properties]
+cross_file = ['cross-compile/stm32.txt']
+

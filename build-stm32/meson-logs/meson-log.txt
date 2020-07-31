@@ -1,0 +1,86 @@
+Build started at 2020-07-31T16:53:48.015146
+Main binary: /usr/bin/python3
+Build Options: -Dfreertos:port=GCC/ARM_CM3 -Dbackend=ninja -Dfreertos:allocator=
+Python system: Linux
+The Meson build system
+Version: 0.53.2
+Source dir: /home/ubuntu/IonSat-RFF
+Build dir: /home/ubuntu/IonSat-RFF/build-stm32
+Build type: cross build
+Project name: FSW
+Project version: undefined
+C compiler for the build machine: cc (gcc 10.0.1 "cc (Ubuntu 10-20200411-0ubuntu1) 10.0.1 20200411 (experimental) [master revision bb87d5cc77d:75961caccb7:f883c46b4877f637e0fa5025b4d6b5c9040ec566]")
+C linker for the build machine: cc ld.bfd 2.34
+C++ compiler for the build machine: c++ (gcc 10.0.1 "c++ (Ubuntu 10-20200411-0ubuntu1) 10.0.1 20200411 (experimental) [master revision bb87d5cc77d:75961caccb7:f883c46b4877f637e0fa5025b4d6b5c9040ec566]")
+C++ linker for the build machine: c++ ld.bfd 2.34
+C compiler for the host machine: arm-none-eabi-gcc (gcc 9.2.1 "arm-none-eabi-gcc (15:9-2019-q4-0ubuntu1) 9.2.1 20191025 (release) [ARM/arm-9-branch revision 277599]")
+C linker for the host machine: arm-none-eabi-gcc ld.bfd 2.34-4ubuntu1
+C++ compiler for the host machine: arm-none-eabi-g++ (gcc 9.2.1 "arm-none-eabi-g++ (15:9-2019-q4-0ubuntu1) 9.2.1 20191025 (release) [ARM/arm-9-branch revision 277599]")
+C++ linker for the host machine: arm-none-eabi-g++ ld.bfd 2.34-4ubuntu1
+Build machine cpu family: x86_64
+Build machine cpu: x86_64
+Host machine cpu family: x86_64
+Host machine cpu: x64
+Target machine cpu family: arm
+Target machine cpu: cortex-m3
+Pkg-config binary for MachineChoice.HOST is not cached.
+Pkg-config binary missing from cross or native file, or env var undefined.
+Found Pkg-config: NO
+Pkg-config binary for machine MachineChoice.HOST not found. Giving up.
+CMake binary for MachineChoice.HOST is not cached
+CMake binary missing from cross or native file, or env var undefined.
+Found CMake: NO
+No CMake binary for machine MachineChoice.HOST not found. Giving up.
+Run-time dependency freertos found: NO (tried pkgconfig and cmake)
+Looking for a fallback subproject for the dependency freertos
+
+Executing subproject freertos method meson 
+
+Project name: FreeRTOS
+Project version: undefined
+C compiler for the build machine: cc (gcc 10.0.1 "cc (Ubuntu 10-20200411-0ubuntu1) 10.0.1 20200411 (experimental) [master revision bb87d5cc77d:75961caccb7:f883c46b4877f637e0fa5025b4d6b5c9040ec566]")
+C linker for the build machine: cc ld.bfd 2.34
+C compiler for the host machine: arm-none-eabi-gcc (gcc 9.2.1 "arm-none-eabi-gcc (15:9-2019-q4-0ubuntu1) 9.2.1 20191025 (release) [ARM/arm-9-branch revision 277599]")
+C linker for the host machine: arm-none-eabi-gcc ld.bfd 2.34-4ubuntu1
+Build targets in project: 0
+Subproject freertos finished.
+
+Dependency freertos from subproject subprojects/freertos found: YES undefined
+Adding test "controller unit test"
+Adding test "eventHandler unit test"
+Adding test "task unit test"
+Adding test "mode unit test"
+Adding test "module unit test"
+Adding test "example0 unit test"
+Build targets in project: 6
+
+FSW undefined
+
+  Subprojects
+    freertos: YES
+
+Found ninja-1.10.0 at /usr/bin/ninja
+Running compile:
+Working directory:  /tmp/tmpikprx3v4
+Command line:  arm-none-eabi-g++ /tmp/tmpikprx3v4/testfile.cpp -o /tmp/tmpikprx3v4/output.obj -pipe -D_FILE_OFFSET_BITS=64 -c -std=c++17 
+
+Code:
+ int i = static_cast<int>(0);
+Compiler stdout:
+ 
+Compiler stderr:
+ 
+Compiler accepts -std=c++17: YES
+Running compile:
+Working directory:  /home/ubuntu/IonSat-RFF/build-stm32/meson-private/tmpr5yd8ifs
+Command line:  arm-none-eabi-g++ /home/ubuntu/IonSat-RFF/build-stm32/meson-private/tmpr5yd8ifs/testfile.cpp -o /home/ubuntu/IonSat-RFF/build-stm32/meson-private/tmpr5yd8ifs/output.obj -pipe -c -D_FILE_OFFSET_BITS=64 -O0 -fpermissive --print-search-dirs 
+
+Code:
+ 
+Compiler stdout:
+ install: /usr/lib/gcc/arm-none-eabi/9.2.1/
+programs: =/usr/lib/gcc/arm-none-eabi/9.2.1/:/usr/lib/gcc/arm-none-eabi/9.2.1/:/usr/lib/gcc/arm-none-eabi/:/usr/lib/gcc/arm-none-eabi/9.2.1/:/usr/lib/gcc/arm-none-eabi/:/usr/lib/gcc/arm-none-eabi/9.2.1/../../../arm-none-eabi/bin/arm-none-eabi/9.2.1/:/usr/lib/gcc/arm-none-eabi/9.2.1/../../../arm-none-eabi/bin/
+libraries: =/usr/lib/gcc/arm-none-eabi/9.2.1/:/usr/lib/gcc/arm-none-eabi/9.2.1/../../../arm-none-eabi/lib/arm-none-eabi/9.2.1/:/usr/lib/gcc/arm-none-eabi/9.2.1/../../../arm-none-eabi/lib/
+
+Compiler stderr:
+ 
