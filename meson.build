@@ -5,5 +5,6 @@ project(
 )
 source_files=[]
 incdir=[]
+subdir('cross-compile')
 subdir('src')
 subdir('test')

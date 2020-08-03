@@ -1,2 +1,0 @@
-/home/ubuntu/IonSat-RFF/build-stm32/reconfigure/meson-private/cmake_freertos/CMakeFiles/rebuild_cache.dir
-/home/ubuntu/IonSat-RFF/build-stm32/reconfigure/meson-private/cmake_freertos/CMakeFiles/edit_cache.dir

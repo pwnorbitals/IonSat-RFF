@@ -37,3 +37,5 @@ build
 subprojects/*
 !subprojects/*.wrap
 *.kate-swp
+build*/
+

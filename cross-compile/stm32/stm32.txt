@@ -21,3 +21,7 @@ cpu_family = 'arm'
 cpu = 'cortex-m3'
 endian = 'little'
 
+[properties]
+cross_folder = 'stm32'
+linker_scripts = ['STM32F429ZITX_FLASH.ld', 'STM32F429ZITX_RAM.ld']
+startup_code = 'startup_stm32f429zitx.s'
