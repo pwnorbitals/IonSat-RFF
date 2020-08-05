@@ -4,8 +4,9 @@
 #include "task.h"
 #include "queue.h"
 #include "semphr.h"
+#include <cassert>
 
-#include <boost/container/static_vector.hpp>
+// #include <boost/container/static_vector.hpp>
 #include <algorithm>
 
 namespace FFS {

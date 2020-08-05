@@ -1,3 +1,3 @@
 #pragma once
 
-#define INIT_TASK_STACK 1000000
+#define INIT_TASK_STACK 4096

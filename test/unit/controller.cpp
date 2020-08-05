@@ -9,7 +9,7 @@ void handler(MyCustomEventType const& evt) {
     FFS::OSStop();
 }
 
-FFS::EventHandler<MyCustomEventType, 1, 64, 100000> handler1{handler, "first"};
+FFS::EventHandler<MyCustomEventType, 1, 8, 1024> handler1{handler, "first"};
 FFS::Module module{handler1};
 FFS::Controller controller{std::make_tuple(FFS::Mode{"abc"}), module};
 

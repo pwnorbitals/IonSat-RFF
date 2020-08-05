@@ -8,20 +8,12 @@ size = 'arm-none-eabi-size'
 
 [properties]
 needs_exe_wrapper = true
+cross_folder = 'stm32'
+linker_script = 'stm32f429.ld'
+linker_depend = ['cortex-m-generic.ld']
 
 [host_machine]
-system = 'linux'
-cpu_family = 'x86_64'
-cpu = 'x64'
-endian = 'little'
-
-[target_machine]
 system = 'bare-metal'
 cpu_family = 'arm'
-cpu = 'cortex-m3'
+cpu = 'cortex-m4'
 endian = 'little'
-
-[properties]
-cross_folder = 'stm32'
-linker_scripts = ['STM32F429ZITX_FLASH.ld', 'STM32F429ZITX_RAM.ld']
-startup_code = 'startup_stm32f429zitx.s'

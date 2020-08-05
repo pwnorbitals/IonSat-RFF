@@ -10,7 +10,7 @@ void handler(MyCustomEventType const& evt) {
     FFS::OSStop();
 }
 
-FFS::EventHandler<MyCustomEventType, 1, 64, 1000000> handler1{handler, "first"};
+FFS::EventHandler<MyCustomEventType, 1, 4, 1024> handler1{handler, "first"};
 FFS::Module module{handler1};
 
  MyCustomEventType ev{42};

@@ -1,5 +1,8 @@
 #include "FFS.h"
 
+#include <libopencm3/stm32/rcc.h>
+#include <libopencm3/stm32/gpio.h>
+
 extern void ffs_main();
 
 void temp_main(void*) {
@@ -23,6 +26,11 @@ namespace FFS {
 }
 
 int main() {
+    rcc_clock_setup_pll(&rcc_hse_8mhz_3v3[RCC_CLOCK_3V3_168MHZ]);
+	rcc_periph_clock_enable(RCC_GPIOG); /* Enable GPIOG clock. */
+    gpio_mode_setup(GPIOG, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO13 | GPIO14);
+    gpio_set(GPIOG, GPIO13);
+    
 	auto task = FFS::Task<configMAX_PRIORITIES - 1>(temp_main, "init");
 	FFS::OSStart();
 }
