@@ -1,11 +1,20 @@
+/*
+#define sv_call_handler vPortSVCHandler 
+#define pend_sv_handler xPortPendSVHandler 
+#define sys_tick_handler xPortSysTickHandler 
+*/
 #include "FFS.h"
 
 #include <libopencm3/stm32/rcc.h>
 #include <libopencm3/stm32/gpio.h>
+#include <libopencm3/cm3/systick.h>
+
+
 
 extern void ffs_main();
 
-void temp_main(void*) {
+
+void user_main(void*) {
 
 	ffs_main();
 	FFS::suspendCurrentTask();
@@ -25,17 +34,30 @@ namespace FFS {
 	FFS::Task<INIT_TASK_STACK> const& getInitTask(){ return initTask; }
 }
 
-int main() {
-    rcc_clock_setup_pll(&rcc_hse_8mhz_3v3[RCC_CLOCK_3V3_168MHZ]);
-	rcc_periph_clock_enable(RCC_GPIOG); /* Enable GPIOG clock. */
-    gpio_mode_setup(GPIOG, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO13 | GPIO14);
-    gpio_set(GPIOG, GPIO13);
-    
-	auto task = FFS::Task<configMAX_PRIORITIES - 1>(temp_main, "init");
-	FFS::OSStart();
-}
+
 
 extern "C" {
+    int main() {
+        rcc_clock_setup_pll(&rcc_hse_8mhz_3v3[RCC_CLOCK_3V3_168MHZ]);
+        rcc_periph_clock_enable(RCC_GPIOG); /* Enable GPIOG clock. */
+        gpio_mode_setup(GPIOG, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, GPIO13 | GPIO14);
+        gpio_set(GPIOG, GPIO13);
+        
+        auto task = FFS::Task<configMAX_PRIORITIES - 1>(user_main, "init");
+        FFS::OSStart();
+        
+        while(1);
+        
+        return 0;
+    }
+
+    void hard_fault_handler (void) {
+        gpio_set(GPIOG, GPIO14);
+        while(1){};
+    }
+    
+        
+
 	void vMainQueueSendPassed(void) {
 		/* This is just an example implementation of the "queue send" trace hook. */
 

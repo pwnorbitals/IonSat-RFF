@@ -48,6 +48,7 @@ SECTIONS
 		. = ALIGN(4);
 		*(.rodata*)	/* Read-only data */
 		. = ALIGN(4);
+		*(.eh_frame)
 	} >rom
 
 	/* C++ Static constructors/destructors, also used for __attribute__
@@ -98,9 +99,11 @@ SECTIONS
 	_data_loadaddr = LOADADDR(.data);
 
 	.bss : {
+        __bss_start__ = .;
 		*(.bss*)	/* Read-write zero initialized data */
 		*(COMMON)
 		. = ALIGN(4);
+		__bss_end__ = .;
 		_ebss = .;
 	} >ram
 

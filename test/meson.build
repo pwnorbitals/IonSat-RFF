@@ -1,6 +1,5 @@
 fs = import('fs')
 
-deps = []
 # thread_dep = dependency('threads')
 deps += dependency('freertos', fallback:['freertos', 'freertos_dep'])
 if meson.is_cross_build()

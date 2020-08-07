@@ -28,7 +28,8 @@ if cross_folder != ''
         linker_deps += meson.source_root()+'/cross-compile/'+cross_folder+'/'+ld
     endforeach
     
-    flags = ['-mcpu=cortex-m4',  '-mthumb', '-mno-thumb-interwork', '-mfpu=fpv4-sp-d16', '-mfloat-abi=hard', '-ffreestanding']
+    flags = ['-mcpu=cortex-m4',  '-mthumb', '-mno-thumb-interwork', '-mfpu=fpv4-sp-d16', '-mfloat-abi=hard', '-ffreestanding', '-fno-exceptions']
     comp_args += flags
+    comp_args += '-l,--whole-archive'
     link_args += flags
 endif

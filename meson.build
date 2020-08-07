@@ -8,7 +8,7 @@ if meson.is_cross_build()
     add_global_arguments('-DSTM32F4', language : ['c', 'cpp'])
 endif
 
-
+deps = []
 link_args = []
 comp_args = []
 source_files = []
