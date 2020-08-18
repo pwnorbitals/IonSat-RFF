@@ -1,20 +1,19 @@
 project(
   'FSW',
   ['c', 'cpp'],
-  default_options : ['cpp_std=c++17', 'c_std=c11', 'warning_level=3']
+  default_options : ['cpp_std=gnu++17', 'c_std=gnu11', 'warning_level=3']
 )
 
-if meson.is_cross_build()
-    add_global_arguments('-DSTM32F4', language : ['c', 'cpp'])
-endif
 
-
+deps = []
+minimal_deps = []
 link_args = []
 comp_args = []
 source_files = []
 incdir = []
 linker_deps = []
-incdir += include_directories('subprojects/libopencm3/include')
+
+
 subdir('cross-compile')
 subdir('src')
 subdir('test')
