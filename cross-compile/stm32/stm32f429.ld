@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
  * This file is part of the libopencm3 project.
  *
@@ -22,6 +23,8 @@
 /* Linker script for ST STM32F429IDISCOVERY (STM32F429ZI, 2048K flash, 256K RAM). */
 
 /* Define memory regions. */
+=======
+>>>>>>> 005f3fdcbea2cb47c28efeaf5ec7206355b3f60a
 MEMORY
 {
 	rom (rx) : ORIGIN = 0x08000000, LENGTH = 2048K

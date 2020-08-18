@@ -26,3 +26,7 @@ namespace FFS {
 
 
 }
+
+extern "C" {
+    void hard_fault_handler(void);
+}
