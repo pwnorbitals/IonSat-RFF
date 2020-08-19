@@ -14,7 +14,7 @@ foreach sd : subdirs
     
     foreach tf : test_files
         name = tf.split('.')[0]
-        file = files(meson.source_root()+'/test/'+sd+'/'+tf)
+        file = files(meson.current_source_dir()+'/'+sd+'/'+tf)
         ut = executable(
             name+'_'+sd+'_test', 
             source_files + file, 
