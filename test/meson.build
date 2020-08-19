@@ -8,14 +8,11 @@ incdir += include_directories('.')
 subdirs = ['unit', 'phys', 'integration', 'emul']
 test_master = files('test.cpp')
 
-message(link_args)
-message(comp_args)
-message(linker_deps)
 foreach sd : subdirs
     test_files = []
     subdir(sd)
-    '''
-   foreach tf : test_files
+    
+    foreach tf : test_files
         name = tf.split('.')[0]
         file = files(meson.source_root()+'/test/'+sd+'/'+tf)
         ut = executable(
@@ -30,7 +27,7 @@ foreach sd : subdirs
         )
         test(name+' unit test', ut)
     endforeach
-    '''
+    
     
 endforeach
 

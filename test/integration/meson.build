@@ -1,5 +1,6 @@
-test_files = ['example0.cpp', 'blink.cpp']
+test_files = []
 
+'''
 _tf = 'blink_standalone.cpp'
 _name = _tf.split('.')[0]
 _file = _tf
@@ -30,4 +31,4 @@ _ut = executable(
     link_depends: linker_deps
 )
 test(_name+' unit test', _ut)
-
+'''

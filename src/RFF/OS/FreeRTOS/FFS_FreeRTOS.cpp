@@ -40,7 +40,6 @@ extern "C" {
     }
 
     void hard_fault_handler (void) {
-        gpio_set(GPIOG, GPIO14);
         while(1){};
     }
     

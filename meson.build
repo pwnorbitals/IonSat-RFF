@@ -10,10 +10,10 @@ minimal_deps = []
 link_args = []
 comp_args = []
 source_files = []
+target_specific_sources = []
 incdir = []
 linker_deps = []
 
 
-subdir('cross-compile')
 subdir('src')
 subdir('test')
