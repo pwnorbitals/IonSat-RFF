@@ -17,7 +17,6 @@ namespace RFF {
     
 	void OSStart() {
 		vTaskStartScheduler();
-		exit(0);
 	}
 
 	void OSStop() {
@@ -32,8 +31,6 @@ extern "C" {
                 
         auto task = RFF::Task<configMAX_PRIORITIES - 1>(user_main, "init");
         RFF::OSStart();
-        
-        while(1);
         
         return 0;
     }
