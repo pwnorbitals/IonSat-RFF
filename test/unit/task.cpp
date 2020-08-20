@@ -10,7 +10,8 @@ struct eventType { int myint; };
 void hdlr(eventType* evt) {
     assert(evt->myint == 8);
     std::cout << "Ok" << std::endl;
-    RFF::OSStop();
+    // RFF::OSStop();
+    exit(0);
 }
 
 eventType evt{8};

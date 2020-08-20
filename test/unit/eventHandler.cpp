@@ -10,7 +10,8 @@ void rff_main() {
     auto hdlr = [](eventType const& mydata) {
         assert(mydata.myint == 8);
         std::cout << "Ok" << std::endl;
-        RFF::OSStop();
+        // RFF::OSStop();
+        exit(0);
     };
 
 
