@@ -5,7 +5,7 @@
 #include "queue.h"
 #include "semphr.h"
 
-namespace FFS {
+namespace RFF {
 // QUEUES : https://www.freertos.org/a00018.html
 
 	template<typename item_t, uint16_t length>

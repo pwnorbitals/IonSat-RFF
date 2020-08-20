@@ -10,23 +10,23 @@
 #include "mode/mode.h"
 #include "module/module.h"
 #include "OS/OS.h"
-#include "FFS.h"
+#include "RFF.h"
 
 #include "unique_function.h"
 
-namespace FFS {
+namespace RFF {
     	
 
 	class Controller {
 	protected:
-		std::tuple<FFS::Mode> modes;
+		std::tuple<RFF::Mode> modes;
 		unique_function<void (std::any) > func;
 
 
 	public:
 
 		template<typename ...modules_t>
-		Controller(std::tuple<FFS::Mode> _modes, modules_t& ..._modules) : modes{_modes} {
+		Controller(std::tuple<RFF::Mode> _modes, modules_t& ..._modules) : modes{_modes} {
 
 			// From : https://stackoverflow.com/questions/62652638
 			func = [this, &_modules...](std::any && any_ev) mutable {      // invoked _modules' copy constructor which tries to copy the event handlers and the Tasks inside => fail.
@@ -76,7 +76,7 @@ namespace FFS {
         Controller myController;
     public:
         
-        Setup(std::tuple<FFS::Mode> _modes, modules_t& ..._modules) : myController{_modes, _modules...} {
+        Setup(std::tuple<RFF::Mode> _modes, modules_t& ..._modules) : myController{_modes, _modules...} {
             assert(ctrlr == nullptr);
             ctrlr = &myController;
         }

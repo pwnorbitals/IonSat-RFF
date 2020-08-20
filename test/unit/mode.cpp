@@ -1,8 +1,8 @@
 
 #include <iostream>
-#include "FFS.h"
+#include "RFF.h"
 
-void ffs_main() {
+void rff_main() {
 	std::cout << "Ok" << std::endl;
 	assert(1 == 1);
 	exit(0);

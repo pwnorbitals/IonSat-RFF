@@ -3,18 +3,16 @@
 #define pend_sv_handler xPortPendSVHandler 
 #define sys_tick_handler xPortSysTickHandler 
 */
-#include "FFS.h"
+#include "RFF.h"
 
-extern void ffs_main();
-
+extern void rff_main();
 
 void user_main(void*) {
-
-	ffs_main();
-	FFS::suspendCurrentTask();
+	rff_main();
+	RFF::suspendCurrentTask();
 }
 
-namespace FFS {
+namespace RFF {
     Controller* ctrlr = nullptr;
     
 	void OSStart() {
@@ -25,14 +23,14 @@ namespace FFS {
 		vTaskEndScheduler();
 	}
 	
-	FFS::Task<INIT_TASK_STACK> const& getInitTask(){ return initTask; }
+	RFF::Task<INIT_TASK_STACK> const& getInitTask(){ return initTask; }
 }
 
 extern "C" {
     int main() {
                 
-        auto task = FFS::Task<configMAX_PRIORITIES - 1>(user_main, "init");
-        FFS::OSStart();
+        auto task = RFF::Task<configMAX_PRIORITIES - 1>(user_main, "init");
+        RFF::OSStart();
         
         while(1);
         

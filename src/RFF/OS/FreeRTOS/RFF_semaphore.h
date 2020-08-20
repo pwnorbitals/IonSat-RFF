@@ -1,6 +1,6 @@
 #pragma once
 
-namespace FFS {
+namespace RFF {
 	class Semaphore {
 	protected:
 		SemaphoreHandle_t semaphoreHandle;

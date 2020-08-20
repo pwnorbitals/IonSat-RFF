@@ -1,6 +1,6 @@
 #pragma once
 
-#include "FFS.h"
+#include "RFF.h"
 
 #include <functional>
 // #include <boost/container/static_vector.hpp>
@@ -9,10 +9,9 @@
 #include <vector>
 #include <algorithm>
 
-#include "lambda.h"
 #include "unique_function.h"
 
-namespace FFS {
+namespace RFF {
 
     
     template<typename event_t, uint16_t prio = 0, uint16_t queueLength = 16, uint32_t stackDepth = 2*configMINIMAL_STACK_SIZE>

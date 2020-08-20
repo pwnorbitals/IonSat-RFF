@@ -1,8 +1,8 @@
 #pragma once
 
-#include "FFS.h"
+#include "RFF.h"
 
-namespace FFS {
+namespace RFF {
 	class Mode {
 	protected:
 		std::string name;

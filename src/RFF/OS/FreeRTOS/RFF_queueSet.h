@@ -1,9 +1,9 @@
 #pragma once
 
 #include "FreeRTOS.h"
-#include "FFS.h"
+#include "RFF.h"
 
-namespace FFS {
+namespace RFF {
 // QUEUE SETS: https://www.freertos.org/RTOS-queue-sets.html
     
 	template<uint32_t fullLength>

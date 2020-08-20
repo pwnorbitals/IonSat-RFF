@@ -1,46 +1,47 @@
-#define FFS_TEST
+#define RFF_TEST
 
 #include <iostream>
-#include "FFS.h"
+#include "RFF.h"
 
 
-void ffs_main() {
-	struct eventType { int myint; };
+void rff_main() {
+    struct eventType { int myint; };
 
-	auto hdlr = [](eventType const& mydata) {
-		assert(mydata.myint == 8);
+    auto hdlr = [](eventType const& mydata) {
+        assert(mydata.myint == 8);
         std::cout << "Ok" << std::endl;
-		FFS::OSStop();
-	};
+        RFF::OSStop();
+    };
 
 
 
-	auto evt = eventType{8};
+    auto evt = eventType{8};
 
     
-    auto evtHandler = FFS::EventHandler<eventType, 1> {hdlr, "first"};
-	evtHandler(std::move(evt));
-	FFS::suspendCurrentTask();
+    auto evtHandler = RFF::EventHandler<eventType, 1> {hdlr, "first"};
+    evtHandler(std::move(evt));
+    RFF::suspendCurrentTask();
 }
+
 
 /*
 TEST_CASE( "Tasked event handler" , "[EventHandler]" ){
     struct eventType{ int myint; };
 
-    auto hdlr = [] (FFS::Event<eventType> const& mydata) {
+    auto hdlr = [] (RFF::Event<eventType> const& mydata) {
         REQUIRE(mydata.data.myint == 8);
 
-        FFS::OSStop();
+        RFF::OSStop();
     };
 
 
 
-    auto evt = FFS::Event{eventType{8}};
+    auto evt = RFF::Event{eventType{8}};
 
 
 
-    auto evtHandler = FFS::TaskedEventHandler<eventType, 1024, 64>{hdlr, "first", 1};
+    auto evtHandler = RFF::TaskedEventHandler<eventType, 1024, 64>{hdlr, "first", 1};
     evtHandler(evt);
-    FFS::OSStart();
+    RFF::OSStart();
 }
 */

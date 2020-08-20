@@ -9,7 +9,7 @@
 // #include <boost/container/static_vector.hpp>
 #include <algorithm>
 
-namespace FFS {
+namespace RFF {
 	template<uint32_t prio = 0, uint32_t stackDepth = 2*configMINIMAL_STACK_SIZE>
 	class Task {
         

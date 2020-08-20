@@ -1,22 +1,22 @@
 
-#define FFS_TEST
+#define RFF_TEST
 
 #include <iostream>
 #include <thread>
-#include "FFS.h"
+#include "RFF.h"
 
 struct eventType { int myint; };
 
 void hdlr(eventType* evt) {
     assert(evt->myint == 8);
     std::cout << "Ok" << std::endl;
-    FFS::OSStop();
+    RFF::OSStop();
 }
 
 eventType evt{8};
-FFS::Task<1, 20000> task{(void(*)(void*))hdlr, "test", &evt};
+RFF::Task<1, 20000> task{(void(*)(void*))hdlr, "test", &evt};
 
-void ffs_main() {
+void rff_main() {
 	
 
 }

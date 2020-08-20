@@ -5,7 +5,7 @@
 #include <string>
 #include <csignal>
 
-#include "FFS.h"
+#include "RFF.h"
 
 
 struct consoleEvent {
@@ -54,7 +54,7 @@ void cinFct(Queue<std::string>& recvQ, Queue<std::string>& sendQ) {
 template<typename ctrlr_t>
 class ConsoleModule{
 
-        ctrlr_t& FFS;
+        ctrlr_t& RFF;
         Queue<std::string> sendQ;
         Queue<std::string> recvQ;
         std::thread cinThread; // Simulates execution on external hardware
@@ -63,12 +63,12 @@ class ConsoleModule{
             void recvData(Queue<std::string>& q) {
                 auto recvd = q.Pop();
                 std::cout << "RECEIVED FROM THREAD : " << recvd << std::endl;
-                FFS.emit(consoleEvent{recvd});
+                RFF.emit(consoleEvent{recvd});
             }
 
             void sendData(Queue<std::string>& q, std::string s)  { q.Push(s); }
 
-            ConsoleModule(ctrlr_t& _FFS) : FFS{_FFS}, sendQ{}, recvQ{} {
+            ConsoleModule(ctrlr_t& _RFF) : RFF{_RFF}, sendQ{}, recvQ{} {
                 std::cout << "initializing module" << std::endl;
                 std::thread t([this]() { cinFct(recvQ, sendQ); });
                 cinThread = std::move(t);
@@ -94,20 +94,20 @@ void signalEvtHdlr (signalEvent evt) {
 
 int main() {
     std::cout << "test" << std::endl;
-    FFS::iotest();
+    RFF::iotest();
 
-    auto testMode = FFS::Mode{"test"};
+    auto testMode = RFF::Mode{"test"};
     auto modes = std::make_tuple(testMode);
 
 
-    auto consoleChan = FFS::make_chan<consoleEvent>(consoleEvtHdlr);
-    auto signalChan = FFS::make_chan<signalEvent>();
+    auto consoleChan = RFF::make_chan<consoleEvent>(consoleEvtHdlr);
+    auto signalChan = RFF::make_chan<signalEvent>();
     auto chans = std::make_tuple(consoleChan);
 
     // For non-static member function
     // std::bind(&module3::print, &m3, std::placeholders::_1)
 
-    auto controller = FFS::Controller{modes, chans};
+    auto controller = RFF::Controller{modes, chans};
     auto testModule = ConsoleModule{controller};
 
     controller.emit(consoleEvent{"testConsoleEventPleaseWork"});

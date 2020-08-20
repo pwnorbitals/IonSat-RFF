@@ -1,5 +1,5 @@
 incdir += include_directories('RFF')
-source_files += files('RFF/OS/FreeRTOS/FFS_FreeRTOS.cpp')
+source_files += files('RFF/OS/FreeRTOS/RFF_FreeRTOS.cpp')
 message('b')
 freertos = subproject('freertos')
 deps += freertos.get_variable('freertos_dep')

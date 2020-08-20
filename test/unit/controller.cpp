@@ -1,18 +1,18 @@
 #include <iostream>
-#include "FFS.h"
+#include "RFF.h"
 
 struct MyCustomEventType { int eventNo; };
 
 void handler(MyCustomEventType const& evt) {
     assert(evt.eventNo == 42);
     std::cout << "Ok" << std::endl;
-    FFS::OSStop();
+    RFF::OSStop();
 }
 
-FFS::EventHandler<MyCustomEventType, 1, 8, 1024> handler1{handler, "first"};
-FFS::Module module{handler1};
-FFS::Controller controller{std::make_tuple(FFS::Mode{"abc"}), module};
+RFF::EventHandler<MyCustomEventType, 1, 8, 1024> handler1{handler, "first"};
+RFF::Module module{handler1};
+RFF::Controller controller{std::make_tuple(RFF::Mode{"abc"}), module};
 
-void ffs_main() {
+void rff_main() {
 	controller.emit(MyCustomEventType{42});
 }

@@ -3,9 +3,9 @@
 #include <tuple>
 
 #include "eventHandler/eventHandler.h"
-#include "FFS.h"
+#include "RFF.h"
 
-namespace FFS {
+namespace RFF {
     
 	template <typename ...evtHandlers_t>
 	class Module {
