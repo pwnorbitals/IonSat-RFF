@@ -11,7 +11,7 @@ void handler(MyCustomEventType const& evt) {
 
 RFF::EventHandler<MyCustomEventType, 1, 8, 1024> handler1{handler, "first"};
 RFF::Module module{handler1};
-RFF::Controller controller{std::make_tuple(RFF::Mode{"abc"}), module};
+RFF::Controller controller{module};
 
 void rff_main() {
 	controller.emit(MyCustomEventType{42});

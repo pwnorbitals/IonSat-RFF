@@ -25,7 +25,7 @@ namespace RFF {
 	public:
 
 		template<typename ...modules_t>
-		Controller(modules_t& ..._modules) : {
+		Controller(modules_t& ..._modules) {
 
 			// From : https://stackoverflow.com/questions/62652638
 			func = [this, &_modules...](std::any && any_ev) mutable {      // invoked _modules' copy constructor which tries to copy the event handlers and the Tasks inside => fail.
