@@ -10,6 +10,10 @@
 #include <algorithm>
 
 #include "unique_function.h"
+#include "uuid.h"
+
+// From https://stackoverflow.com/questions/38696440
+#define NAME_OF( v ) #v
 
 namespace RFF {
 
@@ -35,7 +39,7 @@ namespace RFF {
 
 
 
-		EventHandler(handler_t _handlerFct , std::string _name) :
+		EventHandler(handler_t _handlerFct , std::string _name = uuid::generate_uuid_v4()) :
             eventsQueue{},
             handlerThread{(void(*)(void*))&me_t::fullHandler, _name, this},
             handlerFct{_handlerFct}

@@ -11,7 +11,8 @@ void printer(PrintMessage const& msg) {
     RFF::emit(ExitMessage{});
 }
 
-void exiter(ExitMessage const& msg) { RFF::OSStop() }
+// Event handler that quits the program
+void exiter(ExitMessage const& msg) { RFF::OSStop(); }
 
 // Define how the event handlers behave
 RFF::EventHandler<PrintMessage> printHandler{printer, "printer"};
