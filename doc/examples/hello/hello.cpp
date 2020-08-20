@@ -11,7 +11,7 @@ void printer(PrintMessage const& msg) {
     RFF::emit(ExitMessage{});
 }
 
-void exiter(ExitMessage const& msg) { exit(0); }
+void exiter(ExitMessage const& msg) { RFF::OSStop() }
 
 // Define how the event handlers behave
 RFF::EventHandler<PrintMessage> printHandler{printer, "printer"};
@@ -22,7 +22,7 @@ RFF::Module printModule{printHandler, exitHandler};
 RFF::Setup setup{printModule};
 
 // Entry point
-void RFF_main() {
+void rff_main() {
 	RFF::emit(PrintMessage{"Hello world !"}); // Send the event to print 
 }
 
