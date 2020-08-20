@@ -75,7 +75,7 @@ namespace RFF {
         Controller myController;
     public:
         
-        Setup(std::tuple<RFF::Mode> _modes, modules_t& ..._modules) : myController{_modes, _modules...} {
+        Setup(modules_t& ..._modules) : myController{_modules...} {
             assert(ctrlr == nullptr);
             ctrlr = &myController;
         }
