@@ -17,6 +17,7 @@ namespace RFF {
     
 	void OSStart() {
 		vTaskStartScheduler();
+		exit(0);
 	}
 
 	void OSStop() {

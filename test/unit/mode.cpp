@@ -5,5 +5,5 @@
 void rff_main() {
 	std::cout << "Ok" << std::endl;
 	assert(1 == 1);
-	exit(0);
+	RFF::OSStop();
 }
