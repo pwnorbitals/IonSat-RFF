@@ -6,7 +6,7 @@ fs = import('fs')
 incdir += include_directories('.')
 
 subdirs = ['unit', 'phys', 'integration', 'emul']
-test_master = files('test.cpp')
+# test_master = files('test.cpp')
 
 foreach sd : subdirs
     test_files = []
