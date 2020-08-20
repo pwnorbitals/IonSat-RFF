@@ -19,7 +19,7 @@ RFF::EventHandler<PrintMessage, 1, 16, 2048> exitHandler{exiter, "exiter"};
 
 // Group events in modules and setup RFF
 RFF::Module printModule{printHandler, exitHandler};
-RFF::Setup setup{{}, printModule};
+RFF::Setup setup{printModule};
 
 // Entry point
 void RFF_main() {

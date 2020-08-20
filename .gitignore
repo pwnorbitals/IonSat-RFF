@@ -39,3 +39,4 @@ subprojects/*
 *.kate-swp
 build*/
 
+**/subprojects/
