@@ -40,3 +40,4 @@ subprojects/*
 build*/
 
 **/subprojects/
+doc/reference/*

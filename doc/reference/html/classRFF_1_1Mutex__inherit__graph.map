@@ -1,4 +1,0 @@
-<map id="RFF::Mutex" name="RFF::Mutex">
-<area shape="rect" id="node1" title="Synchronization primitive for mutual exclusion (Special case of Semaphore)" alt="" coords="22,80,117,107"/>
-<area shape="rect" id="node2" href="$classRFF_1_1Semaphore.html" title="Synchronization primitive for concurrent ressource access." alt="" coords="5,5,133,32"/>
-</map>
