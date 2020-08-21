@@ -13,12 +13,11 @@
 #include "uuid.h"
 
 // From https://stackoverflow.com/questions/38696440
-#define NAME_OF( v ) #v
 
 namespace RFF {
 
     /**
-        \brief Handles an event 
+        \brief Handles a series of same-type events
     */
     template<typename event_t, uint16_t prio = 0, uint16_t queueLength = 16, uint32_t stackDepth = 2*configMINIMAL_STACK_SIZE>
 	class EventHandler {

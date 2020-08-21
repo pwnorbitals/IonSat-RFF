@@ -1,4 +1,4 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
 <area shape="rect" id="node1" href="$classRFF_1_1Semaphore.html" title="Synchronization primitive for concurrent ressource access." alt="" coords="5,5,133,32"/>
-<area shape="rect" id="node2" href="$classRFF_1_1Mutex.html" title=" " alt="" coords="181,5,276,32"/>
+<area shape="rect" id="node2" href="$classRFF_1_1Mutex.html" title="Synchronization primitive for mutual exclusion (Special case of Semaphore)" alt="" coords="181,5,276,32"/>
 </map>

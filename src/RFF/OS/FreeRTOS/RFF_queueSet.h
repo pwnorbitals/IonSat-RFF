@@ -7,8 +7,9 @@ namespace RFF {
 
     /**
         \brief Group of queues
-        https://www.freertos.org/RTOS-queue-sets.html
+        
     */
+    // QUEUE SETS : https://www.freertos.org/RTOS-queue-sets.html
 	template<uint32_t fullLength>
 	class QueueSet {
         using me_t = QueueSet<fullLength>;

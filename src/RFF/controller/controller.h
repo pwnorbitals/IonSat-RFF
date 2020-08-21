@@ -22,7 +22,8 @@ namespace RFF {
 	*/
 	class Controller {
 	protected:
-		unique_function<void (std::any) > func;
+		unique_function<void (std::any) > emitter;
+		unsigned int failCount;
 
 
 	public:
@@ -31,11 +32,11 @@ namespace RFF {
 		Controller(modules_t& ..._modules) {
 
 			// From : https://stackoverflow.com/questions/62652638
-			func = [this, &_modules...](std::any && any_ev) mutable {      // invoked _modules' copy constructor which tries to copy the event handlers and the Tasks inside => fail.
+			emitter = [this, &_modules...](std::any && any_ev) mutable {      // invoked _modules' copy constructor which tries to copy the event handlers and the Tasks inside => fail.
 				auto success = false;
 
 				// Switch to generalized lambda capture from https://stackoverflow.com/questions/8640393
-				auto f = [this, &any_ev, &_modules...](auto evtHandler) -> bool {
+				auto dispatcher = [this, &any_ev, &_modules...](auto evtHandler) -> bool {
 					using EventType = typename std::remove_pointer<decltype(evtHandler)>::type ::evt_t;
 					if(any_ev.type() == typeid(EventType)) { // TODO : get rid of RTTI
 						auto ev = std::any_cast<EventType> (any_ev); 
@@ -48,33 +49,31 @@ namespace RFF {
 				};
                 
                  ((
-                     std::apply([&f, &success](auto& ...h){
-                         if((f(h) || ...)){
+                     std::apply([&dispatcher, &success](auto& ...handler){
+                         if((dispatcher(handler) || ...)){
                              success = true;
                         }
                     }, _modules.evtHandlers)
                 ), ...);
+
+				if(!success) { failCount++; }
                     
-				/*
-				if(!success) {
-					std::cout << "no match :( " << std::endl;
-				} else {
-					std::cout << "matched" << std::endl;
-				}
-				*/
 			};
 		}
 
 		// TODO : make emit interrupt-safe
 		template<typename evt_t>
 		void emit(evt_t&& event) {
-			func(std::move(event));
+			emitter(std::move(event));
 		}
 	};
     
     
     extern Controller* ctrlr;
     
+	/**
+		\brief RFF Setup handler object
+	*/
     template<typename ...modules_t>
     class Setup {
         Controller myController;

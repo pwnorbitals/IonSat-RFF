@@ -50,6 +50,11 @@ namespace RFF {
 
 	};
 
+	/**
+		\brief Synchronization primitive for mutual exclusion (Special case of Semaphore)
+
+		
+	*/
 	class Mutex : public Semaphore {
 	public:
 		Mutex() {
