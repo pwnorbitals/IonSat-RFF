@@ -17,7 +17,9 @@
 
 namespace RFF {
 
-    
+    /**
+        \brief Handles an event 
+    */
     template<typename event_t, uint16_t prio = 0, uint16_t queueLength = 16, uint32_t stackDepth = 2*configMINIMAL_STACK_SIZE>
 	class EventHandler {
     public:
@@ -37,8 +39,6 @@ namespace RFF {
         me_t& operator=(me_t&& other) = delete;
         
 
-
-
 		EventHandler(handler_t _handlerFct , std::string _name = uuid::generate_uuid_v4()) :
             eventsQueue{},
             handlerThread{(void(*)(void*))&me_t::fullHandler, _name, this},
@@ -56,10 +56,6 @@ namespace RFF {
                 
                 me->eventsQueue.receive(recvdEvent, portMAX_DELAY); 
                 me->handlerFct(recvdEvent); // not owning the function, so no problem here
-
-                
-				
-
 
 			}
 		}

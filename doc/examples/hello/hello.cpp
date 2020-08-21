@@ -8,18 +8,14 @@ struct ExitMessage {};
 // Event handler that prints stuff to screen
 void printer(PrintMessage const& msg) {
     std::cout << msg.message << std::endl;
-    RFF::emit(ExitMessage{});
+    RFF::OSStop();
 }
 
-// Event handler that quits the program
-void exiter(ExitMessage const& msg) { RFF::OSStop(); }
-
-// Define how the event handlers behave
-RFF::EventHandler<PrintMessage> printHandler{printer, "printer"};
-RFF::EventHandler<ExitMessage> exitHandler{exiter, "exiter"};
+// Define how the event handler behaves
+RFF::EventHandler<PrintMessage> printHandler{printer};
 
 // Group events in modules and setup RFF
-RFF::Module printModule{printHandler, exitHandler};
+RFF::Module printModule{printHandler};
 RFF::Setup setup{printModule};
 
 // Entry point

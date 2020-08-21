@@ -10,6 +10,10 @@
 #include <algorithm>
 
 namespace RFF {
+
+	/*
+		\brief Thread implementation
+	*/
 	template<uint32_t prio = 0, uint32_t stackDepth = 2*configMINIMAL_STACK_SIZE>
 	class Task {
         

@@ -2,6 +2,9 @@
 #define UNIQUE_FCT_H
 
 
+/**
+	\brief Move-only std::function implementation. Internal use only
+*/
 // From : https://stackoverflow.com/questions/25330716
 template<typename T>
 class unique_function : public std::function<T> {

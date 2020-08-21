@@ -4,8 +4,11 @@
 #include "RFF.h"
 
 namespace RFF {
-// QUEUE SETS: https://www.freertos.org/RTOS-queue-sets.html
-    
+
+    /**
+        \brief Group of queues
+        https://www.freertos.org/RTOS-queue-sets.html
+    */
 	template<uint32_t fullLength>
 	class QueueSet {
         using me_t = QueueSet<fullLength>;

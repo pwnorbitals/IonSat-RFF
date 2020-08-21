@@ -1,6 +1,6 @@
 #pragma once
 
-#if RFF_OS == FREERTOS
+#ifdef RFF_OS_FREERTOS
 #include "FreeRTOS.h"
 #include "FreeRTOS/RFF_FreeRTOS.h"
 #else

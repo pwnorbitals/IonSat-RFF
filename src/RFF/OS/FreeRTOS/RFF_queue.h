@@ -6,8 +6,10 @@
 #include "semphr.h"
 
 namespace RFF {
-// QUEUES : https://www.freertos.org/a00018.html
-
+	/**
+		\brief First-in First-out (FIFO) data structure for inter-process data exchange
+	*/
+	// QUEUES : https://www.freertos.org/a00018.html
 	template<typename item_t, uint16_t length>
 	class Queue {
 		QueueHandle_t queueHandle;

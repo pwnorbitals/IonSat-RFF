@@ -7,6 +7,9 @@
 
 namespace RFF {
     
+	/**
+		\brief Groups event handlers and dispatches events
+	*/
 	template <typename ...evtHandlers_t>
 	class Module {
         typedef Module<evtHandlers_t...> me_t;

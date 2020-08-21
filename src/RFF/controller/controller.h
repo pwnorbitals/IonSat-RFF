@@ -7,7 +7,6 @@
 #include <type_traits>
 #include <any>
 
-#include "mode/mode.h"
 #include "module/module.h"
 #include "OS/OS.h"
 #include "RFF.h"
@@ -16,7 +15,11 @@
 
 namespace RFF {
     	
+	
+	/**
+		\brief Controls the event flow
 
+	*/
 	class Controller {
 	protected:
 		unique_function<void (std::any) > func;

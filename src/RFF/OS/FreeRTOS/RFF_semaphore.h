@@ -1,6 +1,10 @@
 #pragma once
 
 namespace RFF {
+
+	/**
+		\brief Synchronization primitive for concurrent ressource access
+	*/
 	class Semaphore {
 	protected:
 		SemaphoreHandle_t semaphoreHandle;
@@ -53,6 +57,9 @@ namespace RFF {
 		}
 	};
     
+	/**
+		\brief RAII container for holding Semaphores
+	*/
     class SemaphoreHolder {
         Semaphore* ref;
     public:

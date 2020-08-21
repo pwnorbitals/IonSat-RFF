@@ -14,10 +14,6 @@ void RFF_main(void* empty);
 
 namespace RFF {
 
-	struct OSSettings {
-
-	};
-
 	void OSStart();
 	void OSStop();
     
