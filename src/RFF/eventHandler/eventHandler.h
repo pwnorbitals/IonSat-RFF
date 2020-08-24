@@ -49,7 +49,7 @@ namespace RFF {
         static void fullHandler (me_t* initial_me) { 
             
             me_t* me = initial_me;
-			event_t recvdEvent{};
+			event_t recvdEvent;
             
 			while(true) {
                 
