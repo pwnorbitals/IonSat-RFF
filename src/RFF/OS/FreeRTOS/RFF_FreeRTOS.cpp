@@ -5,7 +5,7 @@
 */
 #include "RFF.h"
 
-extern void rff_main();
+extern void rff_main(); // TODO : compile-time presence check, ignore if not defined
 
 void user_main(void*) {
 	rff_main();

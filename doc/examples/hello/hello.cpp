@@ -3,7 +3,6 @@
 
 // Event we handle when we want to print something to screen
 struct PrintMessage { std::string message; };
-struct ExitMessage {};
 
 // Event handler that prints stuff to screen
 void printer(PrintMessage const& msg) {

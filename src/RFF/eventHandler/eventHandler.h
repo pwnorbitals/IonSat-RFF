@@ -49,12 +49,12 @@ namespace RFF {
         static void fullHandler (me_t* initial_me) { 
             
             me_t* me = initial_me;
-			event_t recvdEvent;
+			std::optional<event_t> recvdEvent;
             
 			while(true) {
                 
-                me->eventsQueue.receive(recvdEvent, portMAX_DELAY); 
-                me->handlerFct(recvdEvent); // not owning the function, so no problem here
+                me->eventsQueue.receive(recvdEvent.value(), portMAX_DELAY); 
+                me->handlerFct(recvdEvent.value()); // not owning the function, so no problem here
 
 			}
 		}
