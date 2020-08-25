@@ -63,13 +63,18 @@ namespace RFF {
 			return xQueueSendToFrontFromISR(queueHandle, &pvItemToQueue, pxHigherPriorityTaskWoken);
 		}
 
-
-		BaseType_t receive(item_t& pvBuffer, TickType_t xTicksToWait = 0) {
+		template<typename receive_type>
+		BaseType_t receive(receive_type& pvBuffer, TickType_t xTicksToWait = 0) {
+			static_assert(sizeof(receive_type) == sizeof(item_t), "Received types must be the same size");
+			static_assert(std::is_trivially_copyable_v<item_t>, "Received types must be trivially copyable");
 			return xQueueReceive(queueHandle, &pvBuffer, xTicksToWait);
 		}
 
-		BaseType_t receiveFromISR(item_t* pvBuffer, BaseType_t* pxHigherPriorityTaskWoken) {
-			return xQueueReceiveFromISR(queueHandle, pvBuffer, pxHigherPriorityTaskWoken);
+		template<typename receive_type>
+		BaseType_t receiveFromISR(receive_type& pvBuffer, BaseType_t* pxHigherPriorityTaskWoken) {
+			static_assert(sizeof(receive_type) == sizeof(item_t), "Received types must be the same size");
+			static_assert(std::is_trivially_copyable_v<item_t>, "Received types must be trivially copyable");
+			return xQueueReceiveFromISR(queueHandle, &pvBuffer, pxHigherPriorityTaskWoken);
 		}
 
 		UBaseType_t messagesWaiting() {
@@ -104,13 +109,18 @@ namespace RFF {
 			return xQueueOverwriteFromISR(queueHandle, &pvItemToQueue, pxHigherPriorityTaskWoken);
 		}
 
-
-		BaseType_t peek(item_t* pvBuffer, TickType_t xTicksToWait = 0) {
-			return xQueuePeek(queueHandle, pvBuffer, xTicksToWait);
+		template<typename receive_type>
+		BaseType_t peek(receive_type& pvBuffer, TickType_t xTicksToWait = 0) {
+			static_assert(sizeof(receive_type) == sizeof(item_t), "Received types must be the same size");
+			static_assert(std::is_trivially_copyable_v<item_t>, "Received types must be trivially copyable");
+			return xQueuePeek(queueHandle, &pvBuffer, xTicksToWait);
 		}
 
-		BaseType_t peekFromISR(item_t* pvBuffer) {
-			return xQueuePeekFromISR(queueHandle, pvBuffer);
+		template<typename receive_type>
+		BaseType_t peekFromISR(receive_type& pvBuffer) {
+			static_assert(sizeof(receive_type) == sizeof(item_t), "Received types must be the same size");
+			static_assert(std::is_trivially_copyable_v<item_t>, "Received types must be trivially copyable");
+			return xQueuePeekFromISR(queueHandle, &pvBuffer);
 		}
 
 

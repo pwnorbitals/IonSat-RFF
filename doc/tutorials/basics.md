@@ -72,7 +72,7 @@ project('project-name', ['c', 'cpp'], default_options : ['cpp_std=c++17', 'c_std
 RFF = subproject('RFF')
 RFF_dep = RFF.get_variable('rff_dep')
 
-executable('my-executable', files('main.cpp'), dependencies: RFF_dep)
+exec_obc = executable('my-executable', files('main.cpp'), dependencies: RFF_dep)
 ``` 
 If needed, you can refer to the Meson documentation to get a better overview of the features of `meson.build` files.
 
@@ -91,10 +91,27 @@ To run the binary, you can use this command from your build directory
 
 ## Running RFF tests
 
-in the build directory :
+Move to the RFF subproject directory :
+```
+cd subprojects/RFF
+```
+Create a build directory :
+```
+meson build
+cd build
+```
+Run the tests :
 
 ``` 
 meson test
 ```
 
 ## Writing tests for your application
+
+When redacting your `meson.build` file, create your test executable then declare your tests as :
+```
+test_exec_obj('my-test', files('test.cpp'), dependencies: RFF_dep)
+test('my very cool test', test_exec_obj)
+```
+
+The Catch2 test framework will soon be supported !

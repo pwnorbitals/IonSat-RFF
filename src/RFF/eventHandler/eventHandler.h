@@ -19,7 +19,7 @@ namespace RFF {
     /**
         \brief Handles a series of same-type events
     */
-    template<typename event_t, uint16_t prio = 0, uint16_t queueLength = 16, uint32_t stackDepth = 2*configMINIMAL_STACK_SIZE>
+    template<typename event_t, uint16_t prio = 0, uint16_t queueLength = 16, uint32_t stackDepth = 2*configMINIMAL_STACK_SIZE, typename = std::enable_if<std::is_trivially_copyable_v<event_t>>>
 	class EventHandler {
     public:
         using me_t =      EventHandler<event_t, prio, queueLength, stackDepth>;
@@ -49,13 +49,13 @@ namespace RFF {
         static void fullHandler (me_t* initial_me) { 
             
             me_t* me = initial_me;
-			std::optional<event_t> recvdEvent;
-            
-			while(true) {
-                
-                me->eventsQueue.receive(recvdEvent.value(), portMAX_DELAY); 
-                me->handlerFct(recvdEvent.value()); // not owning the function, so no problem here
+            std::aligned_storage_t<sizeof(event_t), alignof(event_t)> recvdEvent;
 
+
+			while(true) {
+                me->eventsQueue.receive(recvdEvent, portMAX_DELAY); 
+                me->handlerFct((event_t&)recvdEvent); // not owning the function, so no problem here
+                                                      // TODO : Check the cast isn't UB
 			}
 		}
         
