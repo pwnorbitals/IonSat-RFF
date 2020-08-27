@@ -2,6 +2,8 @@
 
 #include <tuple>
 
+#include "ctti/type_id.hpp"
+
 #include "eventHandler/eventHandler.h"
 #include "RFF.h"
 
@@ -25,10 +27,15 @@ namespace RFF {
         Module(me_t&& other) = default;
         me_t& operator=(me_t&& other) = default;
 
-		template<typename evt_t>
-		void callHandlers(evt_t const& event) {
+		void callHandlers(void* event, ctti::type_id_t type) {
 			std::apply([&](auto & ... eh) {    // lvalue reference argument because move would consume the event handlers
-				(..., (*eh)(evt_t{event}));
+				([&]{
+					using curtype = typename decltype(*eh)::evt_t;
+					if constexpr(type == ctti::type_id<curtype>()) { 
+						(*eh)(curtype{*event});
+					}
+				}(), ...);
+				
 			}, evtHandlers);
 		}
 

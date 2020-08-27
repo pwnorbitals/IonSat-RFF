@@ -1,20 +1,35 @@
 
 #include <iostream>
 #include "RFF.h"
+#include "ctti/type_id.hpp"
 
-struct MyCustomEventType { int eventNo; };
+template<typename T>
+struct handlerStub {
+    using evt_t = T;
+    RFF::Mutex& m;
 
-void handler(MyCustomEventType const& evt) {
-    assert(evt.eventNo == 42);
-    std::cout << "Ok" << std::endl;
-    RFF::OSStop();
-}
+    handlerStub(RFF::Mutex& _m) : m{_m}{
+        m.take();
+    }
 
-RFF::EventHandler<MyCustomEventType, 1, 4, 1024> handler1{handler, "first"};
-RFF::Module module{handler1};
+    void callHandlers(void* event, ctti::type_id_t type) { 
+        // TODO : asserts
+        m.give();
+    }
 
- MyCustomEventType ev{42};
+};
+
+RFF::Mutex checker1{}; 
+RFF::Mutex checker2{};
+
+handlerStub<int> h1{checker1};
+handlerStub<float> h2{checker2};
+
+RFF::Module module{h1, h2};
+
 
 void rff_main() {
-    module.callHandlers(ev);
+    auto toCall = 42;
+
+    module.callHandlers(&toCall, ctti::type_id<decltype(toCall)>());
 }

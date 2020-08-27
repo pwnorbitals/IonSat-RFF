@@ -6,66 +6,50 @@
 #include <ctime>
 #include <type_traits>
 #include <any>
+#include <variant>
+
+#include "ctti/type_id.hpp"
 
 #include "module/module.h"
 #include "OS/OS.h"
 #include "RFF.h"
 
+
 #include "unique_function.h"
 
 namespace RFF {
+
+	
     	
 	
 	/**
 		\brief Controls the event flow
 
 	*/
+	
 	class Controller {
 	protected:
-		unique_function<void (std::any) > emitter;
-		unsigned int failCount;
+		std::function<void(const void* value, ctti::type_id_t type)> emitter;
 
 
 	public:
 
 		template<typename ...modules_t>
-		Controller(modules_t& ..._modules) {
-
-			// From : https://stackoverflow.com/questions/62652638
-			emitter = [this, &_modules...](std::any && any_ev) mutable {      // invoked _modules' copy constructor which tries to copy the event handlers and the Tasks inside => fail.
-				auto success = false;
-
-				// Switch to generalized lambda capture from https://stackoverflow.com/questions/8640393
-				auto dispatcher = [this, &any_ev, &_modules...](auto evtHandler) -> bool {
-					using EventType = typename std::remove_pointer<decltype(evtHandler)>::type ::evt_t;
-					if(any_ev.type() == typeid(EventType)) { // TODO : get rid of RTTI
-						auto ev = std::any_cast<EventType> (any_ev); 
-						((_modules.callHandlers(ev)), ...);
-						return true;
-					}
-
-					return false;
-
-				};
-                
-                 ((
-                     std::apply([&dispatcher, &success](auto& ...handler){
-                         if((dispatcher(handler) || ...)){
-                             success = true;
-                        }
-                    }, _modules.evtHandlers)
-                ), ...);
-
-				if(!success) { failCount++; }
-                    
+		Controller(modules_t& ..._modules)  {
+			emitter = [&](const void* value, ctti::type_id_t type) {
+				std::apply([&](auto& ...module) {
+					(module.callHandlers(value, type), ...);
+				}, std::make_tuple(_modules...));
 			};
 		}
 
 		// TODO : make emit interrupt-safe
 		template<typename evt_t>
-		void emit(evt_t&& event) {
-			emitter(std::move(event));
+		void emit(evt_t const& event) {
+			emitter(&event, ctti::type_id<evt_t>());
 		}
+
+		virtual ~Controller() = default;
 	};
     
     
