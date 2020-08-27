@@ -17,6 +17,11 @@
 
 #include "unique_function.h"
 
+template<bool...> struct bool_pack;
+template<bool... bs> using all_true = std::is_same<bool_pack<bs..., true>, bool_pack<true, bs...>>;
+template<class R, class ...Ts> using are_all_different = all_true<std::negation_v<std::is_same_v<Ts, R>...>>;
+
+
 namespace RFF {
 
 	
@@ -34,14 +39,21 @@ namespace RFF {
 
 	public:
 
-		template<typename ...modules_t>
+		Controller() = delete;
+		Controller(Controller const& other) = default;
+		Controller(Controller&& other) = default;
+		Controller& operator=(Controller const& other) = default;
+		Controller& operator=(Controller&& other) = default;
+
+		// template<typename ...modules_t, typename = typename std::enable_if_t<are_all_different<Controller, modules_t...>::value>>
+		template<typename ...modules_t, typename = typename std::enable_if_t<(true && ... && std::negation_v<std::is_same_v<modules_t, Controller>>)>>
 		Controller(modules_t& ..._modules)  {
-			emitter = [_modules...](const void* value, ctti::type_id_t type) {
-				std::apply([&](auto& ...module) {
-					(module.callHandlers(value, type), ...);
-				}, std::make_tuple(_modules...));
+			emitter = [_modules...](const void* value, ctti::type_id_t type) mutable {
+				(_modules.callHandlers(value, type), ...);
 			};
 		}
+
+
 
 		// TODO : make emit interrupt-safe
 		template<typename evt_t>

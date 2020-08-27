@@ -37,12 +37,12 @@ void rff_main() {
     checker1.take();
     checker2.take();
 
-    RFF::Controller controller4; controller4 = controller3; // copy assignment
+    RFF::Controller controller4{stub1, stub2}; controller4 = controller3; // copy assignment
     controller4.emit(42);
     checker1.take();
     checker2.take();
 
-    RFF::Controller controller5; controller5 = std::move(controller3); // move assignment
+    RFF::Controller controller5{stub1, stub2}; controller5 = std::move(controller3); // move assignment
     controller5.emit(42);
     checker1.take();
     checker2.take();
