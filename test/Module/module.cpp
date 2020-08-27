@@ -32,4 +32,5 @@ void rff_main() {
     auto toCall = 42;
 
     module.callHandlers(&toCall, ctti::type_id<decltype(toCall)>());
+    RFF::OSStop();
 }
