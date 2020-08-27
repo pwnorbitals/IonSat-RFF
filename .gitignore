@@ -39,5 +39,6 @@ subprojects/*
 *.kate-swp
 build*/
 
-**/subprojects/
+**/subprojects/*
+!**/subprojects/*.wrap
 doc/reference/*
