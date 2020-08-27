@@ -38,7 +38,7 @@ namespace RFF {
         me_t& operator=(me_t&& other) = delete;
         
 
-		EventHandler(handler_t _handlerFct , std::string _name = uuid::generate_uuid_v4()) :
+		EventHandler(handler_t _handlerFct , std::string _name = "") :
             eventsQueue{},
             handlerThread{(void(*)(void*))&me_t::fullHandler, _name, this},
             handlerFct{_handlerFct}

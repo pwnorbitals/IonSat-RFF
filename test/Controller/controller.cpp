@@ -17,6 +17,7 @@ struct ModuleStub {
     }
 };
 
+
 RFF::Mutex checker1{}; RFF::Mutex checker2{};
 ModuleStub stub1{checker1}; ModuleStub stub2{checker2};
 
@@ -24,26 +25,6 @@ ModuleStub stub1{checker1}; ModuleStub stub2{checker2};
 void rff_main() {
     RFF::Controller controller{stub1, stub2};
 	controller.emit(42);
-    checker1.take();
-    checker2.take();
-
-    RFF::Controller controller2{controller}; // copy constructor
-    controller2.emit(42);
-    checker1.take();
-    checker2.take();
-
-    RFF::Controller controller3{std::move(controller)}; // move constructor
-    controller3.emit(42);
-    checker1.take();
-    checker2.take();
-
-    RFF::Controller controller4{stub1, stub2}; controller4 = controller3; // copy assignment
-    controller4.emit(42);
-    checker1.take();
-    checker2.take();
-
-    RFF::Controller controller5{stub1, stub2}; controller5 = std::move(controller3); // move assignment
-    controller5.emit(42);
     checker1.take();
     checker2.take();
 

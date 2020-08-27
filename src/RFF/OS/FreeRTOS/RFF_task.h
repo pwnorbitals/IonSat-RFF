@@ -4,6 +4,7 @@
 #include "task.h"
 #include "queue.h"
 #include "semphr.h"
+#include "eventHandler/uuid.h"
 #include <cassert>
 
 // #include <boost/container/static_vector.hpp>
@@ -36,7 +37,7 @@ namespace RFF {
 		
 
 		// TASK CREATION : https://www.freertos.org/a00019.html
-		Task(fct_t _handler, std::string _name, void* _arg = {}) :
+		Task(fct_t _handler, std::string _name = "", void* _arg = {}) :
 			task{}, stackBuffer{} {
                 
                 // WAS BUGGY : handler fct was std::function, went out of scope at move. Now impossible with (non-owning) function ptr

@@ -6,6 +6,7 @@ fs = import('fs')
 incdir += include_directories('.')
 
 subdirs = ['Controller', 'EventHandler', 'Module', 'Queue', 'QueueSet', 'Semaphore', 'Task']
+test_master = files('test.cpp')
 
 foreach sd : subdirs
     test_files = []
@@ -16,7 +17,7 @@ foreach sd : subdirs
         file = files(meson.current_source_dir()+'/'+sd+'/'+tf)
         ut = executable(
             name+'_'+sd+'_test', 
-            source_files + file, 
+            source_files + file + test_master, 
             include_directories : incdir, 
             dependencies: deps, 
             link_args: link_args,               # TODO : MUST CHANGE THIS

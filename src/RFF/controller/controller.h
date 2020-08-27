@@ -40,13 +40,12 @@ namespace RFF {
 	public:
 
 		Controller() = delete;
-		Controller(Controller const& other) = default;
-		Controller(Controller&& other) = default;
-		Controller& operator=(Controller const& other) = default;
-		Controller& operator=(Controller&& other) = default;
+		Controller(Controller const& other) = delete;
+		Controller(Controller&& other) = delete;
+		Controller& operator=(Controller const& other) = delete;
+		Controller& operator=(Controller&& other) = delete;
 
-		// template<typename ...modules_t, typename = typename std::enable_if_t<are_all_different<Controller, modules_t...>::value>>
-		template<typename ...modules_t, typename = typename std::enable_if_t<(true && ... && std::negation_v<std::is_same_v<modules_t, Controller>>)>>
+		template<typename ...modules_t>
 		Controller(modules_t& ..._modules)  {
 			emitter = [_modules...](const void* value, ctti::type_id_t type) mutable {
 				(_modules.callHandlers(value, type), ...);
