@@ -4,6 +4,8 @@ freertos = subproject('freertos')
 deps += freertos.get_variable('freertos_dep')
 ctti = subproject('CTTI')
 deps += ctti.get_variable('ctti_dep')
+dda = subproject('disable-dynamic-allocation')
+deps += dda.get_variable('disable_dynamic_allocation_dep')
 # incdir += include_directories(meson.source_root()+'subprojects/freertos/include')
 
 rff_dep = declare_dependency(dependencies: deps, include_directories: incdir, sources: source_files)
