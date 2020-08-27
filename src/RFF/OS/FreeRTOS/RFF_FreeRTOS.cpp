@@ -1,15 +1,15 @@
-/*
-#define sv_call_handler vPortSVCHandler 
-#define pend_sv_handler xPortPendSVHandler 
-#define sys_tick_handler xPortSysTickHandler 
-*/
 #include "RFF.h"
+
+#ifdef RFF_USE_CATCH
+	#define CATCH_CONFIG_RUNNER
+	#include "catch.hpp"
+#endif
 
 extern void rff_main(); // TODO : compile-time presence check, ignore if not defined
 
 void user_main(void*) {
 	rff_main();
-	RFF::suspendCurrentTask();
+	RFF::suspendCurrent();
 }
 
 namespace RFF {
@@ -27,12 +27,16 @@ namespace RFF {
 }
 
 extern "C" {
-    int main() {
+    int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[]) {
+		auto result = 0;
+		#ifdef RFF_USE_CATCH
+			result = Catch::Session().run( argc, argv );
+		#endif
                 
         auto task = RFF::Task<configMAX_PRIORITIES - 1>(user_main, "init");
         RFF::OSStart();
         
-        return 0;
+        return result;
     }
 
     void hard_fault_handler (void) {

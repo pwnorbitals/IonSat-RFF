@@ -1,8 +1,4 @@
-
-#define RFF_TEST
-
 #include <iostream>
-#include <thread>
 #include "RFF.h"
 
 struct eventType { int myint; };

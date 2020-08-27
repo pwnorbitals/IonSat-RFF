@@ -1,4 +1,4 @@
-## Structure of a program
+# Structure of a program
 
 First, you need to include the master RFF header file :
 ```
@@ -15,7 +15,7 @@ void rff_main() {
 }
 ```
 
-## Event handlers
+# Event handlers
 
 To declare an event handler, two parts are needed :
 
@@ -42,7 +42,7 @@ RFF::EventHandler<MessageType, 10, 64, 512000> HandlerObjectName{handlerFunction
 
 
 
-## Modules
+# Modules
 
 For now, modules are a simple syntactic sugar that help with grouping event handlers and dispatching messages. You can declare a module as follows:
 ``` 
@@ -51,7 +51,7 @@ RFF::Module MyFirstModule{firstHandler, secondHandler, thirdHandler};
 
 You can group as many handlers as you want in a single module.
 
-## Setting-up the RFF
+# Setting-up the RFF
 
 RFF Setup cannot be simpler, you just need to create a Setup object and give it your modules :
 
@@ -63,7 +63,7 @@ You can give as many modules as you want to the setup object. Internally, this c
 
 
 
-## Compilation basics
+# Compilation basics
 
 Create your project by writing a `meson.build` file which contains :
 ``` 
@@ -89,7 +89,7 @@ To run the binary, you can use this command from your build directory
 ./project-name
 ```
 
-## Running RFF tests
+# Running RFF tests
 
 Move to the RFF subproject directory :
 ```
@@ -106,7 +106,7 @@ Run the tests :
 meson test
 ```
 
-## Writing tests for your application
+# Writing tests for your application
 
 When redacting your `meson.build` file, create your test executable then declare your tests as :
 ```

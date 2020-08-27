@@ -55,18 +55,6 @@ namespace RFF {
 		}
 
 		// TASK CONTROL : https://www.freertos.org/a00112.html
-		static void delay(const TickType_t xTicksToDelay) {
-			vTaskDelay(xTicksToDelay);
-		}
-
-		static xTaskHandle currentHandle(void) {
-			return xTaskGetCurrentTaskHandle();
-		}
-
-		static void delayUntil(TickType_t* pxPreviousWakeTime, const TickType_t xTimeIncrement) {
-			vTaskDelayUntil(pxPreviousWakeTime, xTimeIncrement);
-		}
-
 		UBaseType_t priority() {
             assert(taskHandle != 0);
 			return uxTaskPriorityGet(taskHandle);
@@ -80,11 +68,7 @@ namespace RFF {
 		void suspend() {
             assert(taskHandle != 0);
 			vTaskSuspend(taskHandle);
-		}
-
-		static void suspendCurrent() {
-			vTaskSuspend(NULL);
-		}
+		}		
 
 		void resume() {
             assert(taskHandle != 0);
@@ -107,7 +91,19 @@ namespace RFF {
 
 	};
 
-	[[maybe_unused]] static void suspendCurrentTask() {
+	static void delay(const TickType_t xTicksToDelay) {
+		vTaskDelay(xTicksToDelay);
+	}
+
+	static xTaskHandle currentHandle(void) {
+		return xTaskGetCurrentTaskHandle();
+	}
+
+	static void delayUntil(TickType_t* pxPreviousWakeTime, const TickType_t xTimeIncrement) {
+		vTaskDelayUntil(pxPreviousWakeTime, xTimeIncrement);
+	}
+
+	static void suspendCurrent() {
 		vTaskSuspend(NULL);
 	}
 }

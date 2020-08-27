@@ -1,5 +1,3 @@
-#define RFF_TEST
-
 #include <iostream>
 #include "RFF.h"
 
@@ -20,7 +18,7 @@ void rff_main() {
     
     auto evtHandler = RFF::EventHandler<eventType, 1> {hdlr, "first"};
     evtHandler(std::move(evt));
-    RFF::suspendCurrentTask();
+    RFF::suspendCurrent();
 }
 
 

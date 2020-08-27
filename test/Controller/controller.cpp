@@ -5,7 +5,6 @@ struct MyCustomEventType { int eventNo; };
 
 void handler(MyCustomEventType const& evt) {
     assert(evt.eventNo == 42);
-    std::cout << "Ok" << std::endl;
     RFF::OSStop();
 }
 

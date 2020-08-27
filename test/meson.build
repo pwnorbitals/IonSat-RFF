@@ -5,8 +5,7 @@ fs = import('fs')
 
 incdir += include_directories('.')
 
-subdirs = ['unit', 'integration']
-# test_master = files('test.cpp')
+subdirs = ['Controller', 'EventHandler', 'Module', 'Queue', 'QueueSet', 'Semaphore', 'Task']
 
 foreach sd : subdirs
     test_files = []
@@ -20,10 +19,10 @@ foreach sd : subdirs
             source_files + file, 
             include_directories : incdir, 
             dependencies: deps, 
-            link_args: link_args, 
-            cpp_args: comp_args,                    
-            c_args: comp_args, 
-            link_depends: linker_deps
+            link_args: link_args,               # TODO : MUST CHANGE THIS
+            cpp_args: comp_args + ['-DRFF_TEST'], # TODO : MUST CHANGE THIS  
+            c_args: comp_args + ['-DRFF_TEST'],   # TODO : MUST CHANGE THIS
+            link_depends: linker_deps 
         )
         test(name+' unit test', ut)
     endforeach

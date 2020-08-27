@@ -12,6 +12,7 @@ The full documentation (tutorials, reference documentation, examples and design 
 
 1) [Basics](doc/tutorials/basics.md)
 2) [Compilation and cross-compilation](doc/tutorials/compilation.md)
+3) [Real-time OS wrapper](doc/tutorials/RTOS.md)
 
 
 ## Examples
