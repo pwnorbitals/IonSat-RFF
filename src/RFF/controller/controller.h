@@ -36,7 +36,7 @@ namespace RFF {
 
 		template<typename ...modules_t>
 		Controller(modules_t& ..._modules)  {
-			emitter = [&](const void* value, ctti::type_id_t type) {
+			emitter = [_modules...](const void* value, ctti::type_id_t type) {
 				std::apply([&](auto& ...module) {
 					(module.callHandlers(value, type), ...);
 				}, std::make_tuple(_modules...));

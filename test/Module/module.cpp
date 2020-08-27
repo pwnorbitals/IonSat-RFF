@@ -12,7 +12,7 @@ struct handlerStub {
         m.take();
     }
 
-    void callHandlers(void* event, ctti::type_id_t type) { 
+    void operator()(T event) { 
         // TODO : asserts
         m.give();
     }

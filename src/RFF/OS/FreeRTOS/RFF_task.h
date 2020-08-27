@@ -91,19 +91,19 @@ namespace RFF {
 
 	};
 
-	static void delay(const TickType_t xTicksToDelay) {
+	[[maybe_unused]] static void delay(const TickType_t xTicksToDelay) {
 		vTaskDelay(xTicksToDelay);
 	}
 
-	static xTaskHandle currentHandle(void) {
+	[[maybe_unused]] static xTaskHandle currentHandle(void) {
 		return xTaskGetCurrentTaskHandle();
 	}
 
-	static void delayUntil(TickType_t* pxPreviousWakeTime, const TickType_t xTimeIncrement) {
+	[[maybe_unused]] static void delayUntil(TickType_t* pxPreviousWakeTime, const TickType_t xTimeIncrement) {
 		vTaskDelayUntil(pxPreviousWakeTime, xTimeIncrement);
 	}
 
-	static void suspendCurrent() {
+	[[maybe_unused]] static void suspendCurrent() {
 		vTaskSuspend(NULL);
 	}
 }
