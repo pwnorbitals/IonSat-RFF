@@ -4,7 +4,6 @@
 #include "task.h"
 #include "queue.h"
 #include "semphr.h"
-#include "eventHandler/uuid.h"
 #include <cassert>
 
 // #include <boost/container/static_vector.hpp>

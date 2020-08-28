@@ -10,7 +10,6 @@
 #include <algorithm>
 
 #include "unique_function.h"
-#include "uuid.h"
 
 // From https://stackoverflow.com/questions/38696440
 
