@@ -1,6 +1,5 @@
 #include "RFF.h"
 
-#define ENABLE_ISR_TEST 0
 
 RFF::Queue<int, 10> q;
 RFF::Mutex check;
@@ -21,7 +20,7 @@ void qReceiver(void*) {
 void qReceiver2(void*) {
     int val;
 
-    #if ENABLE_ISR_TEST
+    #ifdef ENABLE_ISR_TEST
         q.receiveFromISR(val, nullptr);
         assert(val == 42);
         val = 0;
@@ -31,13 +30,13 @@ void qReceiver2(void*) {
     q.peek(val, portMAX_DELAY);
     assert(val == 42);
 
-    #if ENABLE_ISR_TEST
+    #ifdef ENABLE_ISR_TEST
         q.peekFromISR(val);
         assert(val == 42);
     #endif
 
     assert(q.messagesWaiting() == 1);
-    #if ENABLE_ISR_TEST
+    #ifdef ENABLE_ISR_TEST
         assert(q.messagesWaitingFromISR() == 1);
     #endif
     assert(q.spacesAvailable() == 9);
@@ -45,7 +44,7 @@ void qReceiver2(void*) {
     q.receive(val, portMAX_DELAY);
     check.give();
 
-    #if ENABLE_ISR_TEST
+    #ifdef ENABLE_ISR_TEST
         assert(q.isEmptyFromISR());
     #endif
     assert(q.messagesWaiting() == 0);
@@ -53,13 +52,13 @@ void qReceiver2(void*) {
     for(unsigned i = 0; i < 10; i++) {
         q.send(42, portMAX_DELAY);
     }
-    #if ENABLE_ISR_TEST
+    #ifdef ENABLE_ISR_TEST
         assert(q.isFullFromISR());
     #endif
 
     q.reset();
 
-    #if ENABLE_ISR_TEST
+    #ifdef ENABLE_ISR_TEST
         assert(q.isEmptyFromISR());
     #endif
     assert(q.messagesWaiting() == 0);
@@ -93,7 +92,7 @@ void rff_main() {
         check.take(portMAX_DELAY);
     }
 
-    #if ENABLE_ISR_TEST
+    #ifdef ENABLE_ISR_TEST
     {
         RFF::Task recvTask{qReceiver};
         q.sendFromISR(42, nullptr);
@@ -101,7 +100,7 @@ void rff_main() {
     }
     #endif
 
-    #if ENABLE_ISR_TEST
+    #ifdef ENABLE_ISR_TEST
     {
         RFF::Task recvTask{qReceiver};
         q.sendToBackFromISR(42);
@@ -115,7 +114,7 @@ void rff_main() {
         check.take(portMAX_DELAY);
     }
 
-    #if ENABLE_ISR_TEST
+    #ifdef ENABLE_ISR_TEST
     {
         RFF::Task recvTask{qReceiver};
         q.sendToFrontFromISR(42, nullptr);
@@ -129,7 +128,7 @@ void rff_main() {
         q.send(42, portMAX_DELAY);
         check.take(portMAX_DELAY);
 
-        #if ENABLE_ISR_TEST
+        #ifdef ENABLE_ISR_TEST
             q.send(42, portMAX_DELAY);
         #endif
         check.take(portMAX_DELAY);

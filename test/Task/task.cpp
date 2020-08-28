@@ -1,17 +1,30 @@
 #include <iostream>
 #include "RFF.h"
 
-struct eventType { int myint; };
+RFF::Mutex check;
 
-void hdlr(eventType* evt) {
-    assert(evt->myint == 8);
-    std::cout << "Ok" << std::endl;
-    RFF::OSStop();
+void tester1(void* in) {
+    assert(((*((int*)in))) == 42);
+    check.give();
+
+    std::cout << "suspending" << std::endl;
+
+    RFF::suspendCurrent();
 }
-
-eventType evt{8};
-RFF::Task<1, 20000> task{(void(*)(void*))hdlr, "test", &evt};
 
 void rff_main() {
-	
-}
+    {
+        check.take(portMAX_DELAY);
+        int test = 42;
+        RFF::Task<1, 20000> task{tester1, "test", &test};
+        check.take(portMAX_DELAY);
+
+        assert(task.priority() == 1);
+        task.priority(2);
+        assert(task.priority() == 2);
+
+        
+    }
+
+    RFF::OSStop();
+}   
