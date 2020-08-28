@@ -13,7 +13,7 @@ struct handlerStub {
     }
 
     void operator()(T event) { 
-        // TODO : asserts
+        assert(event == 42);
         m.give();
     }
 

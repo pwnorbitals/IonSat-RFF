@@ -6,7 +6,6 @@
 #include "semphr.h"
 #include <cassert>
 
-// #include <boost/container/static_vector.hpp>
 #include <algorithm>
 
 namespace RFF {
@@ -85,11 +84,13 @@ namespace RFF {
 			return xTaskAbortDelay(taskHandle);
 		}
 
-		// TASK UTILITIES : https://www.freertos.org/a00021.html
-		// TODO
+		
 
 
 	};
+
+	// TASK UTILITIES : https://www.freertos.org/a00021.html
+	// TODO
 
 	[[maybe_unused]] static void delay(const TickType_t xTicksToDelay) {
 		vTaskDelay(xTicksToDelay);

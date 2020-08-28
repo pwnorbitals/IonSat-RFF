@@ -12,12 +12,14 @@ struct ModuleStub {
     }
     
     void callHandlers(const void* value, ctti::type_id_t type) {
-        // TODO : asserts
+        assert(*(int*)value == 42);
+        assert(type == ctti::type_id<int>());
         m.give();
     }
 
     void callHandlersISR(const void* value, ctti::type_id_t type) {
-        // TODO : asserts
+        assert(*(int*)value == 42);
+        assert(type == ctti::type_id<int>());
         m.give();
     }
 };

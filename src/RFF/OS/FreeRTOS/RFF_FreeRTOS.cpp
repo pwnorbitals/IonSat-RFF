@@ -5,7 +5,7 @@
 	#include "catch.hpp"
 #endif
 
-extern void rff_main(); // TODO : compile-time presence check, ignore if not defined
+extern void rff_main();
 
 void user_main(void*) {
 	rff_main();

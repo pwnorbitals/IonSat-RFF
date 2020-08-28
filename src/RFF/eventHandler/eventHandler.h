@@ -3,10 +3,8 @@
 #include "RFF.h"
 
 #include <functional>
-// #include <boost/container/static_vector.hpp>
 #include <iostream>
 #include <type_traits>
-#include <vector>
 #include <algorithm>
 
 #include "unique_function.h"
@@ -54,7 +52,7 @@ namespace RFF {
 			while(true) {
                 me->eventsQueue.receive(recvdEvent, portMAX_DELAY); 
                 me->handlerFct((event_t&)recvdEvent); // not owning the function, so no problem here
-                                                      // TODO : Check the cast isn't UB
+                                                      // UB in c++17, not UB in C++20
 			}
 		}
         
