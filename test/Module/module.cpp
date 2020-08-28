@@ -9,7 +9,7 @@ struct handlerStub {
     RFF::Mutex& m;
 
     handlerStub(RFF::Mutex& _m) : m{_m}{
-        m.take();
+        m.take(portMAX_DELAY);
     }
 
     void operator()(T event) { 

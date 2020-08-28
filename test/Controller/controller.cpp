@@ -25,8 +25,8 @@ ModuleStub stub1{checker1}; ModuleStub stub2{checker2};
 void rff_main() {
     RFF::Controller controller{stub1, stub2};
 	controller.emit(42);
-    checker1.take();
-    checker2.take();
+    checker1.take(portMAX_DELAY);
+    checker2.take(portMAX_DELAY);
 
     RFF::OSStop();
 }
