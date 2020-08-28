@@ -59,8 +59,22 @@ namespace RFF {
 		}
         
 		bool handleEvent(event_t const& evt) {
-			auto res = eventsQueue.sendToBackFromISR(evt);
+			auto res = eventsQueue.sendToBack(evt);
             return res;
+		}
+
+        bool handleISREvent(event_t const& evt) {
+			auto res = eventsQueue.sendToBack(evt);
+            return res;
+		}
+
+        template<typename evt_t>
+		bool fromISR(evt_t&& evt) {
+			if constexpr(std::is_same<evt_t, event_t>::value) {
+				return handleISREvent(std::move(evt));
+			}
+
+			return false;
 		}
 		
 		template<typename evt_t>

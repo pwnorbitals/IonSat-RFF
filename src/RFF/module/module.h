@@ -41,6 +41,20 @@ namespace RFF {
 			}, evtHandlers);
 		}
 
+		bool callHandlersISR(const void* event, ctti::type_id_t type) {
+			return std::apply([&](auto & ... eh) {    // lvalue reference argument because move would consume the event handlers
+				return ([&]{
+					using curtype = typename std::remove_reference_t<decltype(*eh)>::evt_t;
+					if (type == ctti::type_id<curtype>()) [[unlikely]] { 
+						(*eh).fromISR(curtype{*((curtype*)event)});
+						return true;
+					}
+					return false;
+				}() || ...);
+				
+			}, evtHandlers);
+		}
+
 
 
 	};

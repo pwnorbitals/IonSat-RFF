@@ -15,6 +15,11 @@ struct ModuleStub {
         // TODO : asserts
         m.give();
     }
+
+    void callHandlersISR(const void* value, ctti::type_id_t type) {
+        // TODO : asserts
+        m.give();
+    }
 };
 
 

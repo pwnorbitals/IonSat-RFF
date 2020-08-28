@@ -35,6 +35,7 @@ namespace RFF {
 	class Controller {
 	protected:
 		std::function<void(const void* value, ctti::type_id_t type)> emitter;
+		std::function<void(const void* value, ctti::type_id_t type)> ISRemitter;
 
 
 	public:
@@ -49,14 +50,23 @@ namespace RFF {
 			emitter = [&_modules...](const void* value, ctti::type_id_t type) mutable {
 				(_modules.callHandlers(value, type), ...);
 			};
+
+			emitter = [&_modules...](const void* value, ctti::type_id_t type) mutable {
+				(_modules.callHandlersISR(value, type), ...);
+			};
 		}
 
 
 
-		// TODO : make emit interrupt-safe
+		
 		template<typename evt_t>
 		void emit(evt_t const& event) {
 			emitter(&event, ctti::type_id<evt_t>());
+		}
+
+		template<typename evt_t>
+		void emitFromISR(evt_t const& event) {
+			ISRemitter(&event, ctti::type_id<evt_t>());
 		}
 
 		virtual ~Controller() = default;
