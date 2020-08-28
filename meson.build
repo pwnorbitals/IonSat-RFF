@@ -4,7 +4,7 @@ project(
   default_options : ['cpp_std=gnu++17', 'c_std=gnu11', 'warning_level=3']
 )
 
-add_project_link_arguments('--verbose', '--cref', language: ['c', 'cpp'])
+# add_project_link_arguments('--verbose', language: ['c', 'cpp'])
 
 deps = []
 minimal_deps = []

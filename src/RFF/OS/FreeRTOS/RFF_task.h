@@ -107,4 +107,8 @@ namespace RFF {
 	[[maybe_unused]] static void suspendCurrent() {
 		vTaskSuspend(NULL);
 	}
+
+	[[maybe_unused]] static TickType_t getTickCount() {
+		return xTaskGetTickCount();
+	}
 }

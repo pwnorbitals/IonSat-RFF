@@ -39,7 +39,6 @@ namespace RFF {
 
 	public:
 
-		Controller() = delete;
 		Controller(Controller const& other) = delete;
 		Controller(Controller&& other) = delete;
 		Controller& operator=(Controller const& other) = delete;
@@ -47,7 +46,7 @@ namespace RFF {
 
 		template<typename ...modules_t>
 		Controller(modules_t& ..._modules)  {
-			emitter = [_modules...](const void* value, ctti::type_id_t type) mutable {
+			emitter = [&_modules...](const void* value, ctti::type_id_t type) mutable {
 				(_modules.callHandlers(value, type), ...);
 			};
 		}
