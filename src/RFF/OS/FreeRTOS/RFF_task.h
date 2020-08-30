@@ -59,6 +59,10 @@ namespace RFF {
 			return uxTaskPriorityGet(taskHandle);
 		}
 
+		TaskHandle_t handle() {
+			return taskHandle;
+		}
+
 		void priority(UBaseType_t uxNewPriority) {
             assert(taskHandle != 0);
 			vTaskPrioritySet(taskHandle, uxNewPriority);
@@ -100,8 +104,8 @@ namespace RFF {
 		return xTaskGetCurrentTaskHandle();
 	}
 
-	[[maybe_unused]] static void delayUntil(TickType_t* pxPreviousWakeTime, const TickType_t xTimeIncrement) {
-		vTaskDelayUntil(pxPreviousWakeTime, xTimeIncrement);
+	[[maybe_unused]] static void delayUntil(TickType_t& pxPreviousWakeTime, const TickType_t xTimeIncrement) {
+		vTaskDelayUntil(&pxPreviousWakeTime, xTimeIncrement);
 	}
 
 	[[maybe_unused]] static void suspendCurrent() {
