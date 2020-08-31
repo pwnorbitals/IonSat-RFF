@@ -40,6 +40,7 @@ namespace RFF {
 
 	public:
 
+
 		Controller(Controller const& other) = delete;
 		Controller(Controller&& other) = delete;
 		Controller& operator=(Controller const& other) = delete;
@@ -48,16 +49,10 @@ namespace RFF {
 		template<typename ...modules_t>
 		Controller(modules_t& ..._modules)  {
 			emitter = [&_modules...](const void* value, ctti::type_id_t const type) mutable {
-				if constexpr(!(_modules.hasHandler(type) || ...)) {
-					static_assert("Type not matched");
-				}
 				(_modules.callHandlers(value, type), ...);
 			};
 
 			emitter = [&_modules...](const void* value, ctti::type_id_t const type) mutable {
-				if constexpr(!(_modules.hasHandler(type) || ...)) {
-					static_assert("Type not matched");
-				}
 				(_modules.callHandlersISR(value, type), ...);
 			};
 		}
@@ -67,6 +62,9 @@ namespace RFF {
 		
 		template<typename evt_t>
 		void emit(evt_t const& event) {
+			//if constexpr(std::disjunction_v<>) {
+				
+			//}
 			emitter(&event, ctti::type_id<evt_t>());
 		}
 

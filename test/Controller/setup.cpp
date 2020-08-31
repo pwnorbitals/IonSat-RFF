@@ -40,7 +40,7 @@ void rff_main() {
 	RFF::emit(42);
     checker1.take(portMAX_DELAY);
     checker2.take(portMAX_DELAY);
-    RFF::emit(EventThatShouldFail{42});
+    // RFF::emit(EventThatShouldFail{42});
 
     RFF::OSStop();
 }

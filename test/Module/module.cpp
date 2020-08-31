@@ -29,6 +29,11 @@ RFF::Module module{h1, h2};
 
 
 void rff_main() {
+    static_assert(!std::is_copy_constructible_v<RFF::Module<handlerStub<int>, handlerStub<float>>>);
+    static_assert(!std::is_copy_assignable_v<RFF::Module<handlerStub<int>, handlerStub<float>>>);
+    static_assert(std::is_move_constructible_v<RFF::Module<handlerStub<int>, handlerStub<float>>>);
+    static_assert(std::is_move_assignable_v<RFF::Module<handlerStub<int>, handlerStub<float>>>);
+
     auto toCall = 42;
 
     module.callHandlers(&toCall, ctti::type_id<decltype(toCall)>());

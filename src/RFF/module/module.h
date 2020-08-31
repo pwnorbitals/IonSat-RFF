@@ -1,6 +1,7 @@
 #pragma once
 
 #include <tuple>
+#include <type_traits>
 
 #include "ctti/type_id.hpp"
 
@@ -9,14 +10,7 @@
 
 namespace RFF {
 
-	template<typename ...modules_t, typename type_t>
-	struct hasHandler  {
-		using value = std::disjunction_v<
-			std::disjunction_v<
-				modules_t::handlers_t
-			>...
-		>;
-	}
+	
     
 	/**
 		\brief Groups event handlers and dispatches events
@@ -27,8 +21,14 @@ namespace RFF {
         
 	public:
 		std::tuple<evtHandlers_t* ...> evtHandlers;
-		using handlers_t = evtHandlers_t...;
-
+/*
+		template<typename type_t>
+		struct hasHandler  {
+			using value = std::disjunction<
+				std::is_same<type_t, typename evtHandlers_t::evt_t>::value...
+			>::value;
+		};
+		*/
 
         Module() = delete;
         Module(evtHandlers_t& ... modules) : evtHandlers{std::make_tuple(&modules...)}{};

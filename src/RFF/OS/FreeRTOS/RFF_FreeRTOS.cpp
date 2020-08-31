@@ -23,7 +23,6 @@ namespace RFF {
 		vTaskEndScheduler();
 	}
 	
-	RFF::Task<INIT_TASK_STACK> const& getInitTask(){ return initTask; }
 }
 
 extern "C" {

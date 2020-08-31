@@ -95,7 +95,12 @@ void rff_main() {
             std::cout << "delay aborted confirmed" << std::endl;
 
         }
-
+        {
+            static_assert(!std::is_copy_constructible_v<RFF::Task<1, 128>>);
+            static_assert(!std::is_copy_assignable_v<RFF::Task<1, 128>>);
+            static_assert(!std::is_move_constructible_v<RFF::Task<1, 128>>);
+            static_assert(!std::is_move_assignable_v<RFF::Task<1, 128>>);
+        }
         
     }
 

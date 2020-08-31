@@ -14,4 +14,10 @@ RFF::EventHandler<eventType> evtHandler{handler};
 void rff_main() {
     RFF::Mutex m;
     evtHandler(eventType{8});
+    
+    static_assert(!std::is_copy_constructible_v<RFF::EventHandler<eventType>>);
+    static_assert(!std::is_copy_assignable_v<RFF::EventHandler<eventType>>);
+    static_assert(!std::is_move_constructible_v<RFF::EventHandler<eventType>>);
+    static_assert(!std::is_move_assignable_v<RFF::EventHandler<eventType>>);
+
 }

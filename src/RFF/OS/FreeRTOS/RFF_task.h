@@ -88,6 +88,16 @@ namespace RFF {
 			return xTaskAbortDelay(taskHandle);
 		}
 
+		void getInfo(TaskStatus_t &taskStatus, BaseType_t freeStackSpace, eTaskState eState) {
+			// TODO
+		}
+
+		TaskHookFunction_t getApplicationTaskTag() {
+			
+		}
+
+
+
 		
 
 
@@ -115,4 +125,15 @@ namespace RFF {
 	[[maybe_unused]] static TickType_t getTickCount() {
 		return xTaskGetTickCount();
 	}
+	/*
+	[[maybe_unused]] static UBaseType_t getSystemState(TaskStatus& pxStatusArray, unsigned long& totalRunTime) {
+		// TODO
+	}
+
+	[[maybe_unused]] static void getCurrentHandle() {
+		// TODO
+	}
+	*/
+
+
 }

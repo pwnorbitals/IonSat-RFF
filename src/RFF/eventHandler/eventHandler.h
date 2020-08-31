@@ -22,7 +22,8 @@ namespace RFF {
         using me_t =      EventHandler<event_t, prio, queueLength, stackDepth>;
         using handler_t = void(*)(event_t const&);
         using evt_t = event_t;
-		
+
+
 		Queue<event_t, queueLength> eventsQueue;
         Task<prio, stackDepth> handlerThread;
         handler_t handlerFct;
