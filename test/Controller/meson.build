@@ -1,2 +1,2 @@
-test_files = ['controller.cpp']
+test_files = ['controller.cpp', 'setup.cpp']
 
