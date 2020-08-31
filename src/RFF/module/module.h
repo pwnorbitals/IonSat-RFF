@@ -8,6 +8,15 @@
 #include "RFF.h"
 
 namespace RFF {
+
+	template<typename ...modules_t, typename type_t>
+	struct hasHandler  {
+		using value = std::disjunction_v<
+			std::disjunction_v<
+				modules_t::handlers_t
+			>...
+		>;
+	}
     
 	/**
 		\brief Groups event handlers and dispatches events
@@ -18,6 +27,7 @@ namespace RFF {
         
 	public:
 		std::tuple<evtHandlers_t* ...> evtHandlers;
+		using handlers_t = evtHandlers_t...;
 
 
         Module() = delete;
@@ -27,7 +37,7 @@ namespace RFF {
         Module(me_t&& other) = default;
         me_t& operator=(me_t&& other) = default;
 
-		bool callHandlers(const void* event, ctti::type_id_t type) {
+		bool callHandlers(const void* event, ctti::type_id_t const type) const {
 			return std::apply([&](auto & ... eh) {    // lvalue reference argument because move would consume the event handlers
 				return ([&]{
 					using curtype = typename std::remove_reference_t<decltype(*eh)>::evt_t;
@@ -41,7 +51,7 @@ namespace RFF {
 			}, evtHandlers);
 		}
 
-		bool callHandlersISR(const void* event, ctti::type_id_t type) {
+		bool callHandlersISR(const void* event, ctti::type_id_t const type) const {
 			return std::apply([&](auto & ... eh) {    // lvalue reference argument because move would consume the event handlers
 				return ([&]{
 					using curtype = typename std::remove_reference_t<decltype(*eh)>::evt_t;

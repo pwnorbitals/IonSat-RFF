@@ -47,11 +47,17 @@ namespace RFF {
 
 		template<typename ...modules_t>
 		Controller(modules_t& ..._modules)  {
-			emitter = [&_modules...](const void* value, ctti::type_id_t type) mutable {
+			emitter = [&_modules...](const void* value, ctti::type_id_t const type) mutable {
+				if constexpr(!(_modules.hasHandler(type) || ...)) {
+					static_assert("Type not matched");
+				}
 				(_modules.callHandlers(value, type), ...);
 			};
 
-			emitter = [&_modules...](const void* value, ctti::type_id_t type) mutable {
+			emitter = [&_modules...](const void* value, ctti::type_id_t const type) mutable {
+				if constexpr(!(_modules.hasHandler(type) || ...)) {
+					static_assert("Type not matched");
+				}
 				(_modules.callHandlersISR(value, type), ...);
 			};
 		}

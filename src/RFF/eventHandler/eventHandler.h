@@ -56,18 +56,18 @@ namespace RFF {
 			}
 		}
         
-		bool handleEvent(event_t const& evt) {
+		bool handleEvent(event_t const& evt) const {
 			auto res = eventsQueue.sendToBack(evt);
             return res;
 		}
 
-        bool handleISREvent(event_t const& evt) {
+        bool handleISREvent(event_t const& evt) const {
 			auto res = eventsQueue.sendToBack(evt);
             return res;
 		}
 
         template<typename evt_t>
-		bool fromISR(evt_t&& evt) {
+		bool fromISR(evt_t&& evt) const {
 			if constexpr(std::is_same<evt_t, event_t>::value) {
 				return handleISREvent(std::move(evt));
 			}
@@ -76,7 +76,7 @@ namespace RFF {
 		}
 		
 		template<typename evt_t>
-		bool operator()(evt_t&& evt) {
+		bool operator()(evt_t&& evt) const {
 			if constexpr(std::is_same<evt_t, event_t>::value) {
 				return handleEvent(std::move(evt));
 			}

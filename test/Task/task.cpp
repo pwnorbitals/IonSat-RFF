@@ -23,8 +23,11 @@ void tester3(void*) {
 }
 
 void tester4(void*) {
+    std::cout << "starting delay" << std::endl;
     RFF::delay(portMAX_DELAY);
+    std::cout << "giving" << std::endl;
     check.give();
+    std::cout << "gon sleep" << std::endl;
     RFF::suspendCurrent();
 }
 
@@ -34,6 +37,7 @@ void rff_main() {
         check.take(portMAX_DELAY);
 
         {
+            std::cout << "a" << std::endl;
             int test = 42;
             RFF::Task<configMAX_PRIORITIES-1, 20000> task{tester1, "test1", &test};
             assert(task.handle() != 0);
@@ -42,6 +46,7 @@ void rff_main() {
         }
         assert(check.getCount() == 0);
         {
+            std::cout << "b" << std::endl;
             RFF::Task<1, 20000> task{tester2, "test2"};
             assert(task.priority() == 1);
             task.priority(2);
@@ -50,6 +55,8 @@ void rff_main() {
         assert(check.getCount() == 0);
         i = 0;
         {
+            
+            std::cout << "c" << std::endl;
             RFF::Task<configMAX_PRIORITIES-1, 20000> task{tester3, "test3"};
             auto i_c1 = i;
             task.suspend();
@@ -59,6 +66,7 @@ void rff_main() {
             assert(i_c1 == i_c2);
         }
         {
+            std::cout << "d" << std::endl;
             auto time1 = RFF::getTickCount();
             RFF::delay(1*configTICK_RATE_HZ);
             auto time2 = RFF::getTickCount();
@@ -66,6 +74,7 @@ void rff_main() {
             assert(time2 < time1+(1.02*configTICK_RATE_HZ));
         }
         {
+            std::cout << "e" << std::endl;
             auto time1 = RFF::getTickCount();
             auto time1_mod = time1;
             // delayUntil modifies its first argument !
@@ -76,7 +85,8 @@ void rff_main() {
         }
         assert(check.getCount() == 0);
         {
-            RFF::Task<configMAX_PRIORITIES-1, 20000> task{tester4, "test4"};
+            std::cout << "f" << std::endl;
+            RFF::Task<1, 20000> task{tester4, "test4"};
             RFF::delay(1*configTICK_RATE_HZ);
             std::cout << "aborting delay" << std::endl;
             task.abortDelay();
