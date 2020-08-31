@@ -52,7 +52,7 @@ namespace RFF {
 			while(true) {
                 me->eventsQueue.receive(recvdEvent, portMAX_DELAY); 
                 me->handlerFct((event_t&)recvdEvent); // not owning the function, so no problem here
-                                                      // UB in c++17, not UB in C++20
+                                                      // UB in c++17, not UB in C++20, does GCC guarantee ?
 			}
 		}
         
