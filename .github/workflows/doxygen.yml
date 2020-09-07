@@ -1,10 +1,8 @@
-name: Generate doc and deploy to gh pages
-
+name: Documentation
 on:
   push:
     branches:
-      main
-
+      master
 jobs:
   doc:
     name: Generate doc & deploy
