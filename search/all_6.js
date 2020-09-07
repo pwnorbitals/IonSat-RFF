@@ -1,5 +1,6 @@
 var searchData=
 [
-  ['task_11',['Task',['../classRFF_1_1Task.html',1,'RFF']]],
-  ['task_3c_200_2c_202_20_2aconfigminimal_5fstack_5fsize_20_3e_12',['Task&lt; 0, 2 *configMINIMAL_STACK_SIZE &gt;',['../classRFF_1_1Task.html',1,'RFF']]]
+  ['semaphore_9',['Semaphore',['../classRFF_1_1Semaphore.html',1,'RFF']]],
+  ['semaphoreholder_10',['SemaphoreHolder',['../classRFF_1_1SemaphoreHolder.html',1,'RFF']]],
+  ['setup_11',['Setup',['../classRFF_1_1Setup.html',1,'RFF']]]
 ];

@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['unique_5ffunction_13',['unique_function',['../classunique__function.html',1,'']]]
+  ['task_12',['Task',['../classRFF_1_1Task.html',1,'RFF']]],
+  ['task_3c_200_2c_202_20_2aconfigminimal_5fstack_5fsize_20_3e_13',['Task&lt; 0, 2 *configMINIMAL_STACK_SIZE &gt;',['../classRFF_1_1Task.html',1,'RFF']]]
 ];

@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['module_3',['Module',['../classRFF_1_1Module.html',1,'RFF']]],
-  ['mutex_4',['Mutex',['../classRFF_1_1Mutex.html',1,'RFF']]]
+  ['ionsat_20rff_20_3a_20real_2dtime_20flight_20framework_3',['IonSat RFF : Real-time Flight Framework',['../index.html',1,'']]]
 ];
