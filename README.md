@@ -1,7 +1,8 @@
 # IonSat-RFF
 This repository hosts the RFF (Realtime Flight Framework), developped for french Ecole Polytechnique's student space center and its cubesat IonSat. It was created as a framework to help with realtime embeddedded development by wrapping the RTOS and a custom event-driven library into a simple C++ library. It is powered by the Meson build system generator for ease of use. 
 
-![Polytechnique logo](doc/logo.png) 
+![Polytechnique logo](doc/logo.png =250px) 
+![CSEP logo](doc/logo_csep.png =250px) 
 
 ## Getting started
 
