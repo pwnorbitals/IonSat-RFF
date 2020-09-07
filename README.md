@@ -18,10 +18,10 @@ The full documentation (tutorials, reference documentation, examples and design 
 
 ## Examples
 
-1) [Hello world !](doc/examples/hello/hello.md)
-2) [Blinker](doc/examples/blinker/blinker.md)
-3) [Synchronization](doc/examples/synchronization/synchronization.md)
-4) [Cross-compilation](doc/examples/cross-compilations/cross-compilation.md)
+1) [Hello world !](doc/examples/hello/)
+2) [Blinker](doc/examples/blinker/)
+3) [Synchronization](doc/examples/synchronization/)
+4) [Cross-compilation](doc/examples/cross-compilations/)
 
 ## Design
 
