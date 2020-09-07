@@ -1,0 +1,5 @@
+<map id="RFF::EventHandler&lt; event_t, prio, queueLength, stackDepth, typename &gt;" name="RFF::EventHandler&lt; event_t, prio, queueLength, stackDepth, typename &gt;">
+<area shape="rect" id="node1" title="Handles a series of same&#45;type events." alt="" coords="123,109,306,165"/>
+<area shape="rect" id="node2" href="$classRFF_1_1Task.html" title=" " alt="" coords="5,5,219,47"/>
+<area shape="rect" id="node3" href="$classRFF_1_1Queue.html" title=" " alt="" coords="243,5,392,47"/>
+</map>
