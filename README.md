@@ -32,4 +32,4 @@ The full documentation (tutorials, reference documentation, examples and design 
 
 ## Reference
 
-[Full reference documentation](https://astronautix.github.io/IonSat-RFF/)
+[Full reference documentation](https://astronautix.github.io/IonSat-RFF/index.html)
