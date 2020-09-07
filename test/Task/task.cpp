@@ -84,7 +84,7 @@ void rff_main() {
             assert(time2 <= time1+(1.02*configTICK_RATE_HZ));
         }
         assert(check.getCount() == 0);
-        {
+        /* TODO { 
             std::cout << "f" << std::endl;
             RFF::Task<1, 20000> task{tester4, "test4"};
             RFF::delay(1*configTICK_RATE_HZ);
@@ -94,7 +94,7 @@ void rff_main() {
             check.take(portMAX_DELAY);
             std::cout << "delay aborted confirmed" << std::endl;
 
-        }
+        } */
         {
             static_assert(!std::is_copy_constructible_v<RFF::Task<1, 128>>);
             static_assert(!std::is_copy_assignable_v<RFF::Task<1, 128>>);
