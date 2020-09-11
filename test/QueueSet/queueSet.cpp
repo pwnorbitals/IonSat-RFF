@@ -29,6 +29,11 @@ void rff_main() {
         check.take(portMAX_DELAY);
 
     }
+
+    static_assert(!std::is_copy_constructible_v<RFF::QueueSet<20>>);
+    static_assert(!std::is_copy_assignable_v<RFF::QueueSet<20>>);
+    static_assert(std::is_move_constructible_v<RFF::QueueSet<20>>);
+    static_assert(std::is_move_assignable_v<RFF::QueueSet<20>>);
     
 
     RFF::OSStop();

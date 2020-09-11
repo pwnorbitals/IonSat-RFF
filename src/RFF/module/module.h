@@ -41,7 +41,7 @@ namespace RFF {
 			return std::apply([&](auto & ... eh) {    // lvalue reference argument because move would consume the event handlers
 				return ([&]{
 					using curtype = typename std::remove_reference_t<decltype(*eh)>::evt_t;
-					if (type == ctti::type_id<curtype>()) [[unlikely]] { 
+					if (type == ctti::type_id<curtype>())  { 
 						(*eh)(curtype{*((curtype*)event)});
 						return true;
 					}
@@ -55,7 +55,7 @@ namespace RFF {
 			return std::apply([&](auto & ... eh) {    // lvalue reference argument because move would consume the event handlers
 				return ([&]{
 					using curtype = typename std::remove_reference_t<decltype(*eh)>::evt_t;
-					if (type == ctti::type_id<curtype>()) [[unlikely]] { 
+					if (type == ctti::type_id<curtype>()) { 
 						(*eh).fromISR(curtype{*((curtype*)event)});
 						return true;
 					}

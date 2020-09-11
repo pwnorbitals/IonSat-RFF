@@ -78,6 +78,8 @@ void rff_main() {
     auto qHandle = q.handle();
     assert(qHandle != 0);
 
+    std::cout << "a" << std::endl;
+
     check.take(portMAX_DELAY);
 
     {
@@ -85,13 +87,13 @@ void rff_main() {
         q.send(42, portMAX_DELAY);
         check.take(portMAX_DELAY);
     }
-
+    std::cout << "b" << std::endl;
     {
         RFF::Task recvTask{qReceiver};
         q.sendToBack(42, portMAX_DELAY);
         check.take(portMAX_DELAY);
     }
-
+    std::cout << "c" << std::endl;
     #ifdef ENABLE_ISR_TEST
     {
         RFF::Task recvTask{qReceiver};
@@ -113,6 +115,7 @@ void rff_main() {
         q.sendToFront(42);
         check.take(portMAX_DELAY);
     }
+    std::cout << "d" << std::endl;
 
     #ifdef ENABLE_ISR_TEST
     {
@@ -133,6 +136,8 @@ void rff_main() {
         #endif
         check.take(portMAX_DELAY);
     }
+
+    std::cout << "e" << std::endl;
 
 
     RFF::OSStop();

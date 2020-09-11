@@ -87,15 +87,15 @@ namespace RFF {
             assert(taskHandle != 0);
 			return xTaskAbortDelay(taskHandle);
 		}
-
+/*
 		void getInfo(TaskStatus_t &taskStatus, BaseType_t freeStackSpace, eTaskState eState) {
 			// TODO
 		}
 
 		TaskHookFunction_t getApplicationTaskTag() {
-			
+			//TODO
 		}
-
+*/
 
 
 		
