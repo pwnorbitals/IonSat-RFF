@@ -50,7 +50,33 @@ namespace RFF {
                 return xTimerReset(handle, portMAX_DELAY);
             }
 
+            bool startFromISR() {
+                return xTimerStartFromISR(handle, NULL);
+            }
+
+            bool stopFromISR() {
+                return xTimerStopFromISR(handle, NULL);
+            }
+
+
+            bool changePeriodFromISR(TickType_t newPeriod) {
+                return xTimerChangePeriodFromISR(handle, newPeriod, NULL);
+            }
+
+            bool resetFromISR() {
+                return xTimerResetFromISR(handle, portMAX_DELAY);
+            }
+
+            // TODO : setTimerID
+            // TODO : getTimerDaemonTaskHandle
+            // TODO : PendFunctionCall
+            // TODO : PendFunctionCallFromISR
+            // TODO : getPeriod
+            // TODO : getExpiryTime
             
+
+
+
 
 
 
