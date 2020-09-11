@@ -92,6 +92,7 @@ namespace RFF {
 			// TODO
 		}
 
+		/*
 		TaskHookFunction_t getApplicationTaskTag() {
 			//TODO
 		}
