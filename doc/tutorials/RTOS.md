@@ -4,7 +4,7 @@ As a comfort feature, the RFF has been designed to wrap any RTOS in user-friendl
 
 # FreeRTOS
 
-When it comes to using the wrappped FreeRTOS, the most important and useful features are the synchronization primitives, namely `RFF::Mutex` and `RFF::Semaphore`/`RFF::SemaphoreHolder`. Aside from this, access is given to the other RTOS features : `RFF::Queue`/`RFF::QueueSet` and `RFF::Task`. Those two last sets of features shouldn't really be needed when using the event-driven RFF features on embedded targets, but can be useful for demonstration purposes or for solving complex and intricate real-time problems.
+When it comes to using the wrappped FreeRTOS, the most important and useful features are the synchronization primitives (namely `RFF::Mutex` and `RFF::Semaphore`/`RFF::SemaphoreHolder`) and timing primitives (`RFF::Timer`). Aside from this, access is given to the other RTOS features : `RFF::Queue`/`RFF::QueueSet` and `RFF::Task`. Those two last sets of features shouldn't really be needed when using the event-driven RFF features on embedded targets, but can be useful for demonstration purposes or for solving complex and intricate real-time problems.
 
 `RFF::Mutex` and `RFF::Semaphore` are actually two sides of the same coin. 
 
