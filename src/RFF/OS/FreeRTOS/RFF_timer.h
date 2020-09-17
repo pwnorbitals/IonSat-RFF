@@ -4,23 +4,39 @@
 
 namespace RFF {
     #if configUSE_TIMERS 
+    template<int count>
     class Timer {
             StaticTimer_t buffer;
             TimerHandle_t handle;
-        public:
-            void callback( TimerHandle_t xTimer ) {
+            void (*cb) (void*);
 
-            }
-
-            Timer(TickType_t period, bool autoReload) : buffer{}, handle{
-                xTimerCreateStatic("", period, autoReload, 0, callback, buffer)
-            }{
+            Timer(TickType_t period, bool autoReload, void (*_cb)(void*)) 
+                : buffer{}, 
+                  cb{_cb}, 
+                  handle{xTimerCreateStatic("", period, autoReload, 0, Timer<count>::callback, buffer)}
+                {
+                assert(cb != nullptr);
                 assert(handle != NULL);
             }
+
+            
+
+            static void callback( TimerHandle_t xTimer ) {
+                cb();
+            }
+
+
+        public:
 
             ~Timer () {
                 xTimerDelete( handle, portMAX_DELAY );
             }
+            
+            static Timer& instance(TickType_t period = 0, bool autoReload = true, void (*cb) (void*) = nullptr) {
+                static Timer<count> instance{period, autoReload, cb};
+                return instance;
+            }
+            
 
             bool isActive() {
 
