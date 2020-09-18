@@ -1,3 +1,4 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classRFF_1_1SemaphoreHolder.html" title="RAII container for holding Semaphores." alt="" coords="5,5,163,32"/>
+<area shape="rect" id="node1" href="$classRFF_1_1Semaphore.html" title="Synchronization primitive for concurrent ressource access." alt="" coords="5,5,124,32"/>
+<area shape="rect" id="node2" href="$classRFF_1_1Mutex.html" title="Synchronization primitive for mutual exclusion (Special case of Semaphore)" alt="" coords="172,5,260,32"/>
 </map>
