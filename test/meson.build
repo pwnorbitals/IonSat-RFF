@@ -5,7 +5,7 @@ fs = import('fs')
 
 incdir += include_directories('.')
 
-subdirs = ['Controller', 'EventHandler', 'Module', 'Queue', 'QueueSet', 'Semaphore', 'Task']
+subdirs = ['Controller', 'EventHandler', 'Module', 'Queue', 'QueueSet', 'Semaphore', 'Task', 'Timer']
 
 if not meson.is_cross_build()
     foreach sd : subdirs

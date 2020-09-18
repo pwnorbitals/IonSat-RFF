@@ -33,8 +33,12 @@ Cross-compilation for embedded targets need a few components :
 
 ## Cross files
 
-
+WIP
 
 ## Linker scripts
 
-## custom libraries
+WIP
+
+## Custom libraries
+
+WIP
